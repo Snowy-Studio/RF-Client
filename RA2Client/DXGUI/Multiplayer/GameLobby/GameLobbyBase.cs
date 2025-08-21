@@ -41,6 +41,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
     /// </summary>
     public abstract class GameLobbyBase : INItializableWindow
     {
+        Mod game_mod;
+
         protected const int MAX_PLAYER_COUNT = 8;
         protected const int PLAYER_OPTION_VERTICAL_MARGIN = 12;
         protected const int PLAYER_OPTION_HORIZONTAL_MARGIN = 3;
@@ -478,6 +480,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             InitializeGameOptionPresetUI();
 
             CmbGame_SelectedChanged(cmbGame, null);
+
+            update_chkTerrain_condition();
         }
 
         private void ChkAres_CheckedChanged(object sender, EventArgs e)
@@ -599,8 +603,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             DarkeningPanel.AddAndInitializeWithControl(WindowManager, new 添加至游戏模式(WindowManager, Map, GameModeMaps));
         }
 
-
-
         protected virtual void ModManagerEnabled()
         {
             var modManager = ModManager.GetInstance(WindowManager);
@@ -627,6 +629,54 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             return true;
         }
 
+        void update_chkTerrain_condition()
+        {
+            var Theater = "";
+            var chkTerrain = FindChild<GameLobbyCheckBox>("chkTerrain");
+            bool a = false;
+            if (Map != null && lbGameModeMapList != null)
+            {
+               Theater = Renderer.GetSafeString(Map.Theater, lbGameModeMapList.FontIndex);
+            }
+            if (Theater == "TEMPERATE")
+            {
+                a = File.Exists(Path.Combine(game_mod.FilePath, "temperatmd.ini"));
+            }
+            if (Theater == "URBAN")
+            {
+                a = File.Exists(Path.Combine(game_mod.FilePath, "urbanmd.ini"));
+            }
+            if (Theater == "SNOW")
+            {
+                a = File.Exists(Path.Combine(game_mod.FilePath, "snowmd.ini"));
+            }
+            if (Theater == "NEWURBAN")
+            {
+                a = File.Exists(Path.Combine(game_mod.FilePath, "urbannmd.ini"));
+            }
+            if (Theater == "DESERT")
+            {
+                a = File.Exists(Path.Combine(game_mod.FilePath, "desertmd.ini"));
+            }
+            if (Theater == "LUNAR")
+            {
+                a = File.Exists(Path.Combine(game_mod.FilePath, "lunarmd.ini"));
+            }
+            if (a == true)
+            {
+                chkTerrain.CheckedTexture = LoadTextureOrNull("checkBoxChecked.png");
+                chkTerrain.ClearTexture = LoadTextureOrNull("checkBoxClear.png");
+                chkTerrain.AllowChanges = true;
+            }
+            else
+            {
+                chkTerrain.CheckedTexture = LoadTextureOrNull("checkBoxCheckedD.png");
+                chkTerrain.ClearTexture = LoadTextureOrNull("checkBoxClearD.png");
+                chkTerrain.Checked = false;
+                chkTerrain.AllowChanges = false;
+            }
+        }
+
         public void CmbGame_SelectedChanged(object sender, EventArgs e)
         {
             if (cmbGame.SelectedItem == null || cmbGame.SelectedItem.Tag == null)
@@ -636,6 +686,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             }
 
             Mod mod = ((Mod)cmbGame.SelectedItem.Tag);
+            game_mod = mod;
+            update_chkTerrain_condition();
 
             //if (mod.ID == "GH" || mod.Compatible == "GH")
             //{
@@ -1399,6 +1451,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             //CmbGame_SelectedChanged(cmbGame, null);
             //},token);
+            update_chkTerrain_condition();
         }
 
         public void ReloadMod()
@@ -2453,7 +2506,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             ManipulateStartingLocations(mapIni, houseInfos);
 
             
-            mapIni.WriteIniFile(spawnMapIniFile.FullName, Encoding.GetEncoding("Big5"));
+            mapIni.WriteIniFile(spawnMapIniFile.FullName, Encoding.GetEncoding("GBK"));
 
 
         }

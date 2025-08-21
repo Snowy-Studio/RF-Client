@@ -110,6 +110,7 @@ namespace DTAConfig.OptionPanels
                 textBoxSearch = new XNATextBox(WindowManager);
                 textBoxSearch.Name = nameof(textBoxSearch);
                 textBoxSearch.ClientRectangle = new Rectangle(comboBoxtypes.Right + 80, comboBoxtypes.Y, 200, UIDesignConstants.BUTTON_HEIGHT);
+                textBoxSearch.EnterPressed += ComboBoxtypes_SelectedIndexChanged;
 
                 AddChild(textBoxSearch);
 

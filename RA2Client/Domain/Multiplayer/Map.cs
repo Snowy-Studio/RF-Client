@@ -136,6 +136,7 @@ namespace Ra2Client.Domain.Multiplayer
 
 
         public bool Ares { get; private set; }
+        public string Theater { get; private set; }
 
         /// <summary>
         /// The calculated SHA1 of the map.
@@ -589,6 +590,8 @@ namespace Ra2Client.Domain.Multiplayer
                     section.SetValue("Description", Name);
                 }
 
+                Theater = GetMapIni(BaseFilePath).GetStringValue("Map", "Theater", "");
+                section.SetValue("Theater", Theater);
 
                 GetTeamStartMappingPresets(section);
                 //if (UserINISettings.Instance.PreloadMapPreviews)

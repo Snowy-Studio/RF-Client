@@ -205,7 +205,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             btnToggleFavoriteMap = new XNAClientButton(WindowManager);
             btnToggleFavoriteMap.IdleTexture = AssetLoader.LoadTexture("favInactive.png");
-            btnToggleFavoriteMap.ClientRectangle = new Rectangle(20, 20, 30, 30);
+            btnToggleFavoriteMap.ClientRectangle = new Rectangle(20, 20, 75, 75);
             btnToggleFavoriteMap.LeftClick += (sender, args) => ToggleFavorite?.Invoke(sender, args);
             btnToggleFavoriteMap.SetToolTipText("Toggle Favorite Map".L10N("UI:Main:ToggleFavoriteMap"));
 

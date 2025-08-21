@@ -14,6 +14,7 @@ using Rampastring.Tools;
 using Rampastring.XNAUI;
 using SharpDX.XAudio2;
 using IniFile = Rampastring.Tools.IniFile;
+using System.Text;
 
 namespace ClientGUI
 {
@@ -390,19 +391,30 @@ namespace ClientGUI
 
                 var e = string.Empty;
 
-                if (newSection.GetValue("chkTerrain", false))
-                {
-                    int zh_location = 所有需要复制的文件.IndexOf("zh");
-                    所有需要复制的文件.Insert(zh_location, "TX");
-                }
+                List<string> white_list = ["syringe.exe"];
 
+                if (newSection.GetValue("chkTerrain", false))   //如果开启地形扩展，就把地形ini加入到白名单
+                {
+                    white_list.Add("temperatmd.ini");
+                    white_list.Add("urbanmd.ini");
+                    white_list.Add("snowmd.ini");
+                    white_list.Add("urbannmd.ini");
+                    white_list.Add("desertmd.ini");
+                    white_list.Add("lunarmd.ini");
+                    int zh_location = 所有需要复制的文件.IndexOf("zh");
+                    List<string> Terrain = ["TX"];
+                    for (int i = 0; i < Terrain.Count; i++)
+                    {
+                        所有需要复制的文件.Insert(zh_location, "Terrain/" + Terrain[i]);
+                    }
+                }
                 if (IsNtfs(ProgramConstants.GamePath))
                 {
-                  e = 符号链接(所有需要复制的文件, newMission, ["syringe.exe"]);
+                    e = 符号链接(所有需要复制的文件, newMission, white_list, newSection.GetValue("chkTerrain", false));
                 }
                 else
                 {
-                    e = 复制文件(所有需要复制的文件);
+                    e = 复制文件(所有需要复制的文件, newSection.GetValue("chkTerrain", false));
                 }
 
                 if (e != string.Empty)
@@ -473,7 +485,7 @@ namespace ClientGUI
 
         }
 
-        private static string 复制文件(List<string> 所有需要复制的文件)
+        private static string 复制文件(List<string> 所有需要复制的文件, bool Terrain_Expansion)
         {
             //所有需要链接的文件.Add("gamemd-spawn.exe");
             Dictionary<string, string> 文件字典 = [];
@@ -521,7 +533,7 @@ namespace ClientGUI
           
         }
 
-        private static string 符号链接(List<string> 所有需要链接的文件, string 存档目标, List<string> 白名单)
+        private static string 符号链接(List<string> 所有需要链接的文件, string 存档目标, List<string> 白名单, bool Terrain_Expansion)
         {
             Dictionary<string, string> 文件字典 = new();
 
@@ -582,6 +594,35 @@ namespace ClientGUI
                     }
                 }
 
+                if (Terrain_Expansion)
+                {
+                    string Path_Run = Path.Combine(ProgramConstants.游戏目录);
+                    string Path_Terrain = Path.Combine(ProgramConstants.GamePath) + "Terrain/";
+                    List<string> Terrain = ["TX"];
+
+                    IniFile ini_temperatmd  = new IniFile(Path_Run + "/temperatmd.ini");
+                    IniFile ini_urbanmd     = new IniFile(Path_Run + "/urbanmd.ini");
+                    IniFile ini_snowmd      = new IniFile(Path_Run + "/snowmd.ini");
+                    IniFile ini_urbannmd    = new IniFile(Path_Run + "/urbannmd.ini");
+                    IniFile ini_desertmd    = new IniFile(Path_Run + "/desertmd.ini");
+                    IniFile ini_lunarmd     = new IniFile(Path_Run + "/lunarmd.ini");
+                    for (int i = 0; i < Terrain.Count; i++)
+                    {
+                        IniFile.ConsolidateIniFiles(ini_temperatmd, new IniFile(Path_Terrain + Terrain[i] + "/temperatmd.ini"));
+                        IniFile.ConsolidateIniFiles(ini_urbanmd,    new IniFile(Path_Terrain + Terrain[i] + "/urbanmd.ini"));
+                        IniFile.ConsolidateIniFiles(ini_snowmd,     new IniFile(Path_Terrain + Terrain[i] + "/snowmd.ini"));
+                        IniFile.ConsolidateIniFiles(ini_urbannmd,   new IniFile(Path_Terrain + Terrain[i] + "/urbannmd.ini"));
+                        IniFile.ConsolidateIniFiles(ini_desertmd,   new IniFile(Path_Terrain + Terrain[i] + "/desertmd.ini"));
+                        IniFile.ConsolidateIniFiles(ini_lunarmd,    new IniFile(Path_Terrain + Terrain[i] + "/lunarmd.ini"));
+                    }
+                    ini_temperatmd  .WriteIniFile(Path_Run + "/temperatmd.ini"  , Encoding.GetEncoding("GBK"));
+                    ini_urbanmd     .WriteIniFile(Path_Run + "/urbanmd.ini"     , Encoding.GetEncoding("GBK"));
+                    ini_snowmd      .WriteIniFile(Path_Run + "/snowmd.ini"      , Encoding.GetEncoding("GBK"));
+                    ini_urbannmd    .WriteIniFile(Path_Run + "/urbannmd.ini"    , Encoding.GetEncoding("GBK"));
+                    ini_desertmd    .WriteIniFile(Path_Run + "/desertmd.ini"    , Encoding.GetEncoding("GBK"));
+                    ini_lunarmd     .WriteIniFile(Path_Run + "/lunarmd.ini"     , Encoding.GetEncoding("GBK"));
+                }
+
                 //if (!string.IsNullOrEmpty(存档目标))
 
                 //{
@@ -608,7 +649,7 @@ namespace ClientGUI
             }
             catch (Exception ex)
             {
-                return $"符号链接失败，原因：{ex.Message}";
+                return $"符号链接失败，原因：{ex.Message}\n\n请关闭杀毒软件，并且以管理员身份运行客户端";
             }
 
             return string.Empty;
