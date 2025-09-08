@@ -196,7 +196,7 @@ namespace ClientCore
                 try
                 {
                     File.CreateSymbolicLink(linkPath, file);
-                    Console.WriteLine($"符号链接成功: {linkPath} -> {file}");
+                //    Console.WriteLine($"符号链接成功: {linkPath} -> {file}");
                 }
                 catch (Exception ex)
                 {

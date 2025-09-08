@@ -348,16 +348,16 @@ namespace ClientGUI
                 所有需要复制的文件.Add("zh");
                 所有需要复制的文件.Add("cncnet5.dll");
 
-                if(!Ares && !File.Exists(Path.Combine(newGame,"ares.dll")))
-                    所有需要复制的文件.Add("gamemd.exe");
+          //      if(!Ares && !File.Exists(Path.Combine(newGame,"ares.dll")))
+                    所有需要复制的文件.Add("gamemd-spawn.exe");
 
                 if (Ares)
                 {
                     所有需要复制的文件.Add("Ares");
                 }
 
-                所有需要复制的文件.Add("syringe.exe");
-       
+                
+
 
                 所有需要复制的文件.Add(newGame);
 
@@ -396,7 +396,7 @@ namespace ClientGUI
 
                 if (IsNtfs(ProgramConstants.GamePath))
                 {
-                  e = 符号链接(所有需要复制的文件, newMission, ["syringe.exe"]);
+                  e = 符号链接(所有需要复制的文件, newMission, ["syringe.exe","gamemd-spawn.exe"]);
                 }
                 else
                 {
@@ -473,7 +473,7 @@ namespace ClientGUI
 
         private static string 复制文件(List<string> 所有需要复制的文件)
         {
-            //所有需要链接的文件.Add("gamemd-spawn.exe");
+          
             Dictionary<string, string> 文件字典 = [];
 
             try

@@ -939,6 +939,25 @@ public class IniFile : IIniFile
         return 1; // 无效字节，按单字节处理
     }
 
+    private static int GetGbkCharLength(byte firstByte)
+    {
+        if (firstByte <= 0x7F)
+        {
+            // ASCII 单字节
+            return 1;
+        }
+        else if (firstByte >= 0x81 && firstByte <= 0xFE)
+        {
+            // GBK 双字节
+            return 2;
+        }
+        else
+        {
+            // 非法字节，按 1 字节处理
+            return 1;
+        }
+    }
+
     private static bool TryReadUtf8Char(byte[] bytes, ref int position, out int l, out char result)
     {
         result = '\0';
@@ -951,7 +970,7 @@ public class IniFile : IIniFile
         }
 
         byte firstByte = bytes[position];
-        int charLength = GetUtf8CharLength(firstByte);
+        int charLength = GetGbkCharLength(firstByte);
 
         // 检查是否有足够的字节
         if (remaining < charLength)
@@ -962,7 +981,7 @@ public class IniFile : IIniFile
         try
         {
             // 解码字符
-            result = Encoding.UTF8.GetString(bytes, position, charLength)[0];
+            result = Encoding.GetEncoding("GBK").GetString(bytes, position, charLength)[0];
             position += charLength;
             l = charLength;
             return true;
@@ -1044,7 +1063,11 @@ public class IniFile : IIniFile
                             continue;
                         if (sectionNameEndIndex == currentLine.TrimEnd().Length - 1)
                         {
-                            string sectionName = currentLine.Substring(1, sectionNameEndIndex - 1);
+                            string sectionName = currentLine.TrimEnd().Substring(1, sectionNameEndIndex - 1);
+
+                            //if (sectionName == "集故故皆")
+                            //    Console.WriteLine();
+
                             int index = Sections.FindIndex(c => c.SectionName == sectionName);
 
                             if (index > -1)
@@ -1142,13 +1165,14 @@ public class IniFile : IIniFile
 
             if (currentLine[0] == '[')
             {
-                int sectionNameEndIndex = currentLine.LastIndexOf(']');
+                int sectionNameEndIndex = currentLine.TrimEnd().LastIndexOf(']');
                 if (sectionNameEndIndex == -1)
                     //throw new IniParseException("Invalid INI section definition: " + currentLine);
                     continue;
-                if (sectionNameEndIndex == currentLine.Length - 1)
+                if (sectionNameEndIndex == currentLine.TrimEnd().Length - 1)
                 {
-                    string sectionName = currentLine.Substring(1, sectionNameEndIndex - 1);
+                    string sectionName = currentLine.TrimEnd().Substring(1, sectionNameEndIndex - 1);
+                
                     int index = Sections.FindIndex(c => c.SectionName == sectionName);
 
                     if (index > -1)

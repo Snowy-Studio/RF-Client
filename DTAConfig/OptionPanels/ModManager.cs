@@ -25,6 +25,7 @@ using SharpDX.Direct2D1;
 using TsfSharp;
 using System.Threading;
 using ClientCore.Entity;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DTAConfig.OptionPanels;
 
@@ -489,7 +490,7 @@ public class ModManager : XNAWindow
         触发刷新?.Invoke();
     }
 
-    public static MissionPack 导入具体任务包(bool copyFile, bool deepImport, string missionPath,bool muVisible = false, string startPath = null,MissionPack m = null)
+    public static MissionPack 导入具体任务包(bool copyFile, bool deepImport, string missionPath,bool muVisible = false, string startPath = null,MissionPack mp = null)
     {
         if(missionPath == null) return null;
 
@@ -508,21 +509,28 @@ public class ModManager : XNAWindow
         
         var missionPack = new MissionPack
         {
-            ID = m?.ID ?? id,
+            ID = mp?.ID ?? id,
             FilePath = missionPath,
-            FileName = Path.Combine(startPath,$"Maps/Cp/battle{m?.ID ?? id}.ini"),
-            Name = m?.Name ?? Path.GetFileName(missionPath),
+            FileName = Path.Combine(startPath,$"Maps/Cp/battle{mp?.ID ?? id}.ini"),
+            Name = mp?.Name ?? Path.GetFileName(missionPath),
             YR = isYR,
             Other = true,
-            LongDescription = m?.LongDescription ?? Path.GetFileName(missionPath),
+            LongDescription = mp?.LongDescription ?? Path.GetFileName(missionPath),
             Mod = isYR ? "YR" : "RA2",
             DefaultMod = isYR ? "YR+" : "RA2+",
-            UpdateTime = m?.UpdateTime ?? ""
+            UpdateTime = mp?.UpdateTime ?? ""
         };
 
         missionPack.DefaultMod = missionPack.Mod;
 
-        var mod = 导入具体Mod( missionPath, copyFile, deepImport, isYR, muVisible,startPath,modid: missionPack.ID,name: missionPack.Name);
+        var m = new Mod()
+        {
+            ID = missionPack.ID,
+            Name = missionPack.Name
+        };
+
+        var mod = 导入具体Mod( missionPath, copyFile, deepImport, isYR, muVisible,startPath,m);
+
         if (mod != null) //说明检测到Mod
         {
             missionPack.Mod = mod.ID;
@@ -752,7 +760,7 @@ public class ModManager : XNAWindow
         return Directory.Exists(path) && YRFiles.Any(file => File.Exists(Path.Combine(path, file))) || Directory.GetFiles(path, "expandmd*.mix").Length != 0 || Directory.GetFiles(path, "*md.map").Length != 0;
     }
 
-    public string 导入Mod(bool copyFile, bool deepImport, string filePath)
+    public string 导入Mod(bool copyFile, bool deepImport, string filePath,Mod m = null)
     {
 
         var id = string.Empty;
@@ -768,7 +776,7 @@ public class ModManager : XNAWindow
 
                 if (判断是否为Mod(item, true))
                 {
-                    var r = 导入具体Mod(item, copyFile, deepImport, true);
+                    var r = 导入具体Mod(item, copyFile, deepImport,true,m:m);
                     if (r != null)
                     {
                         id = r.ID;
@@ -791,20 +799,20 @@ public class ModManager : XNAWindow
 
     }
 
-    public static Mod 导入具体Mod(string path, bool copyFile, bool deepImport, bool isYR,bool muVisible = true,string startPath = null,string modid = null,string name = null)
+    public static Mod 导入具体Mod(string path, bool copyFile, bool deepImport, bool isYR,bool muVisible = true,string startPath = null,Mod m = null)
     {
         startPath ??= ProgramConstants.GamePath;
         var md = isYR ? "md" : null;
 
         if (!判断是否为Mod(path, isYR)) return null;
 
-        var id = modid ?? Path.GetFileName(path);
+        var id = m?.ID ?? Path.GetFileName(path);
         if (path == ProgramConstants.GamePath)
         {
             id = DateTime.Now.ToString("yyyyMMddHHmmss");
         }
 
-        var Name = name ?? id;
+        var Name = m?.Name ?? id;
         var Countries = string.Empty;
         var RandomSides = string.Empty;
         List<string> RandomSidesIndexs = [];
@@ -903,15 +911,17 @@ public class ModManager : XNAWindow
         }
         #endregion
 
-        var mod = new Mod
-        {
-            ID = id,
-            Name = Name,
-            FileName = Path.Combine(startPath, $"Mod&AI\\Mod&AI{id}.ini"),
-            md = md,
-            MuVisible = muVisible,
-            SettingsFile = SettingsFile
-        };
+        var mod = m;
+
+        mod ??= new Mod
+            {
+                ID = id,
+                Name = Name,
+                FileName = Path.Combine(startPath, $"Mod&AI\\Mod&AI{id}.ini"),
+                md = md,
+                MuVisible = muVisible,
+                SettingsFile = SettingsFile
+            };
 
         if (copyFile)
             mod.FilePath = $"Mod&AI\\{id}";
@@ -1122,7 +1132,7 @@ public class ModManager : XNAWindow
 
             foreach (var missionPack in MissionPack.MissionPacks)
             {
-                if (missionPack.Mod.Contains(mod.ID))
+                if (missionPack.Mod == mod.ID && !mod.MuVisible)
                 {
                     XNAMessageBox.Show(WindowManager, "Error".L10N("UI:Main:Error"), $"这个Mod被任务包 {missionPack. Name} 使用, 无法删除, 如要删除请删除任务包");
                     return;

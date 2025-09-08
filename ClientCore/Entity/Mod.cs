@@ -18,11 +18,13 @@ public class Mod : InfoBaseClass
              SetValue("Mod", ID, ID);
         iniFile.AddSection(ID).
             SetValue("Description", Description).
+            SetValue("Name",Name).
             SetValue("FilePath", FilePath).
             SetValue("Version", Version). 
             SetValue("MuVisible", MuVisible).
             SetValue("CpVisible", CpVisible).
             SetValue("Compatible", Compatible).
+            SetValue("UpdateTime", UpdateTime).
             SetValue("YR", md.Equals("md")).
             SetValue("Sides", Countries).
             SetValue("Author", Author).
@@ -141,7 +143,7 @@ public class Mod : InfoBaseClass
 
                 mod.MuVisible = iniFile.GetValue(modID, "MuVisible", true);
                 mod.CpVisible = iniFile.GetValue(modID, "CpVisible", true);
-
+                mod.UpdateTime = iniFile.GetValue(modID, "UpdateTime", string.Empty);
                 mod.SettingsFile = iniFile.GetValue(modID, "SettingsFile", "RA2MD.ini");
 
                 mod.Colors = iniFile.GetValue<string>(modID, "Colors", null);
@@ -178,6 +180,8 @@ public class Mod : InfoBaseClass
     /// </summary>
     /// 
     public string Colors { get; set; }
+
+    public string UpdateTime { get; set; } = "";
 
     /// <summary>
     /// 战役是否显示

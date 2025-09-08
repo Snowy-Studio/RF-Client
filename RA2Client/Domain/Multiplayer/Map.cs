@@ -736,7 +736,7 @@ namespace Ra2Client.Domain.Multiplayer
         {
             List<Rule> rules = [];
 
-            for (int j = 1; section.KeyExists($"Rule{j}"); j++)
+                for (int j = 0; section.KeyExists($"Rule{j}"); j++)
             {
                 string ruleLine = section.GetValue($"Rule{j}", string.Empty);
                 if (string.IsNullOrWhiteSpace(ruleLine))

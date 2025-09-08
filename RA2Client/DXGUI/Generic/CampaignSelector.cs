@@ -374,13 +374,13 @@ namespace Ra2Client.DXGUI.Generic
             //ReadDrop();
 
 
-            var _lblGame = new XNALabel(WindowManager)
+            _lblGame = new XNALabel(WindowManager)
             {
                 Text = "Use mod:".L10N("UI:Main:UseMod"),
                 ClientRectangle = new Rectangle(_tbMissionDescriptionList.X + _tbMissionDescriptionList.Width + 10, _tbMissionDescriptionList.Y, 0,0)
             };
 
-            var lblModify = new XNALabel(WindowManager);
+            lblModify = new XNALabel(WindowManager);
             lblModify.Name = nameof(lblModify);
             lblModify.Text = "Note: Changes may not take effect, and some may disrupt the flow of the mission".L10N("UI:Main:TurnOnCheat");
             lblModify.ClientRectangle = new Rectangle(_lblGame.X, _tbMissionDescriptionList.Y + 40, 0, 0);
@@ -932,6 +932,8 @@ namespace Ra2Client.DXGUI.Generic
         private System.Windows.Forms.Timer timer;
         private int 延迟时间 = 300;
         private DateTime lastActionTime = DateTime.MinValue;
+        private XNALabel _lblGame;
+        private XNALabel lblModify;
 
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -1008,8 +1010,16 @@ namespace Ra2Client.DXGUI.Generic
                 if (_cmbGame.SelectedIndex == -1 || _cmbGame.SelectedItem == null)
                     _cmbGame.SelectedIndex = 0;
 
-                if (_cmbGame.Items.Count == 1) _cmbGame.AllowDropDown = false;
-                else _cmbGame.AllowDropDown = true;
+                if (_cmbGame.Items.Count == 1)
+                {
+                    _lblGame.Visible = false;
+                    _cmbGame.Visible = false;
+                }
+                else
+                {
+                    _lblGame.Visible = true;
+                    _cmbGame.Visible = true;
+                }
 
                 CmbGame_SelectedChanged(null, null);
 
@@ -1026,6 +1036,7 @@ namespace Ra2Client.DXGUI.Generic
                     // 如果地图文件存在
                     _gameOptionsPanel.Visible = File.Exists(Path.Combine(ProgramConstants.GamePath, mission.Path, mission.Scenario));
 
+                    lblModify.Visible = _gameOptionsPanel.Visible;
                     _mapPreviewBox.Visible = false;
 
                     //重新加载Mod选择器
@@ -1214,6 +1225,8 @@ namespace Ra2Client.DXGUI.Generic
             LaunchMission(_missionToLaunch);
         }
 
+        private string 战役临时目录 = SafePath.CombineFilePath(ProgramConstants.GamePath, "Resources\\MissionCache\\");
+
         /// <summary>
         /// Starts a singleplayer Path.
         /// </summary>
@@ -1227,102 +1240,130 @@ namespace Ra2Client.DXGUI.Generic
             var spawnIni = new IniFile();
             var mod = ((Mod)_cmbGame.SelectedItem.Tag);
 
-            var 战役临时目录 = SafePath.CombineFilePath(ProgramConstants.GamePath, "Resources\\MissionCache\\");
-            if (!Directory.Exists(战役临时目录))
-                Directory.CreateDirectory(战役临时目录);
-            else if (Directory.GetFiles(战役临时目录).Length > 0)
+            try
             {
-                Directory.Delete(战役临时目录, true);
-                Directory.CreateDirectory(战役临时目录);
+                if (!Directory.Exists(战役临时目录))
+                    Directory.CreateDirectory(战役临时目录);
+                else if (Directory.GetFiles(战役临时目录).Length > 0)
+                {
+                    Directory.Delete(战役临时目录, true);
+                    Directory.CreateDirectory(战役临时目录);
+                }
             }
+            catch { }
 
             if (_gameOptionsPanel.Visible)
             {
                 var mapName = SafePath.CombineFilePath(ProgramConstants.GamePath, Path.Combine(mission.Path, mission.Scenario));
                 if (!File.Exists(mapName)) return;
 
-                foreach (var m in mission.MPack.Missions)
+                 void ProcessMission(Mission m)
+        {
+            if (string.IsNullOrEmpty(m.Scenario)) return;
+
+            var mapIni = new IniFile(
+                SafePath.CombineFilePath(m.MPack.FilePath, m.Scenario),
+                Encoding.GetEncoding("GBK"));
+
+            if (mapIni.GetSections().Count == 0)
+            {
+                File.Copy(
+                    SafePath.CombineFilePath(m.MPack.FilePath, m.Scenario),
+                    SafePath.CombineFilePath(战役临时目录, m.Scenario));
+            }
+            else
+            {
+                // ===== Header 修复 =====
+                if (!mapIni.SectionExists("Header"))
+                    mapIni.AddSection("Header");
+                if (mapIni.GetValue("Header", "NumberStartingPoints", string.Empty) == string.Empty)
+                    mapIni.SetValue("Header", "NumberStartingPoints", 0);
+
+                // ===== General 修复 =====
+                if (!mapIni.SectionExists("General"))
+                    mapIni.AddSection("General");
+                if (mapIni.GetIntValue("General", "MaximumQueuedObjects", 0) == 0)
+                    mapIni.SetIntValue("General", "MaximumQueuedObjects", 100);
+
+                // ===== mod 特殊处理 =====
+                if (mod.md == string.Empty)
                 {
-                    if (m.Scenario == string.Empty) continue;
-                    var mapIni = new IniFile(SafePath.CombineFilePath(mission.MPack.FilePath, m.Scenario), Encoding.GetEncoding("GBK"));
-                    if (mapIni.GetSections().Count == 0)
-                    {
-                        File.Copy(SafePath.CombineFilePath(mission.MPack.FilePath, m.Scenario), SafePath.CombineFilePath(战役临时目录, m.Scenario));
-                    }
-                    else
-                    {
+                    mapIni.SetIntValue("MindControl", "Damage", 1);
+                    mapIni.SetIntValue("SuperMindControl", "Damage", 1);
 
-                        if(!mapIni.SectionExists("Header"))
-                            mapIni.AddSection("Header");
-                        if(mapIni.GetValue("Header", "NumberStartingPoints",string.Empty) == string.Empty)
-                            mapIni.SetValue("Header", "NumberStartingPoints", 0);
+                    mapIni.AddSection("AlliedOccupyW")
+                        .SetValue("Damage", 30)
+                        .SetValue("ROF", 15)
+                        .SetValue("Range", 7)
+                        .SetValue("Projectile", "InvisibleHigh")
+                        .SetValue("Warhead", "SSAB")
+                        .SetValue("Report", "AlliedOccupiedAttack")
+                        .SetValue("OccupantAnim", "UCFLASH");
 
-                        if (!mapIni.SectionExists("General"))
-                            mapIni.AddSection("General");
-                        if (mapIni.GetIntValue("General", "MaximumQueuedObjects", 0) == 0)
-                            mapIni.SetIntValue("General", "MaximumQueuedObjects", 100);
-
-                        if(mod.md == string.Empty)
-                        {
-                            mapIni.SetIntValue("MindControl", "Damage", 1);
-                            mapIni.SetIntValue("SuperMindControl", "Damage", 1);
-
-                            mapIni.AddSection("AlliedOccupyW")
-                                .SetValue("Damage",30)
-                                .SetValue("ROF", 15)
-                                .SetValue("Range", 7)
-                                .SetValue("Projectile", "InvisibleHigh")
-                                .SetValue("Warhead", "SSAB")
-                                .SetValue("Report", "AlliedOccupiedAttack")
-                                .SetValue("OccupantAnim", "UCFLASH")
-                                ;
-
-                            mapIni.AddSection("SovietOccupyW")
-                                  .SetValue("Damage", 20)
-                                  .SetValue("ROF", 20)
-                                  .SetValue("Range", 7)
-                                  .SetValue("Projectile", "InvisibleHigh")
-                                  .SetValue("Warhead", "SSAB")
-                                  .SetValue("Report", "SovietOccupiedAttack")
-                                  .SetValue("OccupantAnim", "UCFLASH")
-                                  ;
-                        }
-
-
-                        var difficultyIni = new Rampastring.Tools.IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, DifficultyIniPaths[_trbDifficultySelector.Value]));
-                        //
-
-
-                        IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
-                        IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
-                        //IniFile.ConsolidateIniFiles(mapIni, new IniFile("Resources/SkinRulesmd.ini"));
-
-                        foreach (GameLobbyCheckBox chkBox in CheckBoxes)
-                        {
-                            chkBox.ApplySpawnINICode(spawnIni);
-                            chkBox.ApplyMapCode(mapIni, null);
-                        }
-
-                        foreach (GameLobbyDropDown dd in DropDowns)
-                        {
-                            dd.ApplySpawnIniCode(spawnIni);
-                            dd.ApplyMapCode(mapIni, null);
-                        }
-                        if (_cmbCredits.SelectedItem != null && _cmbCredits.SelectedItem.Text != string.Empty)
-                            Credits(mapIni, int.Parse(_cmbCredits.SelectedItem.Text) / 100);
-
-
-
-                        //if (((Mod)_cmbGame.SelectedItem.Tag).md == "md" && !m.YR)
-                        //{
-                        //    if (mapIni.SectionExists("Countries"))
-                        //        mapIni.RenameSection("Countries", "YBCountry");
-                        //}
-
-                        mapIni.WriteIniFile(SafePath.CombineFilePath(战役临时目录, m.Scenario), Encoding.GetEncoding("GBK"));
-                    }
+                    mapIni.AddSection("SovietOccupyW")
+                        .SetValue("Damage", 20)
+                        .SetValue("ROF", 20)
+                        .SetValue("Range", 7)
+                        .SetValue("Projectile", "InvisibleHigh")
+                        .SetValue("Warhead", "SSAB")
+                        .SetValue("Report", "SovietOccupiedAttack")
+                        .SetValue("OccupantAnim", "UCFLASH");
                 }
-              
+
+                // ===== 难度 ini 合并 =====
+                var difficultyIni = new Rampastring.Tools.IniFile(
+                    SafePath.CombineFilePath(ProgramConstants.GamePath, DifficultyIniPaths[_trbDifficultySelector.Value]));
+                IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
+                IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
+                // IniFile.ConsolidateIniFiles(mapIni, new IniFile("Resources/SkinRulesmd.ini"));
+
+                // ===== 应用复选框配置 =====
+                foreach (GameLobbyCheckBox chkBox in CheckBoxes)
+                {
+                    chkBox.ApplySpawnINICode(spawnIni);
+                    chkBox.ApplyMapCode(mapIni, null);
+                }
+
+                // ===== 应用下拉框配置 =====
+                foreach (GameLobbyDropDown dd in DropDowns)
+                {
+                    dd.ApplySpawnIniCode(spawnIni);
+                    dd.ApplyMapCode(mapIni, null);
+                }
+
+                // ===== 金币数配置 =====
+                if (_cmbCredits.SelectedItem != null && _cmbCredits.SelectedItem.Text != string.Empty)
+                    Credits(mapIni, int.Parse(_cmbCredits.SelectedItem.Text) / 100);
+
+
+                // ===== 保存文件 =====
+                mapIni.WriteIniFile(
+                    SafePath.CombineFilePath(战役临时目录, m.Scenario),
+                    Encoding.GetEncoding("GBK"));
+            }
+        }
+
+        // 1. 先处理当前任务（同步，保证立即可用）
+        ProcessMission(mission);
+
+                // 2. 后台异步处理同一任务包内的其他任务
+                Task.Run(() =>
+                {
+                    foreach (var m in mission.MPack.Missions)
+                    {
+                        if (m == mission) continue; // 跳过当前任务
+                        try
+                        {
+                            ProcessMission(m);
+                        }
+                        catch (Exception ex)
+                        {
+                            // 建议写日志，别影响主流程
+                            Console.WriteLine($"处理任务 {m.Scenario} 出错: {ex.Message}");
+                        }
+                    }
+                });
+
                 UserINISettings.Instance.CampaignDefaultGameSpeed.Value = 6 - _cmbGameSpeed.SelectedIndex;
                 UserINISettings.Instance.Difficulty.Value = _trbDifficultySelector.Value;
                 UserINISettings.Instance.SaveSettings();

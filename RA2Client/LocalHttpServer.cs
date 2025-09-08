@@ -218,6 +218,53 @@ namespace Ra2Client
                     response.Close(); // 一定要关闭响应
                 }
             }
+            else if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/downloadMod")
+            {
+                #region 下载任务包
+                try
+                {
+                    using var reader = new StreamReader(request.InputStream, request.ContentEncoding);
+                    string requestBody = await reader.ReadToEndAsync();
+
+                    var modVo = JsonSerializer.Deserialize<ModVo>(requestBody);
+
+
+                    _ = Task.Run(async () =>
+                    {
+                        var messageBox = new XNAMessage(wm);
+                        messageBox.caption = "写入模组";
+                        messageBox.description = $"正在写入模组 {modVo.name},请稍等";
+                        messageBox.Show();
+                        await 写入模组(modVo, wm);
+                        messageBox.Disable();
+                        messageBox.Detach();
+                        messageBox.Dispose();
+                    });
+
+
+                    var result = new
+                    {
+                        code = "200",
+                    };
+                    response.StatusCode = 200;
+                    string jsonResult = JsonSerializer.Serialize(result);
+                    byte[] buffer = Encoding.UTF8.GetBytes(jsonResult);
+                    response.ContentType = "application/json";
+                    response.ContentLength64 = buffer.Length;
+                    await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    #endregion
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex.ToString());
+                    Console.WriteLine(ex.ToString());
+                }
+                finally
+                {
+                    response.ContentType = "application/json";
+                    response.Close(); // 一定要关闭响应
+                }
+            }
             else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/mapExists")
             {
                 try
@@ -284,6 +331,37 @@ namespace Ra2Client
                     }
                 }
         
+                var result = new
+                {
+                    code = "200",
+                    status,
+                };
+
+                string jsonResult = JsonSerializer.Serialize(result);
+                byte[] buffer = Encoding.UTF8.GetBytes(jsonResult);
+                response.ContentType = "application/json";
+                response.ContentLength64 = buffer.Length;
+                await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                response.StatusCode = 200;
+            }
+            else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/modExists")
+            {
+                var modID = request.QueryString["id"];
+                int status = 0; // 未下载
+
+                var mod = Mod.Mods.Find(m => m.ID == modID);
+                if (mod != null)
+                {
+                    if (mod.UpdateTime == request.QueryString["updateTime"])
+                    {
+                        status = 1; // 已安装
+                    }
+                    else
+                    {
+                        status = 2; // 需要更新
+                    }
+                }
+
                 var result = new
                 {
                     code = "200",
@@ -454,7 +532,8 @@ namespace Ra2Client
                      ID = missionPackVo.id,
                      Name = missionPackVo.name,
                     LongDescription = missionPackVo.description,
-                    UpdateTime = missionPackVo.updateTime
+                    UpdateTime = missionPackVo.updateTime,
+                    Author = missionPackVo.author,
                 };
 
                
@@ -476,6 +555,66 @@ namespace Ra2Client
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ 写入任务包时发生异常: {ex}");
+            }
+        }
+
+        private static async Task 写入模组(ModVo modVo, WindowManager wm)
+        {
+            try
+            {
+                var fileName = Path.GetFileName(modVo.file);
+                string tmpFile = Path.Combine(ProgramConstants.GamePath, "tmp", fileName);
+                string extractDir = Path.Combine(ProgramConstants.GamePath, "tmp", "Mod");
+
+                string downloadUrl;
+                if (modVo.file.StartsWith("u"))
+                    downloadUrl = Path.Combine(NetWorkINISettings.Address, modVo.file);
+                else
+                    downloadUrl = modVo.file;
+
+                // 等待下载完成
+                bool success = await NetWorkINISettings.DownloadFileAsync(downloadUrl, tmpFile);
+
+                if (!success)
+                {
+                    Console.WriteLine($"❌ 下载Mod失败: {downloadUrl}");
+                    return;
+                }
+                if (modVo.file.StartsWith("u"))
+                    // 解压文件
+                    SevenZip.ExtractWith7Zip(tmpFile, extractDir, needDel: true);
+                else
+                    SevenZip.ExtractWith7Zip(tmpFile, "./", needDel: true);
+
+                var mod = new Mod()
+                {
+                    ID = modVo.id,
+                    Name = modVo.name,
+                    md = modVo.gameType == 1 ? "md" : string.Empty,
+                    Author = modVo.author,
+                    Description = modVo.description,
+                    UpdateTime = modVo.updateTime,
+                    Compatible = modVo.compatible,
+                };
+
+
+                if (modVo.file.StartsWith("u"))
+                    // 导入Mod
+                    ModManager.GetInstance(wm).导入Mod(
+                        true,
+                        true,
+                        Path.Combine(ProgramConstants.GamePath, "tmp", "Mod"),
+                        m: mod
+                    );
+
+                if (Directory.Exists(Path.Combine(ProgramConstants.GamePath, "tmp", "Mod")))
+                    Directory.Delete(Path.Combine(ProgramConstants.GamePath, "tmp", "Mod"), true);
+
+                UserINISettings.Instance.重新加载地图和任务包?.Invoke(null, null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ 写入模组时发生异常: {ex}");
             }
         }
         /// <summary>
