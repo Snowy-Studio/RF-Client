@@ -354,6 +354,7 @@ namespace ClientGUI
                 if (Ares)
                 {
                     所有需要复制的文件.Add("Ares");
+                    所有需要复制的文件.Add("Syringe.exe");
                 }
 
                 
