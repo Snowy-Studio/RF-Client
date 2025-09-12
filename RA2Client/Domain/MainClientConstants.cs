@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using System.Collections.Generic;
 using System.IO;
 
@@ -18,7 +18,7 @@ namespace Ra2Client.Domain
 
         public static string CurrentTunnelServerUrl = TunnelServerUrls["仅重聚官方自建"];
 
-        public static string GAME_NAME_LONG = "Red Alert 2 Reunion the Future Client";
+        public static string GAME_NAME_LONG = "Red Alert 2 Reunion Client";
         public static string GAME_NAME_SHORT = "Reunion";
 
         //public static string CREDITS_URL = Path.Combine(ProgramConstants.游戏目录, "Resources\\ThanksList");

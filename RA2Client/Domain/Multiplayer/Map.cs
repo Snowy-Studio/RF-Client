@@ -348,9 +348,16 @@ namespace Ra2Client.Domain.Multiplayer
                 ID = Path.GetFileNameWithoutExtension(BaseFilePath);
                 Official = whitelist.Any(sectionName.Contains);
 
-                OtherFile = section.GetValue("OtherFile", string.Empty);
-                if (OtherFile == string.Empty)
-                    OtherFile = section.GetValue("Mission", string.Empty);
+                if (section != null)
+                {
+                    OtherFile = section.GetValue("OtherFile", string.Empty);
+                    if (string.IsNullOrEmpty(OtherFile))
+                        OtherFile = section.GetValue("Mission", string.Empty);
+                }
+                else
+                {
+                    OtherFile = string.Empty;
+                }
 
                 #region 处理预览图
 

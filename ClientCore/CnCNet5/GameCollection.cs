@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -95,7 +95,8 @@ namespace ClientCore.CnCNet5
                 if (!iniFile.SectionExists(kvp.Value))
                     continue;
 
-                string ID = iniFile.GetStringValue(kvp.Value, "InternalName", string.Empty).ToLowerInvariant();
+                // string ID = iniFile.GetStringValue(kvp.Value, "InternalName", string.Empty).ToLowerInvariant();
+                string ID = "RF".ToLowerInvariant();
 
                 if (string.IsNullOrEmpty(ID))
                     throw new GameCollectionConfigurationException("InternalName for game " + kvp.Value + " is not defined or set to an empty value.");
@@ -115,10 +116,12 @@ namespace ClientCore.CnCNet5
                 customGames.Add(new CnCNetGame
                 {
                     InternalName = ID,
-                    UIName = iniFile.GetStringValue(kvp.Value, "UIName", ID.ToUpperInvariant()),
+                    // UIName = iniFile.GetStringValue(kvp.Value, "UIName", ID.ToUpperInvariant()),
+                    UIName = "重聚未来",
                     ChatChannel = GetIRCChannelNameFromIniFile(iniFile, kvp.Value, "ChatChannel"),
                     GameBroadcastChannel = GetIRCChannelNameFromIniFile(iniFile, kvp.Value, "GameBroadcastChannel"),
-                    ClientExecutableName = iniFile.GetStringValue(kvp.Value, "ClientExecutableName", string.Empty),
+                    // ClientExecutableName = iniFile.GetStringValue(kvp.Value, "ClientExecutableName", string.Empty),
+                    ClientExecutableName = "Reunion.exe",
                     RegistryInstallPath = iniFile.GetStringValue(kvp.Value, "RegistryInstallPath", "HKCU\\Software\\"
                             + ID.ToUpperInvariant()),
                     Texture = AssetLoader.AssetExists(iconFilename) ? AssetLoader.LoadTexture(iconFilename) :

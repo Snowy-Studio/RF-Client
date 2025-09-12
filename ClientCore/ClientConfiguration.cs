@@ -176,7 +176,9 @@ namespace ClientCore
 
         public int LanguageCount => clientDefinitionsIni.GetSectionKeys("Language") == null ? 0 : clientDefinitionsIni.GetSectionKeys("Language").Count;
 
-        public string LocalGame => clientDefinitionsIni.GetStringValue(SETTINGS, "LocalGame", "DTA");
+        // public string LocalGame => clientDefinitionsIni.GetStringValue(SETTINGS, "LocalGame", "DTA");
+
+        public string LocalGame => "RF";
 
         public bool SidebarHack => clientDefinitionsIni.GetBooleanValue(SETTINGS, "SidebarHack", false);
 
@@ -190,7 +192,9 @@ namespace ClientCore
 
         public string[] RecommendedResolutions => clientDefinitionsIni.GetStringValue(SETTINGS, "RecommendedResolutions", "1280x768,2560x1440,3840x2160").Split(',');
 
-        public string WindowTitle => clientDefinitionsIni.GetStringValue(SETTINGS, "WindowTitle", string.Empty);
+        // public string WindowTitle => clientDefinitionsIni.GetStringValue(SETTINGS, "WindowTitle", string.Empty);
+
+        public string WindowTitle => "红色警戒2 重聚未来";
 
         public string InstallationPathRegKey => clientDefinitionsIni.GetStringValue(SETTINGS, "RegistryInstallPath", "Reunion");
 
@@ -204,7 +208,9 @@ namespace ClientCore
 
         public bool ModMode => clientDefinitionsIni.GetBooleanValue(SETTINGS, "ModMode", false);
 
-        public string LongGameName => clientDefinitionsIni.GetStringValue(SETTINGS, "LongGameName", "Reunion");
+        // public string LongGameName => clientDefinitionsIni.GetStringValue(SETTINGS, "LongGameName", "Reunion");
+
+        public string LongGameName => "红色警戒2 重聚未来";
 
         public string LongSupportURL => clientDefinitionsIni.GetStringValue(SETTINGS, "LongSupportURL", "");
 
@@ -347,7 +353,9 @@ namespace ClientCore
         /// the correct main client executable.
         /// For example, DTA.exe in case of DTA.
         /// </summary>
-        public string LauncherExe => clientDefinitionsIni.GetStringValue(SETTINGS, "LauncherExe", string.Empty);
+
+        // public string LauncherExe => clientDefinitionsIni.GetStringValue(SETTINGS, "LauncherExe", string.Empty);
+        public string LauncherExe => "Reunion.exe";
 
         public bool UseClientRandomStartLocations => clientDefinitionsIni.GetBooleanValue(SETTINGS, "UseClientRandomStartLocations", false);
 
