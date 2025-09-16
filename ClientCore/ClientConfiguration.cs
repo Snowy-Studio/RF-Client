@@ -421,35 +421,7 @@ namespace ClientCore
 
                 if (version.Major == 10)
                 {
-                    if (version.Build == 22000)
-                    {
-                        return OSVersion.Windows11_21H2;
-                    }
-                    else if (version.Build == 22621)
-                    {
-                        return OSVersion.Windows11_22H2;
-                    }
-                    else if (version.Build == 22631)
-                    {
-                        return OSVersion.Windows11_23H2;
-                    }
-                    else if (version.Build == 26100)
-                    {
-                        return OSVersion.Windows11_24H2_LTSC2024_SERVER2025;
-                    }
-                    else if (version.Build == 26120)
-                    {
-                        return OSVersion.Windows11_24H2_Beta;
-                    }
-                    else if (version.Build == 26200)
-                    {
-                        return OSVersion.Windows11_25H2;
-                    }
-                    //else if (version.Build == 27817)
-                    //{
-                    //    return OSVersion.Windows11_30H1;
-                    //}
-                    else if (version.Build == 10240)
+                    if (version.Build == 10240)
                     {
                         return OSVersion.Windows10_1507_LTSB2015;
                     }
@@ -509,9 +481,37 @@ namespace ClientCore
                     {
                         return OSVersion.Windows10_SERVER2022;
                     }
+                    else if(version.Build == 22000)
+                    {
+                        return OSVersion.Windows11_21H2;
+                    }
+                    else if (version.Build == 22621)
+                    {
+                        return OSVersion.Windows11_22H2;
+                    }
+                    else if (version.Build == 22631)
+                    {
+                        return OSVersion.Windows11_23H2;
+                    }
+                    else if (version.Build == 26100)
+                    {
+                        return OSVersion.Windows11_24H2_LTSC2024_SERVER2025;
+                    }
+                    else if (version.Build == 26120)
+                    {
+                        return OSVersion.Windows11_24H2_Beta;
+                    }
+                    else if (version.Build == 26200)
+                    {
+                        return OSVersion.Windows11_25H2;
+                    }
+                    else if (version.Build == 26220)
+                    {
+                        return OSVersion.Windows11_25H2_Dev;
+                    }
                     else
                     {
-                        return OSVersion.Experimental_Version_Of_Windows;
+                        return OSVersion.Windows_Dev;
                     }
                 }
 

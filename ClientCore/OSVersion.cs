@@ -1,4 +1,4 @@
-﻿public enum OSVersion
+public enum OSVersion
 {
     UNKNOWN,
     Windows2000,
@@ -30,7 +30,6 @@
     Windows11_24H2_Beta,
     Windows11_25H2,
     Windows11_25H2_Dev,
-    Windows11_30H1,
-    Experimental_Version_Of_Windows,
+    Windows_Dev,
     UNIX
 }
