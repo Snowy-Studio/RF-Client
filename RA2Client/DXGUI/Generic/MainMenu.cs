@@ -205,7 +205,7 @@ namespace Ra2Client.DXGUI.Generic
         {
             var mapEditorProcess = new Process();
             mapEditorProcess.StartInfo.FileName =  ProgramConstants.MapEditorPath;
-            mapEditorProcess.StartInfo.WorkingDirectory = Path.Combine(ProgramConstants.GamePath,"Resources\\FA2SP_HDM_Edition_1.1.8");
+            mapEditorProcess.StartInfo.WorkingDirectory = Path.Combine(ProgramConstants.GamePath,"Resources\\FA2SP_HDM_Edition");
             mapEditorProcess.StartInfo.UseShellExecute = false; //是否使用操作系统shell启动 
             mapEditorProcess.StartInfo.CreateNoWindow = true;   //是否在新窗口中启动该进程的值 (不显示程序窗口)
             mapEditorProcess.Start();
@@ -803,7 +803,7 @@ namespace Ra2Client.DXGUI.Generic
             }
             else
             {
-                var ini = new IniFile(ProgramConstants.GamePath + "Resources/FA2SP_HDM_Edition_1.1.8/FinalAlert.ini", Encoding.GetEncoding("GBK"));
+                var ini = new IniFile(ProgramConstants.GamePath + "Resources/FA2SP_HDM_Edition/FinalAlert.ini", Encoding.GetEncoding("GBK"));
                 ini.SetStringValue("TS", "Exe", Path.Combine(ProgramConstants.游戏目录, "gamemd.exe").Replace('/', '\\')); //地编路径必须是\，这里写两个是因为有一个是转义符
                 ini.WriteIniFile();
                 Logger.Log("写入地编游戏路径");
