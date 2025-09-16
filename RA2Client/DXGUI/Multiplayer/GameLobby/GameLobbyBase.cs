@@ -654,6 +654,11 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 chkAres.AllowChecking = false;
                 chkAres.Checked = true;
             }
+            else if(mod.FileName != Path.Combine(ProgramConstants.GamePath, "Mod&AI\\Mod&AI.ini"))
+            {
+                chkAres.Checked = false;
+                chkAres.AllowChecking = false;
+            }
             else if(Map?.Ares == true)
             {
                 chkAres.AllowChecking = false;
@@ -2408,8 +2413,11 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 mapIni.SetIntValue("MindControl", "Damage", 1);
                 mapIni.SetIntValue("SuperMindControl", "Damage", 1);
 
-                
-                mapIni.AddSection("AlliedOccupyW")
+            }
+
+            if(!mapIni.SectionExists("AlliedOccupyW"))
+
+            mapIni.AddSection("AlliedOccupyW")
                     .SetValue("Damage", 30)
                     .SetValue("ROF", 15)
                     .SetValue("Range", 7)
@@ -2418,21 +2426,19 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     .SetValue("Report", "AlliedOccupiedAttack")
                     .SetValue("OccupantAnim", "UCFLASH")
                     ;
-
+            if (!mapIni.SectionExists("SovietOccupyW"))
                 mapIni.AddSection("SovietOccupyW")
-                        .SetValue("Damage", 20)
-                        .SetValue("ROF", 20)
-                        .SetValue("Range", 7)
-                        .SetValue("Projectile", "InvisibleHigh")
-                        .SetValue("Warhead", "SSAB")
-                        .SetValue("Report", "SovietOccupiedAttack")
-                        .SetValue("OccupantAnim", "UCFLASH")
-                        ;
-                
-            }
+                    .SetValue("Damage", 20)
+                    .SetValue("ROF", 20)
+                    .SetValue("Range", 7)
+                    .SetValue("Projectile", "InvisibleHigh")
+                    .SetValue("Warhead", "SSAB")
+                    .SetValue("Report", "SovietOccupiedAttack")
+                    .SetValue("OccupantAnim", "UCFLASH")
+                    ;
 
 
-            if(Name == "SkirmishLobby")
+            if (Name == "SkirmishLobby")
                 IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
 
             #region 限制AI建造超级武器

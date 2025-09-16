@@ -157,7 +157,7 @@ namespace ClientCore
                 string fileName = Path.GetFileName(file);
                 if (ProgramConstants.PureHashes.ContainsKey(fileName))
                 {
-                    Console.WriteLine($"白名单文件，跳过删除: {fileName}");
+                    //Console.WriteLine($"白名单文件，跳过删除: {fileName}");
                     continue;
                 }
 

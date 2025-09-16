@@ -475,8 +475,9 @@ namespace Ra2Client.DXGUI.Generic
 
         private void BtnDownLoad_LeftClick(object sender, EventArgs e)
         {
-            var _modManager = ModManager.GetInstance(WindowManager);
-            _modManager.打开创意工坊(2);
+            //var _modManager = ModManager.GetInstance(WindowManager);
+            //_modManager.打开创意工坊(2);
+            FunExtensions.OpenUrl($"https://creator.yra2.com/workshop/missionPack/list?token={UserINISettings.Instance.Token}&port={LocalHttpServer.Port}");
         }
 
         private void BtnImport_LeftClick(object sender, EventArgs e)
@@ -1290,28 +1291,32 @@ namespace Ra2Client.DXGUI.Generic
                 {
                     mapIni.SetIntValue("MindControl", "Damage", 1);
                     mapIni.SetIntValue("SuperMindControl", "Damage", 1);
-
-                    mapIni.AddSection("AlliedOccupyW")
-                        .SetValue("Damage", 30)
-                        .SetValue("ROF", 15)
-                        .SetValue("Range", 7)
-                        .SetValue("Projectile", "InvisibleHigh")
-                        .SetValue("Warhead", "SSAB")
-                        .SetValue("Report", "AlliedOccupiedAttack")
-                        .SetValue("OccupantAnim", "UCFLASH");
-
-                    mapIni.AddSection("SovietOccupyW")
-                        .SetValue("Damage", 20)
-                        .SetValue("ROF", 20)
-                        .SetValue("Range", 7)
-                        .SetValue("Projectile", "InvisibleHigh")
-                        .SetValue("Warhead", "SSAB")
-                        .SetValue("Report", "SovietOccupiedAttack")
-                        .SetValue("OccupantAnim", "UCFLASH");
                 }
 
-                // ===== 难度 ini 合并 =====
-                var difficultyIni = new Rampastring.Tools.IniFile(
+                        if (!mapIni.SectionExists("AlliedOccupyW"))
+
+                            mapIni.AddSection("AlliedOccupyW")
+                                    .SetValue("Damage", 30)
+                                    .SetValue("ROF", 15)
+                                    .SetValue("Range", 7)
+                                    .SetValue("Projectile", "InvisibleHigh")
+                                    .SetValue("Warhead", "SSAB")
+                                    .SetValue("Report", "AlliedOccupiedAttack")
+                                    .SetValue("OccupantAnim", "UCFLASH")
+                                    ;
+                        if (!mapIni.SectionExists("SovietOccupyW"))
+                            mapIni.AddSection("SovietOccupyW")
+                                .SetValue("Damage", 20)
+                                .SetValue("ROF", 20)
+                                .SetValue("Range", 7)
+                                .SetValue("Projectile", "InvisibleHigh")
+                                .SetValue("Warhead", "SSAB")
+                                .SetValue("Report", "SovietOccupiedAttack")
+                                .SetValue("OccupantAnim", "UCFLASH")
+                                ;
+
+                        // ===== 难度 ini 合并 =====
+                        var difficultyIni = new Rampastring.Tools.IniFile(
                     SafePath.CombineFilePath(ProgramConstants.GamePath, DifficultyIniPaths[_trbDifficultySelector.Value]));
                 IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
                 IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
