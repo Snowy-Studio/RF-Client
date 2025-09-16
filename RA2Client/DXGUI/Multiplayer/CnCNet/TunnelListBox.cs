@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Ra2Client.Domain.Multiplayer.CnCNet;
 using Localization;
@@ -30,10 +30,10 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             Height = LineHeight * 12 + headerHeight + 3;
             PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
             BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
-            AddColumn("Name".L10N("UI:Main:NameHeader"), 230);
+            AddColumn("Name".L10N("UI:Main:NameHeader"), 238);
             AddColumn("Official".L10N("UI:Main:OfficialHeader"), 70);
-            AddColumn("Ping".L10N("UI:Main:PingHeader"), 68);
-            AddColumn("Players".L10N("UI:Main:PlayersHeader"), 98);
+            AddColumn("Ping".L10N("UI:Main:PingHeader"), 60);
+            AddColumn("Players".L10N("UI:Main:PlayersHeader"), 88);
             AllowRightClickUnselect = false;
             AllowKeyboardInput = true;
         }
