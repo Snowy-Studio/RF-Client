@@ -35,7 +35,7 @@ namespace ClientCore
 
         public static readonly string GamePath = SafePath.CombineDirectoryPath(SafePath.GetDirectory(StartupPath).Parent.Parent.FullName);
 
-        public static readonly string MapEditorPath = Path.Combine(SafePath.CombineDirectoryPath(SafePath.GetDirectory(StartupPath).Parent.Parent.FullName), "Resources\\FA2SP_HDM_Edition_1.1.8\\RunFA2sp.bat");
+        public static readonly string MapEditorPath = Path.Combine(SafePath.CombineDirectoryPath(SafePath.GetDirectory(StartupPath).Parent.Parent.FullName), "Resources\\FA2SP_HDM_Edition\\RunFA2sp.bat");
 
         //MOD游戏数据默认存放的MIX
         public static readonly string MOD_MIX = "EXPANDMD01.MIX";
