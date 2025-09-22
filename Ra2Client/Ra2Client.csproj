@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows7.0</TargetFramework>
+		<LangVersion>13.0</LangVersion>
+		<OutputType>WinExe</OutputType>
+		<Title>Ra2Client</Title>
+		<Description>Ra2Client Library</Description>
+		<Company>Snowy Studio</Company>
+		<Product>Ra2Client</Product>
+		<Copyright>Copyright © Snowy Studio 2022-2025</Copyright> 
+		<Trademark>Ra2Client</Trademark>
+		<Version>1.5.1.42</Version>
+		<FileVersion>1.5.1.42</FileVersion>
+		<AssemblyName>Ra2Client</AssemblyName>
+		<RootNamespace>Ra2Client</RootNamespace>
+		<Nullable>disable</Nullable>
+		<ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+		<AssemblyName>Ra2Client</AssemblyName>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<UseAppHost>false</UseAppHost>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<ApplicationIcon>clienticon.ico</ApplicationIcon>
+		<UseWindowsForms>True</UseWindowsForms>
+		<IsPublishable>False</IsPublishable>
+		<Platforms>AnyCPU;x86</Platforms>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<Optimize>False</Optimize>
+		<OutputPath>..\Bin\Resources\Binaries\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+	  <Optimize>False</Optimize>
+	  <OutputPath>..\Bin\Resources\Binaries\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<OutputPath>..\Bin\Resources\Binaries\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+	  <OutputPath>..\Bin\Resources\Binaries\</OutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<Content Include="..\Bin\Resources\clienticon.ico" />
+	</ItemGroup>
+	<Target Name="CopyResourcesToBinResources" AfterTargets="Build">
+		<ItemGroup>
+			<ResourceFiles Include="Resources\**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ResourceFiles)" DestinationFolder="..\Bin\%(RecursiveDir)" SkipUnchangedFiles="true" />
+	</Target>
+	<ItemGroup>
+		<PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
+		<PackageReference Include="lzo.net" Version="0.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+		<PackageReference Include="Microsoft.NETCore.App" Version="2.1.30" />
+		<PackageReference Include="Microsoft.NETCore.Jit" Version="2.0.8" />
+		<PackageReference Include="OpenMcdf" Version="2.4.1" />
+		<PackageReference Include="Sdcb.FFmpeg" Version="7.0.0" />
+		<PackageReference Include="SendGrid" Version="9.29.3" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
+		<PackageReference Include="System.Management" Version="8.0.0" />
+		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ClientCore\ClientCore.csproj" />
+		<ProjectReference Include="..\ClientGUI\ClientGUI.csproj" />
+		<ProjectReference Include="..\DTAConfig\DTAConfig.csproj" />
+		<ProjectReference Include="..\Localization\Localization.csproj" />
+		<ProjectReference Include="..\RandomMapGenerator\RandomMapGenerator.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="CNCMaps.FileFormats">
+			<HintPath>..\Render\CNCMaps.FileFormats.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+</Project>
