@@ -543,7 +543,6 @@ namespace Ra2Client
                         true,
                         true,
                         Path.Combine(ProgramConstants.GamePath, "tmp","MissionPack"), 
-                        muVisible: false,
                         m: missionPack
                     );
 

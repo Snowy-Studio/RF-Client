@@ -433,7 +433,7 @@ public class ModManager : XNAWindow
     /// <summary>
     /// 导入任务包.
     /// </summary>
-    public string 导入任务包(bool copyFile, bool deepImport, string filePath,bool muVisible = false, string startPath = null, MissionPack m = null)
+    public string 导入任务包(bool copyFile, bool deepImport, string filePath,string startPath = null, MissionPack m = null)
     {
 
         List<string> mapFiles = [];
@@ -452,7 +452,7 @@ public class ModManager : XNAWindow
 
                     if (判断是否为任务包(item))
                     {
-                        var r = 导入具体任务包(copyFile, deepImport, item, muVisible,startPath,m);
+                        var r = 导入具体任务包(copyFile, deepImport, item,startPath,m);
                         if (r != null)
                         {
                             id = r.ID;
@@ -490,7 +490,7 @@ public class ModManager : XNAWindow
         触发刷新?.Invoke();
     }
 
-    public static MissionPack 导入具体任务包(bool copyFile, bool deepImport, string missionPath,bool muVisible = false, string startPath = null,MissionPack mp = null)
+    public static MissionPack 导入具体任务包(bool copyFile, bool deepImport, string missionPath,string startPath = null,MissionPack mp = null)
     {
         if(missionPath == null) return null;
 
@@ -526,10 +526,11 @@ public class ModManager : XNAWindow
         var m = new Mod()
         {
             ID = missionPack.ID,
-            Name = missionPack.Name
+            Name = missionPack.Name,
+            MuVisible = false
         };
 
-        var mod = 导入具体Mod( missionPath, copyFile, deepImport, isYR, muVisible,startPath,m);
+        var mod = 导入具体Mod( missionPath, copyFile, deepImport, isYR,startPath,m);
 
         if (mod != null) //说明检测到Mod
         {
@@ -799,7 +800,7 @@ public class ModManager : XNAWindow
 
     }
 
-    public static Mod 导入具体Mod(string path, bool copyFile, bool deepImport, bool isYR,bool muVisible = true,string startPath = null,Mod m = null)
+    public static Mod 导入具体Mod(string path, bool copyFile, bool deepImport, bool isYR,string startPath = null,Mod m = null)
     {
         startPath ??= ProgramConstants.GamePath;
         var md = isYR ? "md" : null;
@@ -919,7 +920,7 @@ public class ModManager : XNAWindow
                 Name = Name,
                 FileName = Path.Combine(startPath, $"Mod&AI\\Mod&AI{id}.ini"),
                 md = md,
-                MuVisible = muVisible,
+                MuVisible = mod?.MuVisible ?? true,
                 SettingsFile = SettingsFile
             };
 

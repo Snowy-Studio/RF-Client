@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.Entity;
 using ClientCore.Settings;
 using ClientGUI;
@@ -535,7 +535,7 @@ namespace DTAConfig.OptionPanels
 
                 var modManager = ModManager.GetInstance(WindowManager);
 
-                if(ModManager.导入具体任务包(true,true, misssionPackPath, false,Path.Combine(ProgramConstants.GamePath, $"Tmp\\{directoryPath}")) == null)
+                if(ModManager.导入具体任务包(true,true, misssionPackPath,Path.Combine(ProgramConstants.GamePath, $"Tmp\\{directoryPath}")) == null)
                 {
                     XNAMessageBox.Show(WindowManager, "Error".L10N("UI:Main:Error"), "The mission package file was not found".L10N("UI:DTAConfig:MissionPackageFileNotFound"));
                     return string.Empty;
