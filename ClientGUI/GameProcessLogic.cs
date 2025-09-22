@@ -266,6 +266,7 @@ namespace ClientGUI
             var 战役ID = spawn.GetValue("Settings", "CampaignID", -1);
             var chkTerrain = spawn.GetValue("Settings", "chkTerrain", false);
             var chkAres = spawn.GetValue("Settings", "chkAres", false);
+            var buildOffAlly = spawn.GetValue("Settings", "BuildOffAlly", false);
             //if (mission != null)
             //    mission = Path.GetFileName(mission);
 
@@ -289,6 +290,7 @@ namespace ClientGUI
                     iniFile.SetValue(sectionName, "CampaignID", 战役ID);
                 iniFile.SetValue(sectionName, "chkTerrain", chkTerrain);
                 iniFile.SetValue(sectionName, "chkAres", chkAres);
+                iniFile.SetValue(sectionName, "BuildOffAlly", buildOffAlly);
             }
             iniFile.WriteIniFile();
             

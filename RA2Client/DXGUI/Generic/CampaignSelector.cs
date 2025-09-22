@@ -1303,7 +1303,7 @@ namespace Ra2Client.DXGUI.Generic
                                     .SetValue("Warhead", "SSAB")
                                     .SetValue("Report", "AlliedOccupiedAttack")
                                     .SetValue("OccupantAnim", "UCFLASH")
-                                    ;
+                                    ;  
                         if (!mapIni.SectionExists("SovietOccupyW"))
                             mapIni.AddSection("SovietOccupyW")
                                 .SetValue("Damage", 20)

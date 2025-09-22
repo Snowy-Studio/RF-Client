@@ -132,8 +132,9 @@ namespace Ra2Client.DXGUI.Generic
             var newMission = sg.Mission;
             var ares = sg.Ares;
             var tx = sg.Tx;
+            var buildOffAlly = sg.BuildOffAlly;
 
-            if((newGame != string.Empty &&!Directory.Exists(newGame)) || (newMission != string.Empty && !Directory.Exists(newMission)))
+            if ((newGame != string.Empty &&!Directory.Exists(newGame)) || (newMission != string.Empty && !Directory.Exists(newMission)))
             {
                 XNAMessageBox.Show(WindowManager,"Error".L10N("UI:Main:Error"), "The mission pack file or mod file has been deleted and the save cannot be loaded.".L10N("UI:Main:CannotLoadedSave"));
                 return;
@@ -150,6 +151,7 @@ namespace Ra2Client.DXGUI.Generic
             settings.SetValue("chkAres", ares);
 
             settings.SetValue("OtherFile", newMission);
+            settings.SetValue("BuildOffAlly", buildOffAlly);
 
             settings.SetValue("Ra2Mode",false);
             settings.SetValue("chkSatellite",sg.透明迷雾);
@@ -276,8 +278,10 @@ namespace Ra2Client.DXGUI.Generic
                     var 战役ID = saveIni.GetValue(sectionName, "CampaignID", -1);
                     var tx = saveIni.GetValue(sectionName, "chkTerrain", false);
                     var ares = saveIni.GetValue(sectionName, "chkAres", false);
-                   
-                    ParseSaveGame(file.FullName, game, mission, 透明迷雾, 战役ID, ares,tx);
+                    var buildOffAlly = saveIni.GetValue(sectionName, "BuildOffAlly", false);
+
+
+                    ParseSaveGame(file.FullName, game, mission, 透明迷雾, 战役ID, ares,tx, buildOffAlly);
                 }
             }
 
@@ -294,10 +298,10 @@ namespace Ra2Client.DXGUI.Generic
             }
         }
 
-        private void ParseSaveGame(string fileName, string game, string mission, bool 透明迷雾, int 战役ID,bool ares,bool tx)
+        private void ParseSaveGame(string fileName, string game, string mission, bool 透明迷雾, int 战役ID,bool ares,bool tx,bool buildOffAlly)
         {
             string shortName = Path.GetFileName(fileName);
-            SavedGame sg = new SavedGame(shortName, game, mission, ares,tx);
+            SavedGame sg = new SavedGame(shortName, game, mission, ares,tx, buildOffAlly);
             sg.FilePath = fileName;
             sg.透明迷雾 = 透明迷雾;
             sg.战役ID = 战役ID;
