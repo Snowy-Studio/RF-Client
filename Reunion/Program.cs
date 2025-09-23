@@ -183,36 +183,23 @@ namespace Reunion
                     string message;
                     string url;
 
-                    // 判断是否为中国大陆
-                    string countryCode = GetCountryCodeByIp();
-                    string domain;
-
-                    if (string.IsNullOrEmpty(countryCode))
-                    {
-                        domain = "files-cn-v4.ru2023.top/directlink-v2/x";
-                    }
-                    else
-                    {
-                        domain = (countryCode == "CN") ? "files-cn-v4.yra2.com/directlink-v1/y" : "files-global-v4.yra2.net/directlink-v5/z";
-                    }
-
                     switch (arch)
                     {
                         case "x86":
-                            message = "检测到缺少所需的.NET6 x86运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.12 - v6.0.36";
-                            url = $"https://{domain}/NET6/x86/windowsdesktop-runtime-6.0.36-win-x86.exe";
+                            message = "检测到缺少所需的.NET6 x86运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载";
+                            url = $"https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-x86.exe";
                             break;
                         case "x64":
-                            message = "检测到缺少所需的.NET6 x64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.12 - v6.0.36";
-                            url = $"https://{domain}/NET6/x64/windowsdesktop-runtime-6.0.36-win-x64.exe";
+                            message = "检测到缺少所需的.NET6 x64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载";
+                            url = $"https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-x64.exe";
                             break;
                         case "arm64":
-                            message = "检测到缺少所需的.NET6 ARM64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.12 - v6.0.36";
-                            url = $"https://{domain}/NET6/arm64/windowsdesktop-runtime-6.0.36-win-arm64.exe";
+                            message = "检测到缺少所需的.NET6 ARM64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载";
+                            url = $"https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-arm64.exe";
                             break;
                         default:
-                            message = "检测到缺少所需的.NET6运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.12 - v6.0.36";
-                            url = "https://www.yra2.com/runtime#net6-download";
+                            message = "检测到缺少所需的.NET6运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 无法识别您的系统架构, 请自行寻找对应架构的安装包安装";
+                            url = "https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0";
                             break;
                     }
 
@@ -328,38 +315,6 @@ namespace Reunion
                 }
             }
             return null;
-        }
-
-        private static string GetCountryCodeByIp()
-        {
-            try
-            {
-                var psi = new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = "/c curl -s https://api.mir6.com/api/ip_json?ip=myip",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                using (var process = Process.Start(psi))
-                {
-                    string output = process.StandardOutput.ReadToEnd();
-                    process.WaitForExit();
-
-                    // 提取 data 块里的 countryCode 字段
-                    var match = Regex.Match(output, @"""data""\s*:\s*\{[^}]*?""countryCode"":\s*""([^""]+)""");
-                    if (match.Success)
-                    {
-                        return match.Groups[1].Value;
-                    }
-                }
-            }
-            catch
-            {
-                // 忽略异常，默认返回空
-            }
-            return string.Empty;
         }
     }
 }
