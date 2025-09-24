@@ -50,22 +50,19 @@ namespace Reunion
             {
                 if (!File.Exists(RequiredFile) || !File.Exists(FreeFile) || !File.Exists(LicenseFile) || !File.Exists(AntiCheatFile))
                 {
-                    MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
                 if (!ComputeFileSHA256(RequiredFile).Equals(RequiredFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileMD5(FreeFile).Equals(FreeFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileSHA1(LicenseFile).Equals(LicenseFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileSHA512(AntiCheatFile).Equals(AntiCheatFileHash, StringComparison.OrdinalIgnoreCase))
                 {
-                    MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"文件校验出错: {ex.Message}", "错误",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"文件校验出错: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;
@@ -167,7 +164,7 @@ namespace Reunion
                         case "x86":
                             {
                                 const string msg = "检测到缺少所需的.NET6 x86运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载x86运行库\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x86\n如果您确认您的PC并非x86系统, 请点击 '否' 跳转下载Arm64运行时";
-                                var dr = MessageBox.Show(msg, "缺少运行环境", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                                var dr = MessageBox.Show(msg, "警告: 缺少运行时环境", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                                 switch (dr)
                                 {
                                     case DialogResult.Yes:
@@ -186,7 +183,7 @@ namespace Reunion
                         case "x64":
                             {
                                 const string msg = "检测到缺少所需的.NET6 x64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载x64运行库\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x64\n如果您确认您的PC并非x64系统, 请点击 '否' 跳转下载Arm64运行时";
-                                var dr = MessageBox.Show(msg, "缺少运行环境", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                                var dr = MessageBox.Show(msg, "警告: 缺少运行时环境", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                                 switch (dr)
                                 {
                                     case DialogResult.Yes:
@@ -212,7 +209,7 @@ namespace Reunion
                             break;
                     }
 
-                    var result = MessageBox.Show(message, "缺少运行环境", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                    var result = MessageBox.Show(message, "警告: 缺少运行时环境", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                     if (result == DialogResult.OK)
                     {
                         Process.Start(url);
