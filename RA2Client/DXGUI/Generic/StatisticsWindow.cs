@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClientCore;
@@ -210,6 +210,7 @@ namespace Ra2Client.DXGUI.Generic
 
             lbGameList = new XNAMultiColumnListBox(WindowManager);
             lbGameList.Name = nameof(lbGameList);
+            lbGameList.FontIndex = 1;
             lbGameList.ClientRectangle = new Rectangle(2, 25, 876, 250);
             lbGameList.BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
             lbGameList.PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;

@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.XNAUI.XNAControls;
 using Rampastring.XNAUI;
 using System;
@@ -18,7 +18,7 @@ namespace ClientGUI
             var firstLabel = new XNALabel(WindowManager)
             {
                 ClientRectangle = new Rectangle(20, 10, 0, 0),
-                Text = "选择纯净尤里的复仇目录"
+                Text = "选择纯净尤里的复仇目录（这个对话框通常不会存在，如果你没有修改游戏文件，那也可能是安装目录太长了）"
             };
 
 

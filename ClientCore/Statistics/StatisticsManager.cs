@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -332,7 +332,7 @@ namespace ClientCore.Statistics
             {
                 fs.Position = 4; // First 4 bytes after the version mean the amount of games
                 fs.WriteInt(Statistics.Count);
-                Logger.Log("11");
+              
                 fs.Position = fs.Length;
                 ms.Write(fs);
             }
