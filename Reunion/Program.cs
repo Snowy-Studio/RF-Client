@@ -46,47 +46,26 @@ namespace Reunion
 
         private static bool CheckRequiredFile()
         {
-            if (!File.Exists(RequiredFile) || !File.Exists(FreeFile) || !File.Exists(LicenseFile) || !File.Exists(AntiCheatFile))
-            {
-                MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
             try
             {
-                string actualHash1 = ComputeFileSHA256(RequiredFile);
-                if (!actualHash1.Equals(RequiredFileHash, StringComparison.OrdinalIgnoreCase))
+                if (!File.Exists(RequiredFile) || !File.Exists(FreeFile) || !File.Exists(LicenseFile) || !File.Exists(AntiCheatFile))
                 {
                     MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
-                string actualHash2 = ComputeFileMD5(FreeFile);
-                if (!actualHash2.Equals(FreeFileHash, StringComparison.OrdinalIgnoreCase))
+
+                if (!ComputeFileSHA256(RequiredFile).Equals(RequiredFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileMD5(FreeFile).Equals(FreeFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileSHA1(LicenseFile).Equals(LicenseFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileSHA512(AntiCheatFile).Equals(AntiCheatFileHash, StringComparison.OrdinalIgnoreCase))
                 {
                     MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
-                string actualHash3 = ComputeFileSHA1(LicenseFile);
-                if (!actualHash3.Equals(LicenseFileHash, StringComparison.OrdinalIgnoreCase))
-                {
-                    MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
-                string actualHash4 = ComputeFileSHA512(AntiCheatFile);
-                if (!actualHash4.Equals(AntiCheatFileHash, StringComparison.OrdinalIgnoreCase))
-                {
-                    MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"文件校验出错: {ex.Message}", "错误",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;
@@ -186,24 +165,54 @@ namespace Reunion
                     switch (arch)
                     {
                         case "x86":
-                            message = "检测到缺少所需的.NET6 x86运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载";
-                            url = $"https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-x86.exe";
-                            break;
+                            {
+                                const string msg = "检测到缺少所需的.NET6 x86运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载x86运行库\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x86\n如果您确认您的PC并非x86系统, 请点击 '否' 跳转下载Arm64运行时";
+                                var dr = MessageBox.Show(msg, "缺少运行环境", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                                switch (dr)
+                                {
+                                    case DialogResult.Yes:
+                                        Process.Start("https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-x86.exe");
+                                        break;
+                                    case DialogResult.No:
+                                        Process.Start("https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-arm64.exe");
+                                        break;
+                                    case DialogResult.Cancel:
+                                    default:
+                                        break;
+                                }
+                                Environment.Exit(1);
+                                return;
+                            }
                         case "x64":
-                            message = "检测到缺少所需的.NET6 x64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载";
-                            url = $"https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-x64.exe";
-                            break;
+                            {
+                                const string msg = "检测到缺少所需的.NET6 x64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载x64运行库\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x64\n如果您确认您的PC并非x64系统, 请点击 '否' 跳转下载Arm64运行时";
+                                var dr = MessageBox.Show(msg, "缺少运行环境", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                                switch (dr)
+                                {
+                                    case DialogResult.Yes:
+                                        Process.Start("https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-x64.exe");
+                                        break;
+                                    case DialogResult.No:
+                                        Process.Start("https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-arm64.exe");
+                                        break;
+                                    case DialogResult.Cancel:
+                                    default:
+                                        break;
+                                }
+                                Environment.Exit(1);
+                                return;
+                            }
                         case "arm64":
-                            message = "检测到缺少所需的.NET6 ARM64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载";
+                            message = "检测到缺少所需的.NET6 Arm64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载Arm64运行库";
                             url = $"https://mirror.yra2.com/dotnet6/runtime/windowsdesktop-runtime-6.0.36-win-arm64.exe";
                             break;
                         default:
-                            message = "检测到缺少所需的.NET6运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 无法识别您的系统架构, 请自行寻找对应架构的安装包安装";
+                            message = "检测到缺少所需的.NET6 UnknownArch运行环境, 是否立即跳转到Microsoft官网进行下载?\n\n所需运行时版本要求: v6.0.36, 无法识别您的系统架构, 可能不兼容您的系统";
                             url = "https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0";
                             break;
                     }
 
-                    var result = MessageBox.Show(message, "错误", MessageBoxButtons.OKCancel);
+                    var result = MessageBox.Show(message, "缺少运行环境", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                     if (result == DialogResult.OK)
                     {
                         Process.Start(url);
