@@ -1,3 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 using ClientCore;
 using Localization;
 using Microsoft.Xna.Framework;
@@ -11,14 +19,6 @@ using Ra2Client.DXGUI.Multiplayer.GameLobby.CommandHandlers;
 using Ra2Client.Online;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {

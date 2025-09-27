@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -190,18 +190,18 @@ namespace Ra2Client.DXGUI.Multiplayer
             {
                 new LANColor("Gray".L10N("UI:Main:ColorGray"), Color.Gray),
                 new LANColor("Metalic".L10N("UI:Main:ColorLightGrayMetalic"), Color.LightGray),
-                new LANColor("Green".L10N("UI:Main:ColorGreen"), Color.Green),
+                new LANColor("Green".L10N("UI:Main:ColorGreen"), Color.ForestGreen),
                 new LANColor("Lime Green".L10N("UI:Main:ColorLimeGreen"), Color.LimeGreen),
                 new LANColor("Green Yellow".L10N("UI:Main:ColorGreenYellow"), Color.GreenYellow),
                 new LANColor("Goldenrod".L10N("UI:Main:ColorGoldenrod"), Color.Goldenrod),
                 new LANColor("Yellow".L10N("UI:Main:ColorYellow"), Color.Yellow),
                 new LANColor("Orange".L10N("UI:Main:ColorOrange"), Color.Orange),
                 new LANColor("Red".L10N("UI:Main:ColorRed"), Color.Red),
-                new LANColor("Pink".L10N("UI:Main:ColorDeepPink"), Color.DeepPink),
-                new LANColor("Purple".L10N("UI:Main:ColorMediumPurple"), Color.MediumPurple),
-                new LANColor("Sky Blue".L10N("UI:Main:ColorSkyBlue"), Color.SkyBlue),
-                new LANColor("Blue".L10N("UI:Main:ColorBlue"), Color.Blue),
-                new LANColor("Brown".L10N("UI:Main:ColorSaddleBrown"), Color.SaddleBrown),
+                new LANColor("Pink".L10N("UI:Main:ColorPink"), Color.DeepPink),
+                new LANColor("Purple".L10N("UI:Main:ColorPurple"), Color.MediumPurple),
+                new LANColor("Sky Blue".L10N("UI:Main:ColorSkyBlue"), Color.LightSkyBlue),
+                new LANColor("Blue".L10N("UI:Main:ColorBlue"), Color.RoyalBlue),
+                new LANColor("Brown".L10N("UI:Main:ColorBrown"), Color.SaddleBrown),
                 new LANColor("Teal".L10N("UI:Main:ColorTeal"), Color.Teal)
             };
 
