@@ -1,23 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using ClientCore;
+using Localization;
+using Microsoft.Xna.Framework;
 using Ra2Client.Domain;
 using Ra2Client.Domain.LAN;
 using Ra2Client.Domain.Multiplayer;
 using Ra2Client.Domain.Multiplayer.LAN;
 using Ra2Client.DXGUI.Generic;
+using Ra2Client.DXGUI.Multiplayer.CnCNet;
 using Ra2Client.DXGUI.Multiplayer.GameLobby.CommandHandlers;
 using Ra2Client.Online;
-using Localization;
-using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
-using Ra2Client.DXGUI.Multiplayer.CnCNet;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {
@@ -35,7 +36,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         private const string PLAYER_OPTIONS_BROADCAST_COMMAND = "POPTS";
         private const string PLAYER_JOIN_COMMAND = "JOIN";
         private const string PLAYER_QUIT_COMMAND = "QUIT";
-        private const string HOST_QUIT_COMMAND = "HOST_QUIT";
         private const string GAME_OPTIONS_COMMAND = "OPTS";
         private const string PLAYER_READY_REQUEST = "READY";
         private const string LAUNCH_GAME_COMMAND = "LAUNCH";
@@ -149,7 +149,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 thread.Start();
 
                 this.client = new TcpClient();
-                this.client.Connect(hostEndPoint.Address.ToString(), ProgramConstants.LAN_GAME_LOBBY_PORT);
+                this.client.Connect("127.0.0.1", ProgramConstants.LAN_GAME_LOBBY_PORT);
 
                 byte[] buffer = encoding.GetBytes(PLAYER_JOIN_COMMAND +
                     ProgramConstants.LAN_DATA_SEPARATOR + ProgramConstants.PLAYERNAME);
@@ -464,8 +464,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             if (IsHost)
             {
-                BroadcastMessage(HOST_QUIT_COMMAND);
-
                 BroadcastMessage(PLAYER_QUIT_COMMAND);
                 Players.ForEach(p => CleanUpPlayer((LANPlayerInfo)p));
                 Players.Clear();
@@ -598,12 +596,12 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         protected override void ClearPingIndicators()
         {
-
+            
         }
 
         protected override void UpdatePlayerPingIndicator(PlayerInfo pInfo)
         {
-
+           
         }
 
         /// <summary>
@@ -631,7 +629,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         private void SendMessageToHost(string message)
         {
-            if (!client?.Connected == true)
+            if (!client.Connected)
                 return;
 
             byte[] buffer = encoding.GetBytes(message + ProgramConstants.LAN_MESSAGE_SEPARATOR);
@@ -766,7 +764,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             {
                 Players.ForEach(p => sbPlayers.Append(p.Name + ","));
                 if (sbPlayers.Length > 0)
-                    sbPlayers.Length--;
+                sbPlayers.Length--;
             }
             sb.Append(sbPlayers.ToString());
             sb.Append(Convert.ToInt32(Locked));
@@ -928,6 +926,9 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 if (team < 0 || team > 4)
                     return;
 
+                if (ipAddress == "127.0.0.1")
+                    ipAddress = hostEndPoint.Address.ToString();
+
                 bool isAi = aiLevel > -1;
                 if (aiLevel > 2)
                     return;
@@ -1011,7 +1012,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 if (!string.IsNullOrEmpty(mapSHA1))
                     AddNotice("The game host has selected a map that doesn't exist on your installation.".L10N("UI:Main:MapNotExist") + " " +
                         "The host needs to change the map or you won't be able to play.".L10N("UI:Main:HostNeedChangeMapForYou"));
-
+                        
                 return;
             }
 

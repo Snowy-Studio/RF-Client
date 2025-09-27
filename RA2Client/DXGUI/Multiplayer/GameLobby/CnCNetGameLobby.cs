@@ -104,7 +104,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                  
             ];
 
-           // CnCNetLobby.Download_Notice += HandleMapDownloadNotice;
+            // CnCNetLobby.Download_Notice += HandleMapDownloadNotice;
             CnCNetLobby.下载房主传输的地图 += HandleMapDownload;
             
 
@@ -317,100 +317,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             }
         }
 
-
-        private Dictionary<string, XNAMessageBox> pendingMapTransferDialogs = new Dictionary<string, XNAMessageBox>();
-
-        //private void HandleMapDownloadNotice(object sender, EventArgs e)
-        //{
-        //    string requester = sender as string;
-        //    if (requester == null)
-        //        return;
-
-        //    // 如果该请求已存在，则忽略重复请求
-        //    if (pendingMapTransferDialogs.ContainsKey(requester))
-        //        return;
-
-        //    var map = GameModeMap?.Map;
-        //    if (map == null)
-        //        return;
-
-        //    var path = $"{ProgramConstants.GamePath}{map.BaseFilePath}";
-
-        //    var messageBox = new XNAMessageBox(
-        //        WindowManager,
-        //        "Request a map transfer".L10N("UI:Main:RequestMapTransfer"),
-        //        $"{requester} 请求传输地图: {map.Name}",
-        //        XNAMessageBoxButtons.YesNo
-        //    );
-
-        //    var d = Path.GetFileName(Path.GetDirectoryName(map.BaseFilePath));
-        //    var id = string.Empty;
-        //    if (d == "MapLibrary")
-        //        id = map.ID;
-
-        //    messageBox.YesClickedAction += (_) =>
-        //    {
-        //        try
-        //        {
-        //            using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
-        //            var fileContent = new StreamContent(fileStream);
-        //            var fileNameContent = new StringContent(Path.GetFileName(path));
-
-        //            var customMapDto = new MultipartFormDataContent
-        //            {
-        //                { fileNameContent, "fileMame" },
-        //                { fileContent, "file", Path.GetFileName(path) }
-        //            };
-
-        //            var task = Task.Run(async () =>
-        //            {
-        //                try
-        //                {
-        //                    var result = await NetWorkINISettings.Post<string>("custom_map/upload", customMapDto);
-        //                    if (string.IsNullOrEmpty(result.Item1))
-        //                    {
-        //                        AddNotice("地图上传失败，服务器未返回有效SHA1", Color.Red);
-        //                        return;
-        //                    }
-        //                    string messageBody = $"{ProgramConstants.MAP_DOWNLOAD} {Path.GetFileName(path)};{result.Item1};{d};{string.Join(",", map.GameModes)};{map.Name};{map.Author};{map.MaxPlayers};{map.Ares};{id}";
-        //                    connectionManager.SendCustomMessage(new QueuedMessage(
-        //                        "PRIVMSG " + requester + " :\u0001" + messageBody + "\u0001", QueuedMessageType.CHAT_MESSAGE, 0
-        //                    ));
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    AddNotice("地图上传失败: " + ex.Message, Color.Red);
-        //                    Console.WriteLine(ex);
-        //                }
-        //            });
-
-        //            task.Wait();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            AddNotice("地图上传失败: " + ex.Message, Color.Red);
-        //            Console.WriteLine(ex);
-        //        }
-        //        finally
-        //        {
-        //            pendingMapTransferDialogs.Remove(requester);
-        //            messageBox.Dispose();
-        //        }
-        //    };
-
-        //    messageBox.NoClickedAction += (_) =>
-        //    {
-        //        string messageBody = $"{ProgramConstants.MAP_DOWNLOAD} ";
-        //        connectionManager.SendCustomMessage(new QueuedMessage(
-        //            "PRIVMSG " + requester + " :\u0001" + messageBody + "\u0001", QueuedMessageType.CHAT_MESSAGE, 0
-        //        ));
-        //        pendingMapTransferDialogs.Remove(requester);
-        //        messageBox.Dispose();
-        //    };
-
-        //    messageBox.Show();
-        //    pendingMapTransferDialogs.Add(requester, messageBox);
-        //}
 
 
         public event EventHandler GameLeft;
