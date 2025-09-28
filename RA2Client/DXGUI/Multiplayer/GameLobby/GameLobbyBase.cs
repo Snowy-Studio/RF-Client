@@ -3197,6 +3197,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             return GameType.TeamGame;
         }
 
+
         protected int GetRank()
         {
             if (GameMode == null || Map == null)
@@ -3220,23 +3221,26 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 return RANK_NONE;
 
             // These variables are used by both the skirmish and multiplayer code paths
-            int[] teamMemberCounts = new int[5];
+            int[] teamMemberCounts = new int[5]; // 0~4 队伍
             int lowestEnemyAILevel = 2;
             int highestAllyAILevel = 0;
 
             foreach (PlayerInfo aiPlayer in AIPlayers)
             {
-                teamMemberCounts[aiPlayer.TeamId]++;
+                if (aiPlayer.TeamId >= 0 && aiPlayer.TeamId <= 4)
+                {
+                    teamMemberCounts[aiPlayer.TeamId]++;
 
-                if (aiPlayer.TeamId > 0 && aiPlayer.TeamId == localPlayer.TeamId)
-                {
-                    if (aiPlayer.AILevel > highestAllyAILevel)
-                        highestAllyAILevel = aiPlayer.AILevel;
-                }
-                else
-                {
-                    if (aiPlayer.AILevel < lowestEnemyAILevel)
-                        lowestEnemyAILevel = aiPlayer.AILevel;
+                    if (aiPlayer.TeamId > 0 && aiPlayer.TeamId == localPlayer.TeamId)
+                    {
+                        if (aiPlayer.AILevel > highestAllyAILevel)
+                            highestAllyAILevel = aiPlayer.AILevel;
+                    }
+                    else
+                    {
+                        if (aiPlayer.AILevel < lowestEnemyAILevel)
+                            lowestEnemyAILevel = aiPlayer.AILevel;
+                    }
                 }
             }
 
@@ -3257,15 +3261,15 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                         return RANK_NONE;
 
                     int localTeamIndex = localPlayer.TeamId;
-                    if (localTeamIndex > 0 && filteredPlayers.Count(p => p.TeamId == localTeamIndex) > 1)
+                    if (localTeamIndex > 0 &&
+                        localTeamIndex <= 4 &&
+                        filteredPlayers.Count(p => p.TeamId == localTeamIndex) > 1)
                         return RANK_NONE;
 
                     return RANK_HARD;
                 }
 
                 // Coop stars for maps with 4 or more players
-                // See the code in StatisticsManager.GetRankForCoopMatch for the conditions
-
                 if (Players.Find(p => IsPlayerSpectator(p)) != null)
                     return RANK_NONE;
 
@@ -3281,17 +3285,15 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 if (AIPlayers.Find(p => p.TeamId == 0) != null)
                     return RANK_NONE;
 
-                teamMemberCounts[localPlayer.TeamId] += Players.Count;
+                if (localPlayer.TeamId >= 0 && localPlayer.TeamId <= 4)
+                    teamMemberCounts[localPlayer.TeamId] += Players.Count;
 
                 if (lowestEnemyAILevel < highestAllyAILevel)
-                {
-                    // Check that the player's AI allies aren't stronger
                     return RANK_NONE;
-                }
 
-                // Check that all teams have at least as many players
-                // as the human players' team
-                int allyCount = teamMemberCounts[localPlayer.TeamId];
+                int allyCount = (localPlayer.TeamId >= 0 && localPlayer.TeamId <= 4)
+                    ? teamMemberCounts[localPlayer.TeamId]
+                    : 0;
 
                 for (int i = 1; i < 5; i++)
                 {
@@ -3311,22 +3313,17 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             // *********
             // Skirmish!
             // *********
-
             if (AIPlayers.Count != Map.MaxPlayers - 1)
                 return RANK_NONE;
 
-            teamMemberCounts[localPlayer.TeamId]++;
+            if (localPlayer.TeamId >= 0 && localPlayer.TeamId <= 4)
+                teamMemberCounts[localPlayer.TeamId]++;
 
             if (lowestEnemyAILevel < highestAllyAILevel)
-            {
-                // Check that the player's AI allies aren't stronger
                 return RANK_NONE;
-            }
 
-            if (localPlayer.TeamId > 0)
+            if (localPlayer.TeamId > 0 && localPlayer.TeamId <= 4)
             {
-                // Check that all teams have at least as many players
-                // as the local player's team
                 int allyCount = teamMemberCounts[localPlayer.TeamId];
 
                 for (int i = 1; i < 5; i++)
@@ -3341,7 +3338,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     }
                 }
 
-                // Check that there is a team other than the players' team that is at least as large
                 bool pass = false;
                 for (int i = 1; i < 5; i++)
                 {
@@ -3361,6 +3357,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             return lowestEnemyAILevel + 1;
         }
+
+
 
         protected string AddGameOptionPreset(string name)
         {
