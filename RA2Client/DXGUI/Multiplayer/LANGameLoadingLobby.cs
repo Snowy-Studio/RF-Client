@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Management;
 using ClientCore;
 using Ra2Client.Domain;
 using Ra2Client.Domain.LAN;
@@ -99,53 +98,6 @@ namespace Ra2Client.DXGUI.Multiplayer
 
         private bool started = false;
 
-        // 获取所有物理网卡的 NetworkInterface Id 列表（通过WMI PhysicalAdapter）
-        private static HashSet<string> GetPhysicalNetworkInterfaceIds()
-        {
-            var physicalIds = new HashSet<string>();
-            try
-            {
-                // 只选取 PhysicalAdapter 且 PNPDeviceID 以 "PCI\" 开头的网卡
-                using (var searcher = new ManagementObjectSearcher(
-                    "SELECT * FROM Win32_NetworkAdapter WHERE PhysicalAdapter = True AND PNPDeviceID LIKE 'PCI%'"))
-                {
-                    foreach (ManagementObject obj in searcher.Get())
-                    {
-                        var guid = obj["GUID"] as string;
-                        if (!string.IsNullOrEmpty(guid))
-                            physicalIds.Add(guid.ToLower());
-                    }
-                }
-            }
-            catch
-            {
-                // 如果WMI不可用，返回空，后续降级为Loopback
-            }
-            return physicalIds;
-        }
-
-        // 获取本机物理网卡的首个IPv4地址（基于PnpInstanceID/物理网卡）
-        private IPAddress GetLocalLANIPAddress()
-        {
-            var physicalIds = GetPhysicalNetworkInterfaceIds();
-            foreach (var ni in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
-            {
-                if (!physicalIds.Contains(ni.Id.ToLower()))
-                    continue;
-                if (ni.OperationalStatus != System.Net.NetworkInformation.OperationalStatus.Up)
-                    continue;
-
-                foreach (var ua in ni.GetIPProperties().UnicastAddresses)
-                {
-                    if (ua.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        return ua.Address;
-                    }
-                }
-            }
-            return IPAddress.Loopback;
-        }
-
         public void SetUp(bool isHost,
             IPEndPoint hostEndPoint, TcpClient client,
             int loadedGameId)
@@ -163,10 +115,8 @@ namespace Ra2Client.DXGUI.Multiplayer
                 Thread thread = new Thread(ListenForClients);
                 thread.Start();
 
-                // 使用物理网卡IP而不是127.0.0.1
-                var localIP = GetLocalLANIPAddress();
                 this.client = new TcpClient();
-                this.client.Connect(localIP.ToString(), ProgramConstants.LAN_GAME_LOBBY_PORT);
+                this.client.Connect("127.0.0.1", ProgramConstants.LAN_GAME_LOBBY_PORT);
 
                 byte[] buffer = encoding.GetBytes(PLAYER_JOIN_COMMAND +
                     ProgramConstants.LAN_DATA_SEPARATOR + ProgramConstants.PLAYERNAME +
