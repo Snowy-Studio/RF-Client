@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System.Windows.Forms;
@@ -66,7 +66,7 @@ namespace Ra2Client.DXGUI.Generic
             lblExplanation = new XNALabel(WindowManager);
             lblExplanation.Name = nameof(lblExplanation);
             lblExplanation.ClientRectangle = new Rectangle(75, 80, 0, 0);
-            lblExplanation.Text = "重聚未来官网: www.yra2.com (备用地址: www.ru2023.top)\r\n\r\n" +
+            lblExplanation.Text = "重聚未来官网: www.yra2.com (备用地址: www.ra2yr.com)\r\n\r\n" +
                                   "根据相关法律法规,您有权知道我们需要收集的信息,这包含您的设备标识符以及您的设备信息。\r\n\r\n" +
                                   "此Mod完全免费,从下载到安装以及后续技术支持等不存在任何付费情况。\r\n\r\n" +
                                   "如果您喜欢这个Mod,可以到官网的赞助界面请作者喝杯奶茶。\r\n\r\n" +
