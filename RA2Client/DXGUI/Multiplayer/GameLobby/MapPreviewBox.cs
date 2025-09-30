@@ -699,6 +699,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         private void DrawPreviewTexture(Point renderPoint)
         {
+            if(previewTexture!=null)
             Renderer.DrawTexture(previewTexture,
                 new Rectangle(renderPoint.X + textureRectangle.X,
                 renderPoint.Y + textureRectangle.Y + 3,

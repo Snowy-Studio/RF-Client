@@ -1,21 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows7.0</TargetFramework>
 		<LangVersion>13.0</LangVersion>
 		<OutputType>WinExe</OutputType>
-		<Title>Ra2Client</Title>
-		<Description>Ra2Client Library</Description>
+		<Title>RA2Client</Title>
+		<Description>RA2Client Library</Description>
 		<Company>Snowy Studio</Company>
-		<Product>Ra2Client</Product>
+		<Product>RA2Client</Product>
 		<Copyright>Copyright © Snowy Studio 2022-2025</Copyright> 
-		<Trademark>Ra2Client</Trademark>
+		<Trademark>RA2Client</Trademark>
 		<Version>1.5.1.43</Version>
 		<FileVersion>1.5.1.43</FileVersion>
-		<AssemblyName>Ra2Client</AssemblyName>
-		<RootNamespace>Ra2Client</RootNamespace>
+		<AssemblyName>RA2Client</AssemblyName>
+		<RootNamespace>RA2Client</RootNamespace>
 		<Nullable>disable</Nullable>
 		<ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
-		<AssemblyName>Ra2Client</AssemblyName>
+		<AssemblyName>RA2Client</AssemblyName>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<UseAppHost>false</UseAppHost>
