@@ -315,6 +315,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             cmbGame = FindChild<GameLobbyDropDown>(nameof(cmbGame));
             chkTerrain = FindChild<XNAClientCheckBox>("chkTerrain");
+            chkTerrain.SetToolTipText("勾选后会启用TX地形扩展。@部分地图需要，部分地图不需要".L10N("UI:Main:TPchkTerrain"));
 
             foreach (var mod in Mod.Mods.FindAll(mod => mod.MuVisible))
             {
@@ -468,6 +469,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             //RenderImage.RenderImagesAsync() += () => RenderImage.RenderImagesAsync();
 
             chkAres = FindChild<GameLobbyCheckBox>(nameof(chkAres));
+            chkAres.SetToolTipText("对游戏机制的新增和加强\n建议开启，如果想要完全原生的体验可关闭。".L10N("UI:Main:TPchkAres"));
             chkAres.CheckedChanged += ChkAres_CheckedChanged;
 
 
@@ -483,7 +485,11 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         private void ChkAres_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk => chk.Visible = chkAres.Checked);
+            if (!chkAres.Checked)
+            {
+                CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk => chk.Checked = chkAres.Checked);
+            }
+            CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk => chk.AllowChecking = chkAres.Checked);
         }
 
         private void BtnDownLoad_LeftClick(object sender, EventArgs e)
