@@ -76,7 +76,7 @@ public class ModManager : XNAWindow
 
         _modMenu = new XNAContextMenu(WindowManager);
         _modMenu.Name = nameof(_modMenu);
-        _modMenu.Width = 100;
+        _modMenu.Width = 120;
 
         _modMenu.AddItem(new XNAContextMenuItem
         {
