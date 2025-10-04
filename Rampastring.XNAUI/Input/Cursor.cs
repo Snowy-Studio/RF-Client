@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Windows.Win32;
 using Microsoft.Xna.Framework;
@@ -78,6 +78,8 @@ public class Cursor : DrawableGameComponent
     public bool Disabled { get; set; }
 
     public int ScrollWheelValue { get; set; }
+
+    public int HorizontalScrollWheelValue { get; set; }
 
     public Color RemapColor { get; set; }
 

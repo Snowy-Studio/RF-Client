@@ -80,7 +80,7 @@ namespace DTAConfig
                 Y = Bottom - 40,
                 Width = UIDesignConstants.BUTTON_WIDTH_92
             };
-            btnSave.LeftClick += (_, _) => { btnStop.OnLeftClick(); Disable(); };
+            btnSave.LeftClick += (_, _) => { btnStop.OnLeftClick(new InputEventArgs()); Disable(); };
 
             _menu = new XNAContextMenu(windowManager);
             _menu.Name = nameof(_menu);

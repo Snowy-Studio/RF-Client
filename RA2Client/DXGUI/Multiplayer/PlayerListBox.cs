@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using ClientCore.CnCNet5;
@@ -136,7 +136,7 @@ namespace Ra2Client.DXGUI.Multiplayer
                     new Vector2(x, height),
                     user.IsAdmin ? Color.Red : lbItem.TextColor);
 
-                height += lbItem.TextLines.Count * LineHeight;
+                height += LineHeight;
             }
 
             if (DrawBorders)

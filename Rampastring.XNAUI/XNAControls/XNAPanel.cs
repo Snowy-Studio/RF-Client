@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using System.Globalization;
@@ -29,11 +29,11 @@ public class XNAPanel : XNAControl
         set { _borderColor = value; }
     }
 
-    public bool DrawBorders { get; set; } = true;
+    public virtual bool DrawBorders { get; set; } = true;
 
     //RenderTarget2D renderTarget;
 
-    
+
     // Texture2D BorderTexture { get; set; }
 
     /// <summary>

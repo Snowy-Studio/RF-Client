@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using System;
@@ -138,9 +138,10 @@ public class XNATabControl : XNAControl
         base.ParseControlINIAttribute(iniFile, key, value);
     }
 
-    public override void OnLeftClick()
+    public override void OnLeftClick(InputEventArgs inputEventArgs)
     {
-        base.OnLeftClick();
+        base.OnLeftClick(inputEventArgs);
+        inputEventArgs.Handled = true;
 
         Point p = GetCursorPoint();
 

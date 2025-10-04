@@ -1012,7 +1012,7 @@ namespace Ra2Client.DXGUI.Generic
 
             optionsWindow.PostInit();
 
-            btnOptions.OnLeftClick();
+            btnOptions.OnLeftClick(null);
         }
 
         //private void Verification_File()

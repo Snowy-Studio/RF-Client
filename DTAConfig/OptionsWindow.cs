@@ -248,11 +248,11 @@ namespace DTAConfig
             {
                 if (e.PressedKey == Keys.Escape)
                 {
-                    btnCancel.OnLeftClick();
+                    btnCancel.OnLeftClick(null);
                 }
                 if (e.PressedKey == Keys.Enter)
                 {
-                    btnSave.OnLeftClick();
+                    btnSave.OnLeftClick(null);
                 }
             }
         }

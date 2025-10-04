@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Localization;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -56,9 +56,9 @@ namespace ClientGUI
             base.ParseControlINIAttribute(iniFile, key, value);
         }
 
-        public override void OnMouseLeftDown()
+        public override void OnMouseLeftDown(InputEventArgs inputEventArgs)
         {
-            base.OnMouseLeftDown();
+            base.OnMouseLeftDown(inputEventArgs);
             UpdateToolTipBlock();
         }
 

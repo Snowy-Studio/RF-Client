@@ -95,11 +95,11 @@ namespace Ra2Client.DXGUI.Generic
             {
                 if (e.PressedKey == Keys.Escape)
                 {
-                    btnCancel.OnLeftClick();
+                    btnCancel.OnLeftClick(null);
                 }
                 if (e.PressedKey == Keys.Enter)
                 {
-                    btnLaunch.OnLeftClick();
+                    btnLaunch.OnLeftClick(null);
                 }
             }
         }

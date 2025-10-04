@@ -233,7 +233,7 @@ namespace Ra2Client.DXGUI.Generic
             _campaignMenu.AddItem(new XNAContextMenuItem
             {
                 Text = "Import Mission Packs".L10N("UI:Main:ImportMissionPacks"),
-                SelectAction = btnImport.OnLeftClick
+                SelectAction = () => btnImport.OnLeftClick(null)
             });
             _campaignMenu.AddItem(new XNAContextMenuItem
             {
@@ -497,7 +497,7 @@ namespace Ra2Client.DXGUI.Generic
             var dp = DarkeningPanel.AddAndInitializeWithControl(WindowManager, infoWindows);
         }
 
-        private void MapPreviewBox_LeftClick(object sender, EventArgs e)
+        private void MapPreviewBox_LeftClick(object sender, InputEventArgs e)
         {
 
             if (count % 2 == 0)
@@ -528,7 +528,7 @@ namespace Ra2Client.DXGUI.Generic
 
             count++;
 
-            base.OnLeftClick();
+            base.OnLeftClick(e);
 
         }
 

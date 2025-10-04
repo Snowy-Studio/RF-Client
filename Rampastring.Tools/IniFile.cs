@@ -59,21 +59,23 @@ public class IniFile : IIniFile
     /// </summary>
     /// <param name="filePath">The path of the INI file.</param>
     /// <param name="encoding">The encoding of the INI file. Default for UTF-8.</param>
-    public IniFile(string filePath, Encoding encoding)
+    /// <param name="applyBaseIni">Whether to parse potential INI file that the file is based on.</param>
+    public IniFile(string filePath, Encoding encoding, bool applyBaseIni = true)
     {
         FileName = filePath;
         Encoding = encoding;
 
-        Parse();
+        Parse(applyBaseIni);
     }
 
     /// <summary>
     /// Creates a new INI file instance and parses it.
     /// </summary>
     /// <param name="stream">The stream to read the INI file from.</param>
-    public IniFile(Stream stream)
+    /// <param name="applyBaseIni">Whether to parse potential INI file that the file is based on.</param>
+    public IniFile(Stream stream, bool applyBaseIni = true)
     {
-        ParseIniFile(stream);
+        ParseIniFile(stream, null, applyBaseIni);
     }
 
     /// <summary>
@@ -81,11 +83,12 @@ public class IniFile : IIniFile
     /// </summary>
     /// <param name="stream">The stream to read the INI file from.</param>
     /// <param name="encoding">The encoding of the INI file. Default for UTF-8.</param>
-    public IniFile(Stream stream, Encoding encoding)
+    /// <param name="applyBaseIni">Whether to parse potential INI file that the file is based on.</param>
+    public IniFile(Stream stream, Encoding encoding, bool applyBaseIni = true)
     {
         Encoding = encoding;
 
-        ParseIniFile(stream, encoding);
+        ParseIniFile(stream, encoding, applyBaseIni);
     }
 
     /// <summary>
@@ -238,6 +241,24 @@ public class IniFile : IIniFile
     public bool GetBooleanValue(string section, string key, bool defaultValue)
     {
         return Conversions.BooleanFromString(GetStringValue(section, key, string.Empty), defaultValue);
+    }
+
+    /// <summary>
+    /// Parses and returns a list value in the INI file.
+    /// </summary>
+    /// <typeparam name="T">The type of the list elements.</typeparam>
+    /// <param name="section">The name of the INI section.</param>
+    /// <param name="key">The INI key.</param>
+    /// <param name="separator">The separator between the list elements.</param>
+    /// <param name="converter">The function that converts the list elements from strings to the given type.</param>
+    /// <returns>A list that contains the parsed elements.</returns>
+    public List<T> GetListValue<T>(string sectionName, string key, char separator, Func<string, T> converter)
+    {
+        var section = GetSection(sectionName);
+        if (section == null)
+            return new List<T>();
+
+        return section.GetListValue(key, separator, converter);
     }
 
     /// <summary>
@@ -495,7 +516,7 @@ public class IniFile : IIniFile
         Sections.Insert(0, section);
     }
 
-    public void Parse()
+    public void Parse(bool applyBaseIni = true)
     {
         if (FileName is null)
             return;
@@ -507,7 +528,7 @@ public class IniFile : IIniFile
 
         using FileStream stream = fileInfo.OpenRead();
 
-        ParseIniFile(stream);
+        ParseIniFile(stream, null, applyBaseIni);
 
         if (Sections.Count == 0)
         {
@@ -594,6 +615,29 @@ public class IniFile : IIniFile
         iniSection.SetBooleanValue(key, value);
         return this;
 
+    }
+
+    /// <summary>
+    /// Sets the list value of a key in the INI section.
+    /// The list elements are converted to strings using the list element's
+    /// ToString method and the given separator is applied between the elements.
+    /// </summary>
+    /// <typeparam name="T">The type of the list elements.</typeparam>
+    /// <param name="section">The INI section.</param>
+    /// <param name="key">The INI key.</param>
+    /// <param name="list">The list.</param>
+    /// <param name="separator">The separator between list elements.</param>
+    public IniFile SetListValue<T>(string section, string key, List<T> list, char separator)
+    {
+        var iniSection = Sections.Find(s => s.SectionName == section);
+        if (iniSection == null)
+        {
+            iniSection = new IniSection(section);
+            Sections.Add(iniSection);
+        }
+
+        iniSection.SetListValue(key, list, separator);
+        return this;
     }
 
     /// <summary>
@@ -1141,7 +1185,7 @@ public class IniFile : IIniFile
         return text.All(c => char.IsLetterOrDigit(c) || char.IsPunctuation(c) || char.IsWhiteSpace(c));
     }
 
-    private IniFile ParseIniFile(Stream stream, Encoding encoding = null)
+    private IniFile ParseIniFile(Stream stream, Encoding encoding = null, bool applyBaseIni = true)
     {
 
         encoding ??= Encoding;
@@ -1214,7 +1258,8 @@ public class IniFile : IIniFile
             }
         }
 
-        ApplyBaseIni();
+        if (applyBaseIni)
+            ApplyBaseIni();
 
         return this;
     }

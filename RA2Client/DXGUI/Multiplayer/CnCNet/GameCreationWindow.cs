@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using ClientCore;
 using ClientCore.CnCNet5;
@@ -224,11 +224,11 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             {
                 if (e.PressedKey == Keys.Escape)
                 {
-                    btnCancel.OnLeftClick();
+                    btnCancel.OnLeftClick(null);
                 }
                 if (e.PressedKey == Keys.Enter)
                 {
-                    btnCreateGame.OnLeftClick();
+                    btnCreateGame.OnLeftClick(null);
                 }
             }
         }

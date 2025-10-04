@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Rampastring.Tools;
@@ -70,13 +70,7 @@ public class XNAButton : XNAControl
     public Color TextColorIdle
     {
         get => _textColorIdle ?? UISettings.ActiveSettings.ButtonTextColor;
-        set
-        {
-            _textColorIdle = value;
-
-            if (!IsActive)
-                textColor = value;
-        }
+        set => _textColorIdle = value;
     }
 
     private Color? _textColorHover;
@@ -97,11 +91,6 @@ public class XNAButton : XNAControl
 
     public bool AdaptiveText { get; set; } = true;
 
-    /// <summary>
-    /// The current color of the button's text.
-    /// </summary>
-    private Color textColor = Color.White;
-
     private ButtonAnimationMode AnimationMode { get; set; }
 
     private bool cursorOnControl = false;
@@ -114,8 +103,6 @@ public class XNAButton : XNAControl
 
         if (Cursor.LeftDown)
             return;
-
-        textColor = TextColorHover;
 
         if (!AllowClick)
             return;
@@ -135,7 +122,6 @@ public class XNAButton : XNAControl
         base.OnMouseLeave();
 
         cursorOnControl = false;
-        textColor = TextColorIdle;
 
         if (!AllowClick)
             return;
@@ -148,14 +134,15 @@ public class XNAButton : XNAControl
         }
     }
 
-    public override void OnLeftClick()
+    public override void OnLeftClick(InputEventArgs inputEventArgs)
     {
         if (!AllowClick)
             return;
 
         ClickSoundEffect?.Play();
 
-        base.OnLeftClick();
+        base.OnLeftClick(inputEventArgs);
+        inputEventArgs.Handled = true;
     }
 
     public override void Initialize()
@@ -167,8 +154,6 @@ public class XNAButton : XNAControl
             ClientRectangle = new Rectangle(X, Y,
                 IdleTexture.Width, IdleTexture.Height);
         }
-
-        textColor = TextColorIdle;
     }
 
     protected override void OnClientRectangleUpdated()
@@ -210,7 +195,6 @@ public class XNAButton : XNAControl
         {
             case "TextColorIdle":
                 TextColorIdle = AssetLoader.GetColorFromString(value);
-                textColor = TextColorIdle;
                 return;
             case "TextColorHover":
                 TextColorHover = AssetLoader.GetColorFromString(value);
@@ -303,7 +287,7 @@ public class XNAButton : XNAControl
         }
 
         if (Parent != null && Parent.IsActive && Keyboard.PressedKeys.Contains(HotKey))
-            OnLeftClick();
+            OnLeftClick(new InputEventArgs());
     }
 
     public override void Draw(GameTime gameTime)
@@ -328,7 +312,7 @@ public class XNAButton : XNAControl
         if (!Enabled || !AllowClick)
             DrawStringWithShadow(_text, FontIndex, textPosition, TextColorDisabled, 1.0f, TextShadowDistance);
         else
-            DrawStringWithShadow(_text, FontIndex, textPosition, textColor, 1.0f, TextShadowDistance);
+            DrawStringWithShadow(_text, FontIndex, textPosition, IsActive ? TextColorHover : TextColorIdle, 1.0f, TextShadowDistance);
 
         base.Draw(gameTime);
     }

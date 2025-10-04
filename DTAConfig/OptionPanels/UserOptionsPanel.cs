@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Entity;
 using ClientCore.Settings;
@@ -536,7 +536,7 @@ namespace DTAConfig.OptionPanels
             if (lblNameValue.Text == "点击登录或注册")
             {
                 tabControl.SelectedTab = 0;
-                lblNameValue.OnLeftClick();
+                lblNameValue.OnLeftClick(null);
                 return;
             }
 
@@ -605,11 +605,11 @@ namespace DTAConfig.OptionPanels
             messageBox.Show();
         }
 
-        private void 跳转答题窗口(object sender, EventArgs e)
+        private void 跳转答题窗口(object sender, InputEventArgs e)
         {
             if(lblNameValue.Text == "点击登录或注册")
             {
-                lblNameValue.OnLeftClick();
+                lblNameValue.OnLeftClick(e);
                 XNAMessageBox.Show(WindowManager, "Tips".L10N("UI:Main:Tips"), "Please login before authenticating".L10N("UI:DTAConfig:LoginAuthenticating"));
                 return;
             }
@@ -1024,7 +1024,7 @@ namespace DTAConfig.OptionPanels
             }
 
             XNAMessageBox.Show(WindowManager, "Info".L10N("UI:Main:Info"), "Reset successful!".L10N("UI:DTAConfig:ResetSuccessful"));
-            btnCancel.OnLeftClick();
+            btnCancel.OnLeftClick(null);
         }
 
         /// <summary>
@@ -1151,7 +1151,7 @@ namespace DTAConfig.OptionPanels
             }
 
             XNAMessageBox.Show(WindowManager, "Info".L10N("UI:Main:Info"), "Registration is successful".L10N("UI:DTAConfig:RegistrationSuccessful"));
-            btnCancel.OnLeftClick();
+            btnCancel.OnLeftClick(null);
 
         }
 

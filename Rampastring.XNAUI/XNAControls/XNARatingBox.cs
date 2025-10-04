@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -209,7 +209,7 @@ public class XNARatingBox : XNAControl
     /// <summary>
     /// Handles left mouse button clicks on the check box.
     /// </summary>
-    public override void OnLeftClick()
+    public override void OnLeftClick(InputEventArgs inputEventArgs)
     {
         if (AllowChecking)
         {
@@ -239,7 +239,7 @@ public class XNARatingBox : XNAControl
             }
         }
         
-        base.OnLeftClick();
+        base.OnLeftClick(inputEventArgs);
     }
 
     private void ChangeTexture(int nIndex)

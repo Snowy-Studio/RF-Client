@@ -226,12 +226,12 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             MapCodeHelper.ApplyMapCode(mapIni, customIniPath, gameMode);
         }
 
-        public override void OnLeftClick()
+        public override void OnLeftClick(InputEventArgs inputEventArgs)
         {
             if (!AllowDropDown)
                 return;
 
-            base.OnLeftClick();
+            base.OnLeftClick(inputEventArgs);
             UserSelectedIndex = SelectedIndex;
         }
 

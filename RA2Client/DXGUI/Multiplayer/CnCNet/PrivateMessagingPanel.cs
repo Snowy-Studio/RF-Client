@@ -1,4 +1,4 @@
-﻿using ClientGUI;
+using ClientGUI;
 using Rampastring.XNAUI;
 
 namespace Ra2Client.DXGUI.Multiplayer.CnCNet
@@ -13,7 +13,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
         {
         }
 
-        public override void OnLeftClick()
+        public override void OnLeftClick(InputEventArgs inputEventArgs)
         {
             bool hideControl = true;
 
@@ -29,7 +29,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             if (hideControl)
                 Hide();
 
-            base.OnLeftClick();
+            base.OnLeftClick(inputEventArgs);
         }
 
 
