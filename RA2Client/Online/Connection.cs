@@ -50,14 +50,9 @@ namespace Ra2Client.Online
         /// </summary>
         private static readonly IList<Server> Servers = new List<Server>
         {
-            new Server("a-root.ad.cn.ru2023.top", "Reunion China Prefix-v4", new int[1] { 6697 }),
-            new Server("b-root.wt.cn.ru2023.top", "Reunion China Prefix-v4", new int[1] { 6697 }),
-            new Server("c-root.vb.cn.ru2023.top", "Reunion China Prefix-v4", new int[1] { 6697 }),
-            new Server("d-root.bt.cn.ru2023.top", "Reunion China Prefix-v4", new int[1] { 6697 }),
-            new Server("a6-root.ct.cn.ru2023.top", "Reunion China Prefix-v6", new int[1] { 6697 }),
-            new Server("b6-root.bgp.cn.ru2023.top", "Reunion China Prefix-v6", new int[1] { 6697 }),
-            //最后这个节点有问题,不能正确检测用户IP,不对外开放
-            //new Server("c6-root.spc.cn.ru2023.top", "Reunion China Prefix-v6", new int[1] { 6697 })
+            new Server("ap-ircv1.cn.ra2yr.com", "Reunion China Prefix-64", new int[1] { 6697 }),
+            new Server("ap-ircv2.cn.ra2yr.com", "Reunion China Prefix-64", new int[1] { 6697 }),
+            new Server("ap-ircv3.cn.ra2yr.com", "Reunion China Prefix-64", new int[1] { 6697 }),
         }.AsReadOnly();
 
         bool _isConnected = false;
