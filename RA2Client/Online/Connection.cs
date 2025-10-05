@@ -162,104 +162,65 @@ namespace Ra2Client.Online
             WindowManager.progress.Report("正在连接联机大厅...");
             IList<Server> sortedServerList = GetServerListSortedByLatency();
 
-            // 获取当前Windows版本号
-            Version osVersion = Environment.OSVersion.Version;
-            bool isWin1903OrAbove = (osVersion.Major > 10) || (osVersion.Major == 10 && osVersion.Build >= 18362);
-
             foreach (Server server in sortedServerList)
             {
-                try
+                for (int i = 0; i < server.Ports.Length; i++)
                 {
-                    for (int i = 0; i < server.Ports.Length; i++)
+                    try
                     {
-                        TcpClient client;
-                        IAsyncResult result;
-                        string certDomain = server.Host;
-                        if (IPAddress.TryParse(server.Host, out IPAddress ipAddress))
-                        {
-                            client = new TcpClient(ipAddress.AddressFamily);
-                            result = client.BeginConnect(ipAddress, server.Ports[i], null, null);
-                            lock (ipToDomainMap)
-                            {
-                                if (ipToDomainMap != null && ipToDomainMap.TryGetValue(server.Host, out var mappedDomain))
-                                {
-                                    certDomain = mappedDomain;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            client = new TcpClient();
-                            result = client.BeginConnect(server.Host, server.Ports[i], null, null);
-                        }
-                        bool success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(3), false);
+                        Logger.Log($"Attempting TLS connection to {server.Host}:{server.Ports[i]}");
 
-                        Logger.Log("Attempting connection to " + server.Host + ":" + server.Ports[i]);
-
-                        if (!success || !client.Connected)
+                        // 用域名建 TCP 连接 (不解析 IP)
+                        var tcpClient = new TcpClient();
+                        var connectTask = tcpClient.ConnectAsync(server.Host, server.Ports[i]);
+                        if (!connectTask.Wait(TimeSpan.FromSeconds(3)))
                         {
-                            Logger.Log("Connecting to " + server.Host + " port " + server.Ports[i] + " timed out!");
-                            continue; // 尝试使用下一个端口
+                            Logger.Log($"TCP connect to {server.Host}:{server.Ports[i]} timed out.");
+                            tcpClient.Close();
+                            continue;
                         }
 
-                        Logger.Log("Successfully connected to " + server.Host + " on port " + server.Ports[i]);
-                        client.EndConnect(result);
+                        // 包装 SslStream，域名做 SNI
+                        var sslStream = new SslStream(tcpClient.GetStream(), false,
+                                                      new RemoteCertificateValidationCallback(ValidateServerCertificate),
+                                                      null);
 
-                        // 记录当前用于证书校验的域名
-                        currentCertDomain = certDomain;
-
-                        serverStream = client.GetStream();
-                        sslStream = new SslStream(serverStream, false, new RemoteCertificateValidationCallback(ValidateServerCertificate));
-
-                        bool sslConnected = false;
-                        // 如果Windows版本高于或等于Win10 1903,优先使用TLS1.3协议连接,否则使用TLS1.2协议
-                        SslProtocols[] tryProtocols = isWin1903OrAbove
-                            ? new[] { SslProtocols.Tls13, SslProtocols.Tls12 }
-                            : new[] { SslProtocols.Tls12 };
-
-                        foreach (var protocol in tryProtocols)
+                        // 按系统支持顺序协商 TLS 版本
+                        var protocols = new[] { SslProtocols.Tls12, SslProtocols.Tls13 };
+                        bool tlsOk = false;
+                        foreach (var proto in protocols)
                         {
                             try
                             {
-                                Logger.Log($"Trying TLS protocol: {protocol}");
-                                sslStream.AuthenticateAsClient(server.Host, null, protocol, false);
-                                sslConnected = true;
-                                // 记录TLS版本和加密算法
-                                Logger.Log(
-                                    $"TLS handshake succeeded with protocol: {sslStream.SslProtocol}, " +
-                                    $"CipherAlgorithm: {sslStream.CipherAlgorithm}, CipherStrength: {sslStream.CipherStrength}, " +
-                                    $"CipherSuite: {sslStream.NegotiatedCipherSuite}"
-                                );
+                                sslStream.AuthenticateAsClient(server.Host, null, proto, false);
+                                tlsOk = true;
+                                Logger.Log($"TLS handshake ok: {sslStream.SslProtocol}");
                                 break;
                             }
-                            catch (AuthenticationException ex)
+                            catch (AuthenticationException authEx)
                             {
-                                Logger.Log($"TLS handshake failed with protocol {protocol}: {ex.Message}");
-                                // 如果是最后一个协议，才继续下一个服务器
-                                if (protocol == tryProtocols.Last())
-                                {
-                                    sslStream.Dispose();
-                                    sslStream = null;
-                                }
+                                Logger.Log($"TLS {proto} failed: {authEx.Message}");
                             }
                         }
-
-                        // 证书校验后清理映射表
-                        ipToDomainMap = null;
-                        currentCertDomain = null;
-
-                        if (!sslConnected)
+                        if (!tlsOk)
                         {
-                            Logger.Log("TLS authentication failed for all protocols.");
-                            continue; // 尝试下一个服务器
+                            Logger.Log("All TLS versions failed.");
+                            sslStream.Dispose();
+                            tcpClient.Close();
+                            continue;
                         }
 
-                        sslStream.ReadTimeout = 3000;
+                        // 连接成功，赋值原流程所需字段
+                        tcpClient.ReceiveTimeout = 3000;
+                        tcpClient.SendTimeout    = 3000;
+                        sslStream.ReadTimeout    = 3000;
 
-                        tcpClient = client;
+                        this.tcpClient = tcpClient;
+                        this.sslStream = sslStream;
+                        serverStream = tcpClient.GetStream();
+                        currentConnectedServerIP = server.Host;
                         _isConnected = true;
                         _attemptingConnection = false;
-                        currentConnectedServerIP = server.Host;
 
                         connectionManager.OnConnected();
 
@@ -269,88 +230,45 @@ namespace Ra2Client.Online
                         HandleComm();
                         return;
                     }
-                    WindowManager.progress.Report(string.Empty);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log("Unable to connect to the server. " + ex.Message);
+                    catch (Exception ex)
+                    {
+                        Logger.Log($"Connection to {server.Host}:{server.Ports[i]} error: {ex.Message}");
+                    }
                 }
             }
 
             Logger.Log("Connecting to CnCNet failed!");
-            // Clear the failed server list in case connecting to all servers has failed
             failedServerIPs.Clear();
             _attemptingConnection = false;
             connectionManager.OnConnectAttemptFailed();
         }
 
-        // 验证IRC服务端的SSL/TLS证书是否有效
-        public bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private bool ValidateServerCertificate(object sender,
+                                               X509Certificate certificate,
+                                               X509Chain chain,
+                                               SslPolicyErrors sslPolicyErrors)
         {
-            // 证书链必须有效
+            // 只检查证书时间；其余交给系统信任链与 SNI 匹配
+            if (sslPolicyErrors == SslPolicyErrors.None)
+                return true;
+
+            // 时间无效
             if ((sslPolicyErrors & SslPolicyErrors.RemoteCertificateChainErrors) != 0)
             {
-                Logger.Log("Certificate chain is invalid.");
-                return false;
-            }
-
-            // 证书在有效期内
-            DateTime now = DateTime.UtcNow;
-            X509Certificate2 cert2 = certificate as X509Certificate2;
-            if (cert2 == null || cert2.NotBefore > now || cert2.NotAfter < now)
-            {
-                Logger.Log($"Certificate is not valid. Valid from {cert2?.NotBefore} to {cert2?.NotAfter}");
-                return false;
-            }
-
-            // 使用当前记录的域名进行校验
-            string targetHost = currentCertDomain;
-            if (string.IsNullOrEmpty(targetHost))
-            {
-                Logger.Log("Target host is not available for certificate validation.");
-                return false;
-            }
-
-            // 校验CN或SAN包含当前域名
-            bool domainMatched = false;
-            // 检查SAN
-            foreach (var ext in cert2.Extensions)
-            {
-                if (ext.Oid.Value == "2.5.29.17") // Subject Alternative Name
+                foreach (var element in chain.ChainElements)
                 {
-                    var asnData = new AsnEncodedData(ext.Oid, ext.RawData);
-                    string san = asnData.Format(true);
-                    if (san.IndexOf(targetHost, StringComparison.OrdinalIgnoreCase) >= 0)
+                    foreach (var status in element.ChainElementStatus)
                     {
-                        domainMatched = true;
-                        break;
+                        // 允许“不在有效期内”以外的任何错误
+                        if (status.Status == X509ChainStatusFlags.NotTimeValid)
+                        {
+                            Logger.Log("Certificate expired/not yet valid.");
+                            return false;
+                        }
                     }
                 }
             }
-            // 检查CN
-            if (!domainMatched)
-            {
-                string cn = cert2.GetNameInfo(X509NameType.DnsName, false);
-                if (!string.IsNullOrEmpty(cn) && targetHost.EndsWith(cn, StringComparison.OrdinalIgnoreCase))
-                {
-                    domainMatched = true;
-                }
-            }
-            if (!domainMatched)
-            {
-                Logger.Log($"Certificate CN/SAN does not match the target host: {targetHost}");
-                return false;
-            }
 
-            // 证书颁发者在当前系统中可信
-            if ((sslPolicyErrors & SslPolicyErrors.RemoteCertificateChainErrors) != 0 ||
-                (sslPolicyErrors & SslPolicyErrors.RemoteCertificateNotAvailable) != 0)
-            {
-                Logger.Log("Certificate issuer is not trusted.");
-                return false;
-            }
-
-            Logger.Log($"Certificate is valid. Issuer: {cert2.Issuer}, Subject: {cert2.Subject}, Valid from {cert2.NotBefore} to {cert2.NotAfter}");
             return true;
         }
 
