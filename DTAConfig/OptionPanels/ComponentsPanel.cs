@@ -466,7 +466,6 @@ namespace DTAConfig.OptionPanels
             int maxRetries = 3;
             int attempt = 0;
             bool downloadSuccess = false;
-            bool useAltDownloadDomain = false;
 
             while (!downloadSuccess && attempt < maxRetries)
             {
@@ -474,11 +473,6 @@ namespace DTAConfig.OptionPanels
                 try
                 {
                     string downloadUrl = strDownPath;
-                    if (useAltDownloadDomain)
-                    {
-                        // 尝试使用备用下载地址
-                        downloadUrl = downloadUrl.Replace("autopatch1-zh-tcdn.yra2.com", "autopatch4-cn-ucdn.yra2.com");
-                    }
 
                     downloadSuccess = await NetWorkINISettings.DownloadFileAsync(
                         downloadUrl,
@@ -492,16 +486,7 @@ namespace DTAConfig.OptionPanels
                 catch (Exception innerEx)
                 {
                     Logger.Log($"下载尝试 {attempt} 失败: {innerEx.Message}");
-                    if (attempt >= maxRetries && !useAltDownloadDomain)
-                    {
-                        // 转为备用下载地址后重试
-                        useAltDownloadDomain = true;
-                        attempt = 0;
-                    }
-                    else if (attempt >= maxRetries && useAltDownloadDomain)
-                    {
-                        throw;
-                    }
+                    if (attempt >= maxRetries) throw;
                     await Task.Delay(2000);
                 }
             }
