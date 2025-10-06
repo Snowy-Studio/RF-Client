@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -170,7 +171,6 @@ namespace Ra2Client.Online
                     {
                         Logger.Log($"Attempting TLS connection to {server.Host}:{server.Ports[i]}");
 
-                        // 用域名建 TCP 连接 (不解析 IP)
                         var tcpClient = new TcpClient();
                         var connectTask = tcpClient.ConnectAsync(server.Host, server.Ports[i]);
                         if (!connectTask.Wait(TimeSpan.FromSeconds(3)))
@@ -180,13 +180,33 @@ namespace Ra2Client.Online
                             continue;
                         }
 
-                        // 包装 SslStream，域名做 SNI
-                        var sslStream = new SslStream(tcpClient.GetStream(), false,
-                                                      new RemoteCertificateValidationCallback(ValidateServerCertificate),
-                                                      null);
+                        var sslStream = new SslStream(tcpClient.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
 
-                        // 按系统支持顺序协商 TLS 版本
-                        var protocols = new[] { SslProtocols.Tls12, SslProtocols.Tls13 };
+                        SslProtocols[] protocols;
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            // Windows 才做细版本判断
+                            var ver = Environment.OSVersion.Version;
+                            bool isHighWin = ver.Major > 10 ||
+                                             (ver.Major == 10 && ver.Build >= 20348);
+
+                            if (isHighWin)
+                            {
+                                Logger.Log("Your Windows Operating System supports both 'TLS 1.3' and 'TLS 1.2', using TLS 1.3");
+                                protocols = new[] { SslProtocols.Tls13, SslProtocols.Tls12 };
+                            }
+                            else
+                            {
+                                Logger.Log("Your Windows Operating System only support 'TLS 1.2', using TLS 1.2");
+                                protocols = new[] { SslProtocols.Tls12 };
+                            }
+                        }
+                        else
+                        {
+                            Logger.Log("Non-Windows Operating System, using TLS 1.2");
+                            protocols = new[] { SslProtocols.Tls12 };
+                        }
+
                         bool tlsOk = false;
                         foreach (var proto in protocols)
                         {
@@ -194,7 +214,10 @@ namespace Ra2Client.Online
                             {
                                 sslStream.AuthenticateAsClient(server.Host, null, proto, false);
                                 tlsOk = true;
-                                Logger.Log($"TLS handshake ok: {sslStream.SslProtocol}");
+                                Logger.Log($"TLS handshake ok: {sslStream.SslProtocol}, " +
+                                           $"cipher={sslStream.CipherAlgorithm} ({sslStream.CipherStrength} bit), " +
+                                           $"key-exchange={sslStream.KeyExchangeAlgorithm} ({sslStream.KeyExchangeStrength} bit), " +
+                                           $"hash={sslStream.HashAlgorithm} ({sslStream.HashStrength} bit)");
                                 break;
                             }
                             catch (AuthenticationException authEx)
@@ -210,7 +233,6 @@ namespace Ra2Client.Online
                             continue;
                         }
 
-                        // 连接成功，赋值原流程所需字段
                         tcpClient.ReceiveTimeout = 3000;
                         tcpClient.SendTimeout    = 3000;
                         sslStream.ReadTimeout    = 3000;
@@ -243,23 +265,23 @@ namespace Ra2Client.Online
             connectionManager.OnConnectAttemptFailed();
         }
 
-        private bool ValidateServerCertificate(object sender,
-                                               X509Certificate certificate,
-                                               X509Chain chain,
-                                               SslPolicyErrors sslPolicyErrors)
+        private bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
-            // 只检查证书时间；其余交给系统信任链与 SNI 匹配
+            Logger.Log($"Server certificate: subject=\"{certificate.Subject}\", " +
+               $"issuer=\"{certificate.Issuer}\", " +
+               $"serial={certificate.GetSerialNumberString()}, " +
+               $"notBefore={DateTime.Parse(certificate.GetEffectiveDateString()):u}, " +
+               $"notAfter={DateTime.Parse(certificate.GetExpirationDateString()):u}");
+
             if (sslPolicyErrors == SslPolicyErrors.None)
                 return true;
 
-            // 时间无效
             if ((sslPolicyErrors & SslPolicyErrors.RemoteCertificateChainErrors) != 0)
             {
                 foreach (var element in chain.ChainElements)
                 {
                     foreach (var status in element.ChainElementStatus)
                     {
-                        // 允许“不在有效期内”以外的任何错误
                         if (status.Status == X509ChainStatusFlags.NotTimeValid)
                         {
                             Logger.Log("Certificate expired/not yet valid.");

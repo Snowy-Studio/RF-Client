@@ -132,7 +132,7 @@ public static class Updater
         // 仅在 Windows 平台下判断
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            if (osVersion.Major > 10 || (osVersion.Major == 10 && osVersion.Build >= 18362))
+            if (osVersion.Major > 10 || (osVersion.Major == 10 && osVersion.Build >= 20348))
             {
                 return SslProtocols.Tls13 | SslProtocols.Tls12;
             }
