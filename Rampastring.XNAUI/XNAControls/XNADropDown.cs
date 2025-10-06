@@ -359,7 +359,6 @@ public class XNADropDown : XNAControl
 
         OpenDropDown();
 
-        Detach();
         hoveredIndex = -1;
     }
 
