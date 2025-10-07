@@ -411,7 +411,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             }
             else
             {
-              
                 disposeTextures = false;
             }
 
