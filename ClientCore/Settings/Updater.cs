@@ -752,7 +752,7 @@ public static class Updater
             {
                 int serverRetry = 0;
                 Logger.Log($"更新：尝试服务器 {server.url} (延迟优先级)");
-                currentUpdaterServerIndex = UpdaterServers.FindIndex(s => s.url == server.url);
+                currentUpdaterServerIndex = UpdaterServers.FindAll(s=>s.type == UserINISettings.Instance.Beta.Value).FindIndex(s => s.url == server.url);
 
                 while (serverRetry < 3)
                 {

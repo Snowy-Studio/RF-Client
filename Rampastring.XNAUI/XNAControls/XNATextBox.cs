@@ -296,6 +296,7 @@ public class XNATextBox : XNAControl
              * So, we detect that input here and return on these keys.
             /*/
             case '\r':      // Enter / return
+            case '\n':      // Line feed
             case '\x0009':  // Tab
             case '\b':      // Backspace
             case '\x001b':  // ESC

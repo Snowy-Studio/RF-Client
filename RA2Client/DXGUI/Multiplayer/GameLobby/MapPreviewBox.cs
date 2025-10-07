@@ -403,14 +403,15 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 return;
             }
 
-            if (GameModeMap.Map.PreviewTexture == null || !File.Exists(GameModeMap.Map.PreviewPath))
+            previewTexture = GameModeMap.Map.LoadPreviewTexture();
+
+            if (!File.Exists(GameModeMap.Map.PreviewPath))
             {
-                previewTexture = GameModeMap.Map.LoadPreviewTexture();
                 disposeTextures = true;
             }
             else
             {
-                previewTexture = GameModeMap.Map.PreviewTexture;
+              
                 disposeTextures = false;
             }
 
@@ -456,7 +457,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             textureRectangle = new Rectangle(texturePositionX, texturePositionY,
                 textureWidth, textureHeight);
 
-            List<Point> startingLocations = GameModeMap.Map.GetStartingLocationPreviewCoords(new Point(previewTexture.Width, previewTexture.Height));
+            List<Point> startingLocations = GameModeMap.Map.GetStartingLocationPreviewCoords(new Point(previewTexture.Width, previewTexture.Height), disposeTextures);
 
             for (int i = 0; i < startingLocations.Count && i < GameModeMap.Map.MaxPlayers; i++)
             {

@@ -285,9 +285,6 @@ namespace Ra2Client.Domain.Multiplayer
         [JsonIgnore]
         public List<TeamStartMapping> TeamStartMappings => TeamStartMappingPresets?.FirstOrDefault()?.TeamStartMappings;
 
-        [JsonIgnore]
-        public Texture2D PreviewTexture { get; set; }
-
         public void CalculateSHA()
         {
             SHA1 = Utilities.CalculateSHA1ForFile(CompleteFilePath);
@@ -713,22 +710,27 @@ namespace Ra2Client.Domain.Multiplayer
             }
         }
 
-        public List<Point> GetStartingLocationPreviewCoords(Point previewSize)
+        public List<Point> GetStartingLocationPreviewCoords(Point previewSize, bool cache = true)
         {
-            if (startingLocations == null)
-            {
-                startingLocations = new List<Point>();
+            // 如果启用了缓存，且已计算过，直接返回
+            if (cache && startingLocations != null)
+                return startingLocations;
 
-                foreach (string waypoint in Waypoint)
-                {
-                    if (MainClientConstants.USE_ISOMETRIC_CELLS)
-                        startingLocations.Add(GetIsometricWaypointCoords(waypoint, actualSize, localSize, previewSize));
-                    else
-                        startingLocations.Add(GetTDRAWaypointCoords(waypoint, x, y, width, height, previewSize));
-                }
+            // 生成新的列表
+            var locations = new List<Point>();
+            foreach (string waypoint in Waypoint)
+            {
+                if (MainClientConstants.USE_ISOMETRIC_CELLS)
+                    locations.Add(GetIsometricWaypointCoords(waypoint, actualSize, localSize, previewSize));
+                else
+                    locations.Add(GetTDRAWaypointCoords(waypoint, x, y, width, height, previewSize));
             }
 
-            return startingLocations;
+            // 如果缓存启用，更新缓存
+            if (cache)
+                startingLocations = locations;
+
+            return locations;
         }
 
         public Point MapPointToMapPreviewPoint(Point mapPoint, Point previewSize, int level)
