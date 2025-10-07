@@ -168,10 +168,10 @@ namespace Reunion
                                 switch (dr)
                                 {
                                     case DialogResult.Yes:
-                                        Process.Start("https://mirror.yra2.com/win/dotnet/6/windowsdesktop-runtime-6.0.36-win-x86.exe");
+                                        Process.Start("https://url.yra2.com/net6x");
                                         break;
                                     case DialogResult.No:
-                                        Process.Start("https://mirror.yra2.com/win/dotnet/6/windowsdesktop-runtime-6.0.36-win-arm64.exe");
+                                        Process.Start("https://url.yra2.com/net6a");
                                         break;
                                     case DialogResult.Cancel:
                                     default:
@@ -187,10 +187,10 @@ namespace Reunion
                                 switch (dr)
                                 {
                                     case DialogResult.Yes:
-                                        Process.Start("https://mirror.yra2.com/win/dotnet/6/windowsdesktop-runtime-6.0.36-win-x64.exe");
+                                        Process.Start("https://url.yra2.com/net6");
                                         break;
                                     case DialogResult.No:
-                                        Process.Start("https://mirror.yra2.com/win/dotnet/6/windowsdesktop-runtime-6.0.36-win-arm64.exe");
+                                        Process.Start("https://url.yra2.com/net6a");
                                         break;
                                     case DialogResult.Cancel:
                                     default:
@@ -201,7 +201,7 @@ namespace Reunion
                             }
                         case "arm64":
                             message = "检测到缺少所需的.NET6 Arm64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载Arm64运行库";
-                            url = $"https://mirror.yra2.com/win/dotnet/6/windowsdesktop-runtime-6.0.36-win-arm64.exe";
+                            url = $"https://url.yra2.com/net6a";
                             break;
                         default:
                             message = "检测到缺少所需的.NET6 UnknownArch运行环境, 是否立即跳转到Microsoft官网进行下载?\n\n所需运行时版本要求: v6.0.36, 无法识别您的系统架构, 可能不兼容您的系统";
