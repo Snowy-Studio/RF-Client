@@ -14,7 +14,7 @@ namespace Ra2Client.DXGUI.Generic
     public class PrivacyNotification : XNAWindow
     {
         private Timer _timer;
-        private int CountSec= 10;
+        private int CountSec = 10;
 
         private XNALabel lblDescription;
         private XNALabel lblMoreInformation;
@@ -88,7 +88,7 @@ namespace Ra2Client.DXGUI.Generic
                 
                 Disable();
                 BoilerEventLog?.Invoke();
-                WindowManager.progress.Report(string.Empty);
+                WindowManager.progress?.Report(string.Empty);
             };
 
             base.Initialize();

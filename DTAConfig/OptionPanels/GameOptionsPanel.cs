@@ -275,7 +275,7 @@ namespace DTAConfig.OptionPanels
             string ddrawPath = Path.Combine(ProgramConstants.GamePath, "Resources\\Render", UserINISettings.Instance.Renderer.Value, "ddraw.ini");
             if (File.Exists(ddrawPath))
             {
-                var iniFile = new Rampastring.Tools.IniFile(ddrawPath);
+                var iniFile = new IniFile(ddrawPath);
                 foreach (var s in iniFile.GetSections())
                 {
                     if (iniFile.KeyExists("singlecpu", s))

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.IO;
 using ClientCore;
@@ -343,8 +343,10 @@ namespace DTAConfig.OptionPanels
         private float ConvertToVolumeFloat(int trackbarValue)
         {
             // 处理边界值
-            if (trackbarValue <= VOLUME_MIN) return 0f;
-            if (trackbarValue >= VOLUME_MAX) return 1f;
+            if (trackbarValue <= VOLUME_MIN) 
+                return 0f;
+            if (trackbarValue >= VOLUME_MAX) 
+                return 1f;
 
             // 使用精确的浮点转换
             float volume = trackbarValue / (float)VOLUME_SCALE;
@@ -357,8 +359,10 @@ namespace DTAConfig.OptionPanels
         private int ConvertToTrackbarValue(double volumeValue)
         {
             // 处理边界情况
-            if (volumeValue < VOLUME_EPSILON) return VOLUME_MIN;
-            if (volumeValue > 1.0 - VOLUME_EPSILON) return VOLUME_MAX;
+            if (volumeValue < VOLUME_EPSILON) 
+                return VOLUME_MIN;
+            if (volumeValue > 1.0 - VOLUME_EPSILON) 
+                return VOLUME_MAX;
 
             // 四舍五入到最近的整数
             return (int)Math.Round(volumeValue * VOLUME_SCALE);
