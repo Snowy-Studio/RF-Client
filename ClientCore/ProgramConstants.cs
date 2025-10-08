@@ -29,7 +29,7 @@ namespace ClientCore
 
         
 
-        public static string CUR_SERVER_URL = "https://autopatch1-zh-tcdn.yra2.com";
+        public static string CUR_SERVER_URL = "https://cn-east-ngb.update.yra2.com";
 
         public static bool SkipLogo = false;
 
