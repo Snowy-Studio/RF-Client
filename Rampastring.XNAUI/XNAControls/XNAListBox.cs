@@ -7,6 +7,7 @@ using TextCopy;
 #endif
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Rampastring.Tools;
 using System.Globalization;
 
@@ -690,7 +691,8 @@ public class XNAListBox : XNAPanel
 
     public override void Update(GameTime gameTime)
     {
-        foreach (XNAListBoxItem lbItem in Items)
+        var itemsCopy = Items.ToList();
+        foreach (XNAListBoxItem lbItem in itemsCopy)
         {
             if (lbItem.Alpha < 1.0f)
                 lbItem.Alpha += ItemAlphaRate;

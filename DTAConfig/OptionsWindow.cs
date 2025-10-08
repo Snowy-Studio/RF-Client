@@ -111,7 +111,7 @@ namespace DTAConfig
                 new CnCNetOptionsPanel(WindowManager, UserINISettings.Instance, gameCollection),    //3 "CnCNet"页面
                 // new LocalSkinPanel(WindowManager, UserINISettings.Instance),                     //4 "皮肤"页面
                 updaterOptionsPanel,                                                                //5 "更新器"页面
-                componentsPanel,                                                                    //6 "创意工坊工坊"页面
+                componentsPanel,                                                                    //6 "创意工坊"页面
                 //new UserOptionsPanel(WindowManager, UserINISettings.Instance)                     //7 "创作者"页面
             ];
 
