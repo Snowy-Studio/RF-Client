@@ -83,6 +83,10 @@ namespace Ra2Client.DXGUI.Generic
             AddChild(btnOK);
             btnOK.LeftClick += (s, e) =>
             {
+                var settings = UserINISettings.Instance;
+                if (settings == null) 
+                    return;
+
                 UserINISettings.Instance.PrivacyPolicyAccepted.Value = true;
                 UserINISettings.Instance.SaveSettings();
                 

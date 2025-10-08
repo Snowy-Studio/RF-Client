@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClientCore;
@@ -188,7 +188,7 @@ namespace DTAConfig.OptionPanels
 
             ddAllowPrivateMessagesFrom.AddItem(new XNADropDownItem()
             {
-                Text = "Current channel".L10N("Client:DTAConfig:PMCurrentChannel"),
+                Text = "Current channel".L10N("UI:DTAConfig:PMCurrentChannel"),
                 Tag = AllowPrivateMessagesFromEnum.CurrentChannel,
             });
 
