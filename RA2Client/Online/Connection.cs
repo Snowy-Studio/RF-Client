@@ -267,24 +267,32 @@ namespace Ra2Client.Online
 
         private bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
-            Logger.Log($"Server certificate: subject=\"{certificate.Subject}\", " +
-               $"issuer=\"{certificate.Issuer}\", " +
-               $"serial={certificate.GetSerialNumberString()}, " +
-               $"notBefore={DateTime.Parse(certificate.GetEffectiveDateString()):u}, " +
-               $"notAfter={DateTime.Parse(certificate.GetExpirationDateString()):u}");
+            var cert2 = certificate as X509Certificate2 ?? new X509Certificate2(certificate);
+
+            Logger.Log($"Server certificate: subject=\"{cert2.Subject}\", " +
+                       $"issuer=\"{cert2.Issuer}\", " +
+                       $"serial={cert2.SerialNumber}, " +
+                       $"notBefore={cert2.NotBefore:u}, " +
+                       $"notAfter={cert2.NotAfter:u}");
 
             if (sslPolicyErrors == SslPolicyErrors.None)
                 return true;
 
             if ((sslPolicyErrors & SslPolicyErrors.RemoteCertificateChainErrors) != 0)
             {
+                DateTime utcNow = DateTime.UtcNow;
+
                 foreach (var element in chain.ChainElements)
                 {
                     foreach (var status in element.ChainElementStatus)
                     {
                         if (status.Status == X509ChainStatusFlags.NotTimeValid)
                         {
-                            Logger.Log("Certificate expired/not yet valid.");
+                            Logger.Log($"Certificate time validation failed. " +
+                                       $"UTC now: {utcNow:u}, " +
+                                       $"UTC notBefore: {cert2.NotBefore:u}, " +
+                                       $"UTC notAfter: {cert2.NotAfter:u}");
+
                             return false;
                         }
                     }
@@ -416,7 +424,6 @@ namespace Ra2Client.Online
         /// <returns>A list of Lobby servers sorted by latency.</returns>
         private IList<Server> GetServerListSortedByLatency()
         {
-            // 初始化临时映射表
             ipToDomainMap = new Dictionary<string, string>();
 
             // Resolve the hostnames.
@@ -598,8 +605,8 @@ namespace Ra2Client.Online
 
             // Sort the servers by latency.
             IOrderedEnumerable<Tuple<Server, long>>
-                sortedServerAndLatencyResults = pingTasks.Select(task => task.Result)              // Tuple<Server, Latency>
-                                                     .OrderBy(taskResult => taskResult.Item2); // Latency
+                sortedServerAndLatencyResults = pingTasks.Select(task => task.Result)                 // Tuple<Server, Latency>
+                                                         .OrderBy(taskResult => taskResult.Item2);    // Latency
 
             // Do logging.
             foreach (Tuple<Server, long> serverAndLatencyResult in sortedServerAndLatencyResults)
