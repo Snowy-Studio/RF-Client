@@ -278,7 +278,7 @@ namespace DTAConfig.OptionPanels
                 var iniFile = new IniFile(ddrawPath);
                 foreach (var s in iniFile.GetSections())
                 {
-                    if (iniFile.KeyExists("singlecpu", s))
+                    if (iniFile.KeyExists(s, "singlecpu"))
                         iniFile.SetBooleanValue(s, "singlecpu", !TF);
                 }
                 iniFile.WriteIniFile();
