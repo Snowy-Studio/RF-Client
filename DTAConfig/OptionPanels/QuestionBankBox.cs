@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.Entity;
 using ClientCore.Settings;
 using ClientGUI;
@@ -385,7 +385,7 @@ namespace DTAConfig.OptionPanels
 
             var selectedIndexes = chkOptions
                                     .Select((option, index) => new { option, index })  // 将选项和索引组合
-                                    .Where(x => x.option.Checked)                   // 筛选被选中的项
+                                    .Where(x => x.option.Checked)                      // 筛选被选中的项
                                     .Select(x => x.index)                              // 提取索引
                                     .ToList();
 
@@ -399,7 +399,5 @@ namespace DTAConfig.OptionPanels
             var questionBox = new QuestionBankBox(WindowManager, questions,pass);
             DarkeningPanel.AddAndInitializeWithControl(WindowManager, questionBox);
         }
-
-       
     }
 }

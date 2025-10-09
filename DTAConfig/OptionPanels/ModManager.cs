@@ -69,9 +69,7 @@ public class ModManager : XNAWindow
         {
             ClientRectangle = new Rectangle(25, 30, 200, 40)
         };
-
         DDModAI.AddItem(["Mod".L10N("UI:DTAConfig:Mod"), "Mission Pack".L10N("UI:DTAConfig:MissionPack")]);
-
         AddChild(DDModAI);
 
         _modMenu = new XNAContextMenu(WindowManager);
@@ -81,7 +79,8 @@ public class ModManager : XNAWindow
         _modMenu.AddItem(new XNAContextMenuItem
         {
             Text = "Open the file location".L10N("UI:DTAConfig:OpenFileLocation"),
-            SelectAction = () => { if (ListBoxModAi.SelectedIndex != -1)
+            SelectAction = () => {
+                if (ListBoxModAi.SelectedIndex != -1)
                 {
                     var p = Path.Combine(ProgramConstants.GamePath, ((InfoBaseClass)ListBoxModAi.SelectedItem.Tag).FilePath).Replace("/", "\\");
                     Process.Start("explorer.exe", p);
@@ -126,7 +125,7 @@ public class ModManager : XNAWindow
         {
             ClientRectangle = new Rectangle(DDModAI.X, DDModAI.Y + 40, 260, 260),
             LineHeight = 25,
-            SelectedIndex = 2,
+            SelectedIndex = -1,
             FontIndex = 2
         };
         ListBoxModAi.RightClick += (_, _) =>
@@ -196,7 +195,7 @@ public class ModManager : XNAWindow
         };
         BtnNew.LeftClick += BtnNew_LeftClick;
         AddChild(BtnNew);
-        
+
         BtnDel = new XNAClientButton(WindowManager)
         {
             Visible = false,
@@ -215,16 +214,13 @@ public class ModManager : XNAWindow
 
         Enabled = false;
 
-        //   EnabledChanged += ModManager_EnabledChanged;
-        //UserINISettings.Instance.重新加载地图和任务包 += 触发刷新;
-        //DDModAI.SelectedIndex = 0;
-        //ReLoad();
+        // EnabledChanged += ModManager_EnabledChanged;
+        // UserINISettings.Instance.重新加载地图和任务包 += 触发刷新;
+        // DDModAI.SelectedIndex = 0;
+        // ReLoad();
 
         DDModAI_SelectedIndexChanged(DDModAI, null);
-
-
         LoadModInfo();
-
     }
 
     private void BtnDownload_LeftClick(object sender, EventArgs e)
@@ -251,18 +247,17 @@ public class ModManager : XNAWindow
 
         if (fileDialog.ShowDialog() == DialogResult.OK)
         {
-            foreach(var mix in fileDialog.FileNames)
+            foreach (var mix in fileDialog.FileNames)
             {
                 var Dname = Path.GetDirectoryName(mix);
                 var Fname = Path.GetFileNameWithoutExtension(mix);
+                var path = Path.Combine(Dname, Fname);
 
-                var path = Path.Combine(Dname,Fname); ;
                 Mix.UnPackMix(path, mix);
                 if (Directory.Exists(path))
                 {
                     Process.Start("explorer.exe", path);
                 }
-             
             }
         }
     }
@@ -279,11 +274,12 @@ public class ModManager : XNAWindow
             var Dname = Path.GetDirectoryName(fileDialog.FileNames[0]);
             var Fname = Path.GetFileName(Dname) + ".mix";
             Mix.PackFilesToMix(fileDialog.FileNames.ToList(), Dname, Fname);
-            var path = Path.Combine(Dname,Fname);
+            var path = Path.Combine(Dname, Fname);
             if (File.Exists(path))
             {
                 XNAMessageBox.Show(WindowManager, "Tips".L10N("UI:Main:Tips"), $"打包成功: {path}");
-            }else
+            }
+            else
                 XNAMessageBox.Show(WindowManager, "Tips".L10N("UI:Main:Tips"), $"Packaging failed".L10N("UI:DTAConfig:PackagingFailed"));
         }
     }
@@ -296,12 +292,10 @@ public class ModManager : XNAWindow
         var csf = new CSF(csfPath);
         var editCSFWindows = new EditCSFWindows(WindowManager, _tooltip, csf);
         editCSFWindows.Show();
-
     }
 
     private void DDModAI_SelectedIndexChanged(object sender, EventArgs e)
     {
-
         ListBoxModAi.SelectedIndexChanged -= ListBoxModAISelectedIndexChanged;
         ListBoxModAi.SelectedIndex = -1;
         ListBoxModAi.Items.Clear();
@@ -310,26 +304,18 @@ public class ModManager : XNAWindow
         {
             //Mod
             case 0:
+                foreach (var mod in Mod.Mods)
                 {
-                    foreach (var mod in Mod.Mods)
-                    {
-                        ListBoxModAi.AddItem(new XNAListBoxItem { Text = mod.Name, Tag = mod });
-                    }
-
-                    break;
+                    ListBoxModAi.AddItem(new XNAListBoxItem { Text = mod.Name, Tag = mod });
                 }
+                break;
             case 1:
+                foreach (var missionPack in MissionPack.MissionPacks)
                 {
-                    foreach (var missionPack in MissionPack.MissionPacks)
-                    {
-                        ListBoxModAi.AddItem(new XNAListBoxItem { Text = missionPack.Name, Tag = missionPack });
-                    }
-
-                    break;
+                    ListBoxModAi.AddItem(new XNAListBoxItem { Text = missionPack.Name, Tag = missionPack });
                 }
-
+                break;
         }
-
         ListBoxModAi.SelectedIndexChanged += ListBoxModAISelectedIndexChanged;
         //ListBoxModAISelectedIndexChanged(null, null);
         ListBoxModAi.SelectedIndex = 0;
@@ -355,7 +341,6 @@ public class ModManager : XNAWindow
         try
         {
             CopyFiles(modPath, tagerPath, deepImport);
-
         }
         catch (Exception ex)
         {
@@ -406,12 +391,11 @@ public class ModManager : XNAWindow
             }
     }
 
-    private static void 整合任务包文件(string startPath,string MissionPackPath, MissionPack missionPack, bool deepImport = false)
+    private static void 整合任务包文件(string startPath, string MissionPackPath, MissionPack missionPack, bool deepImport = false)
     {
         var tagerPath = Path.Combine(startPath, missionPack.FilePath);
         if (!Directory.Exists(tagerPath))
             Directory.CreateDirectory(tagerPath);
-
         CopyFiles(MissionPackPath, tagerPath, deepImport);
     }
 
@@ -425,7 +409,6 @@ public class ModManager : XNAWindow
         foreach (var item in zips)
         {
             SevenZip.ExtractWith7Zip(item, $"./tmp/{Path.GetFileNameWithoutExtension(zip)}/{Path.GetFileNameWithoutExtension(item)}", needDel: true);
-
             查找并解压压缩包(Path.GetDirectoryName(item));
         }
     }
@@ -433,13 +416,11 @@ public class ModManager : XNAWindow
     /// <summary>
     /// 导入任务包.
     /// </summary>
-    public string 导入任务包(bool copyFile, bool deepImport, string filePath,string startPath = null, MissionPack m = null)
+    public string 导入任务包(bool copyFile, bool deepImport, string filePath, string startPath = null, MissionPack m = null)
     {
-
         List<string> mapFiles = [];
 
         var id = string.Empty;
-
 
         foreach (var path in filePath.Split(','))
         {
@@ -452,7 +433,7 @@ public class ModManager : XNAWindow
 
                     if (判断是否为任务包(item))
                     {
-                        var r = 导入具体任务包(copyFile, deepImport, item,startPath,m);
+                        var r = 导入具体任务包(copyFile, deepImport, item, startPath, m);
                         if (r != null)
                         {
                             id = r.ID;
@@ -474,44 +455,38 @@ public class ModManager : XNAWindow
         return id;
     }
 
-    public void 刷新并渲染(List<string> mapFiles,string modPath = "")
+    public void 刷新并渲染(List<string> mapFiles, string modPath = "")
     {
-
         ReLoad();
 
        // 渲染预览图
        // if (UserINISettings.Instance.RenderPreviewImage.Value)
-            Task.Run(() =>
-            {
-                _ = RenderImage.RenderPreviewImageAsync(mapFiles.ToArray(), modPath);
-                return Task.CompletedTask;
-            });
-
+        Task.Run(() =>
+        {
+            _ = RenderImage.RenderPreviewImageAsync(mapFiles.ToArray(), modPath);
+            return Task.CompletedTask;
+        });
         触发刷新?.Invoke();
     }
 
-    public static MissionPack 导入具体任务包(bool copyFile, bool deepImport, string missionPath,string startPath = null,MissionPack mp = null)
+    public static MissionPack 导入具体任务包(bool copyFile, bool deepImport, string missionPath, string startPath = null, MissionPack mp = null)
     {
-        if(missionPath == null) return null;
+        if (missionPath == null) return null;
 
         startPath ??= ProgramConstants.GamePath;
-
         bool isYR = 判断是否为尤复(missionPath);
-        
 
         if (判断是否为Mod(missionPath, isYR) && !isYR) return null;
-
         var id = Path.GetFileName(missionPath);
-        if(missionPath == ProgramConstants.GamePath)
+        if (missionPath == ProgramConstants.GamePath)
         {
             id = DateTime.Now.ToString("yyyyMMddHHmmss");
         }
-        
         var missionPack = new MissionPack
         {
             ID = mp?.ID ?? id,
             FilePath = missionPath,
-            FileName = Path.Combine(startPath,$"Maps/Cp/battle{mp?.ID ?? id}.ini"),
+            FileName = Path.Combine(startPath, $"Maps/Cp/battle{mp?.ID ?? id}.ini"),
             Name = mp?.Name ?? Path.GetFileName(missionPath),
             YR = isYR,
             Other = true,
@@ -520,9 +495,7 @@ public class ModManager : XNAWindow
             DefaultMod = isYR ? "YR+" : "RA2+",
             UpdateTime = mp?.UpdateTime ?? ""
         };
-
         missionPack.DefaultMod = missionPack.Mod;
-
         var m = new Mod()
         {
             ID = missionPack.ID,
@@ -530,7 +503,7 @@ public class ModManager : XNAWindow
             MuVisible = false
         };
 
-        var mod = 导入具体Mod( missionPath, copyFile, deepImport, isYR,startPath,m);
+        var mod = 导入具体Mod(missionPath, copyFile, deepImport, isYR, startPath, m);
 
         if (mod != null) //说明检测到Mod
         {
@@ -538,73 +511,69 @@ public class ModManager : XNAWindow
             missionPack.DefaultMod = mod.ID;
             missionPack.FilePath = mod.FilePath;
         }
-        else 
+        else
         {
             missionPack.FilePath = $"Maps\\CP\\{id}";
-            整合任务包文件(startPath,missionPath, missionPack);
+            整合任务包文件(startPath, missionPath, missionPack);
         }
 
         missionPack.Create();
-        写入任务INI(missionPack,startPath);
+        写入任务INI(missionPack, startPath);
 
         return missionPack;
     }
 
-   private static readonly Dictionary<string, string> 默认战役名称 = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "Name:TRN01", "新兵训练营 - 第一天" },
-                { "Name:TRN02", "新兵训练营 - 第二天" },
+    private static readonly Dictionary<string, string> 默认战役名称 = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "Name:TRN01", "新兵训练营 - 第一天" },
+        { "Name:TRN02", "新兵训练营 - 第二天" },
+        { "Name:Sov01", "军事行动：红色黎明" },
+        { "Name:Sov02", "军事行动：危机四伏" },
+        { "Name:Sov03", "军事行动：大苹果" },
+        { "Name:Sov04", "军事行动：家乡前线" },
+        { "Name:Sov05", "军事行动：灯火之城" },
+        { "Name:Sov06", "军事行动：划分" },
+        { "Name:Sov07", "军事行动：超时空防御战" },
+        { "Name:Sov08", "军事行动：首都之辱" },
+        { "Name:Sov09", "军事行动：狐狸与猎犬" },
+        { "Name:Sov10", "军事行动：残兵败将" },
+        { "Name:Sov11", "军事行动：红色革命" },
+        { "Name:Sov12", "军事行动：北极风暴" },
+        { "Name:ALL01", "军事行动：孤独守卫" },
+        { "Name:ALL02", "军事行动：危机黎明" },
+        { "Name:ALL03", "军事行动：为长官欢呼" },
+        { "Name:ALL04", "军事行动：最后机会" },
+        { "Name:ALL05", "军事行动：暗夜" },
+        { "Name:ALL06", "军事行动：自由" },
+        { "Name:ALL07", "军事行动：深海" },
+        { "Name:ALL08", "军事行动：自由门户" },
+        { "Name:ALL09", "军事行动：太阳神殿" },
+        { "Name:ALL10", "军事行动：海市蜃楼" },
+        { "Name:ALL11", "军事行动：核爆辐射尘" },
+        { "Name:ALL12", "军事行动：超时空风暴" },
+        { "Name:Sov01md", "军事行动：时空转移" },
+        { "Name:Sov02md", "军事行动：似曾相识" },
+        { "Name:Sov03md", "军事行动：洗脑行动" },
+        { "Name:Sov04md", "军事行动：北非谍影" },
+        { "Name:Sov05md", "军事行动：脱离地心引力" },
+        { "Name:Sov06md", "军事行动：飞向月球" },
+        { "Name:Sov07md", "军事行动：首脑游戏" },
+        { "Name:ALL01md", "军事行动：光阴似箭" },
+        { "Name:ALL02md", "军事行动：好莱坞，梦一场" },
+        { "Name:ALL03md", "军事行动：集中攻击" },
+        { "Name:ALL04md", "军事行动：古墓奇击" },
+        { "Name:ALL05md", "军事行动：纽澳复制战" },
+        { "Name:ALL06md", "军事行动：万圣节" },
+        { "Name:ALL07md", "军事行动：脑死" },
+    };
 
-                { "Name:Sov01", "军事行动：红色黎明" },
-                { "Name:Sov02", "军事行动：危机四伏" },
-                { "Name:Sov03", "军事行动：大苹果" },
-                { "Name:Sov04", "军事行动：家乡前线" },
-                { "Name:Sov05", "军事行动：灯火之城" },
-                { "Name:Sov06", "军事行动：划分" },
-                { "Name:Sov07", "军事行动：超时空防御战" },
-                { "Name:Sov08", "军事行动：首都之辱" },
-                { "Name:Sov09", "军事行动：狐狸与猎犬" },
-                { "Name:Sov10", "军事行动：残兵败将" },
-                { "Name:Sov11", "军事行动：红色革命" },
-                { "Name:Sov12", "军事行动：北极风暴" },
-
-                { "Name:ALL01", "军事行动：孤独守卫" },
-                { "Name:ALL02", "军事行动：危机黎明" },
-                { "Name:ALL03", "军事行动：为长官欢呼" },
-                { "Name:ALL04", "军事行动：最后机会" },
-                { "Name:ALL05", "军事行动：暗夜" },
-                { "Name:ALL06", "军事行动：自由" },
-                { "Name:ALL07", "军事行动：深海" },
-                { "Name:ALL08", "军事行动：自由门户" },
-                { "Name:ALL09", "军事行动：太阳神殿" },
-                { "Name:ALL10", "军事行动：海市蜃楼" },
-                { "Name:ALL11", "军事行动：核爆辐射尘" },
-                { "Name:ALL12", "军事行动：超时空风暴" },
-
-                { "Name:Sov01md", "军事行动：时空转移" },
-                { "Name:Sov02md", "军事行动：似曾相识" },
-                { "Name:Sov03md", "军事行动：洗脑行动" },
-                { "Name:Sov04md", "军事行动：北非谍影" },
-                { "Name:Sov05md", "军事行动：脱离地心引力" },
-                { "Name:Sov06md", "军事行动：飞向月球" },
-                { "Name:Sov07md", "军事行动：首脑游戏" },
-                { "Name:ALL01md", "军事行动：光阴似箭" },
-                { "Name:ALL02md", "军事行动：好莱坞，梦一场" },
-                { "Name:ALL03md", "军事行动：集中攻击" },
-                { "Name:ALL04md", "军事行动：古墓奇击" },
-                { "Name:ALL05md", "军事行动：纽澳复制战" },
-                { "Name:ALL06md", "军事行动：万圣节" },
-                { "Name:ALL07md", "军事行动：脑死" },
-
-            };
-
-    private static void 写入任务INI(MissionPack missionPack,string startPath)
+    private static void 写入任务INI(MissionPack missionPack, string startPath)
     {
         var tagerPath = Path.Combine(startPath, missionPack.FilePath);
         var maps = Directory.GetFiles(tagerPath, "*.map").ToList();
         var md = missionPack.YR ? "md" : string.Empty;
 
-        var battleINI = new IniFile(Path.Combine(startPath,$"Maps\\CP\\battle{missionPack.ID}.ini"),MissionPack.ANNOTATION);
+        var battleINI = new IniFile(Path.Combine(startPath, $"Maps\\CP\\battle{missionPack.ID}.ini"), MissionPack.ANNOTATION);
         if (!battleINI.SectionExists("Battles"))
             battleINI.AddSection("Battles");
 
@@ -617,9 +586,7 @@ public class ModManager : XNAWindow
         if (File.Exists(Path.Combine(tagerPath, $"mission{md}.ini")))
             missionINIPath = Path.Combine(tagerPath, $"mission{md}.ini");
 
-        
         var csf = CSF.获取目录下的CSF字典(tagerPath);
-
         var missionINI = new IniFile(missionINIPath);
         var mapSelINI = new IniFile(mapSelINIPath);
 
@@ -648,7 +615,6 @@ public class ModManager : XNAWindow
 
                 maps.Add(map);
             }
-
         }
 
         var count = 1;
@@ -657,7 +623,6 @@ public class ModManager : XNAWindow
         foreach (var map in maps)
         {
             var mapName = Path.GetFileName(map).ToUpper();
-
             var sectionName = missionPack.ID + $"第{count}关";
 
             if (!battleINI.SectionExists(sectionName))
@@ -670,57 +635,39 @@ public class ModManager : XNAWindow
                 阵营 = "Soviet";
 
             var csfName = missionINI.GetValue(mapName, "UIName", string.Empty);
-
-            var 任务名称 = csf?.GetValueOrDefault(csfName)?.ConvertValuesToSimplified() ?? $"第{count}关";//任务名称
-            var 任务地点 = csf?.GetValueOrDefault(missionINI.GetValue(mapName, "LSLoadMessage", string.Empty))?.ConvertValuesToSimplified() ?? ""; //任务地点
-            var 任务简报 = csf?.GetValueOrDefault(missionINI.GetValue(mapName, "Briefing", string.Empty))?.ConvertValuesToSimplified() ?? ""; //任务描述
-            var 任务目标 = csf?.GetValueOrDefault(missionINI.GetValue(mapName, "LSLoadBriefing", string.Empty))?.ConvertValuesToSimplified() ?? ""; //任务目标
+            var 任务名称 = csf?.GetValueOrDefault(csfName)?.ConvertValuesToSimplified() ?? $"第{count}关";
+            var 任务地点 = csf?.GetValueOrDefault(missionINI.GetValue(mapName, "LSLoadMessage", string.Empty))?.ConvertValuesToSimplified() ?? "";
+            var 任务简报 = csf?.GetValueOrDefault(missionINI.GetValue(mapName, "Briefing", string.Empty))?.ConvertValuesToSimplified() ?? "";
+            var 任务目标 = csf?.GetValueOrDefault(missionINI.GetValue(mapName, "LSLoadBriefing", string.Empty))?.ConvertValuesToSimplified() ?? "";
 
             if (默认战役名称.ContainsKey(csfName) && (默认战役名称[csfName] == 任务名称 || $"第{count}关" == 任务名称))
             {
-                if(任务地点 != string.Empty)
+                if (任务地点 != string.Empty)
                     任务名称 = 任务地点.Split('-')[0].TrimEnd();
             }
-
             if (任务简报.Trim().Contains(任务目标.Trim()))
                 任务简报 = string.Empty;
 
             var LongDescription = 任务地点 + "@@" + 任务简报 + "@" + 任务目标;
-
             battleINI.SetValue("Battles", sectionName, sectionName)
                      .SetValue(sectionName, "Scenario", mapName)
                      .SetValue(sectionName, "Description", 任务名称)
                      .SetValue(sectionName, "LongDescription", LongDescription.Replace("\n", "@"))
                      .SetValue(sectionName, "MissionPack", missionPack.ID)
-                     .SetValue(sectionName, "SideName", 阵营)
-                     ;
+                     .SetValue(sectionName, "SideName", 阵营);
             count++;
         }
-
         battleINI.WriteIniFile();
-
     }
 
     private static readonly List<string> IniFileWhitelist = new List<string>
     {
-        "battle",
-        "mapsel",
-        "ai",
-        "ra2",
-        "spawn",
-        "mpmaps",
-        "spawnmap",
-        "mpbattle",
-        "keyboard",
-        "ddraw",
-        "_desktop",
-        "desktop",
+        "battle", "mapsel", "ai", "ra2", "spawn", "mpmaps", "spawnmap", "mpbattle", "keyboard", "ddraw", "_desktop", "desktop"
     };
 
     public static bool 判断是否为Mod(string path, bool isYR)
     {
         var md = isYR ? "md" : string.Empty;
-        
         var shps = Directory.GetFiles(path, "*.shp")
            .Where(file => !Path.GetFileName(file).ToLower().StartsWith("ls") && !Path.GetFileName(file).ToLower().StartsWith("gls"))
            .ToArray();
@@ -728,10 +675,8 @@ public class ModManager : XNAWindow
         var pals = Directory.GetFiles(path, "*.pal")
             .Where(file => !Path.GetFileName(file).ToLower().StartsWith("ls") && !Path.GetFileName(file).ToLower().StartsWith("gls"))
             .ToArray();
-
         var mixs = Directory.GetFiles(path, $"expand*.mix")
             .ToArray();
-
         var inis = Directory.GetFiles(path, $"*.ini")
             .Where(file =>
             {
@@ -739,14 +684,13 @@ public class ModManager : XNAWindow
                 return !IniFileWhitelist.Any(whitelisted => fileName.StartsWith(whitelisted) || fileName.EndsWith($"{whitelisted}{md}.ini"));
             })
             .ToArray();
-            
-
         return shps.Length + vxls.Length + pals.Length + mixs.Length + inis.Length != 0;
     }
 
     public static bool 判断是否为任务包(string path)
     {
-        if (!Directory.Exists(path)) return false;
+        if (!Directory.Exists(path))
+            return false;
 
         var maps = Directory.GetFiles(path, "*.map").Count(map => !FunExtensions.是否为多人图(map));
         var mixs = Directory.GetFiles(path, "*.mix").Length;
@@ -761,23 +705,23 @@ public class ModManager : XNAWindow
         return Directory.Exists(path) && YRFiles.Any(file => File.Exists(Path.Combine(path, file))) || Directory.GetFiles(path, "expandmd*.mix").Length != 0 || Directory.GetFiles(path, "*md.map").Length != 0;
     }
 
-    public string 导入Mod(bool copyFile, bool deepImport, string filePath,Mod m = null)
+    public string 导入Mod(bool copyFile, bool deepImport, string filePath, Mod m = null)
     {
-
         var id = string.Empty;
-
         foreach (var path in filePath.Split(','))
         {
             List<string> list = [path, .. Directory.GetDirectories(path, "*", SearchOption.AllDirectories)];
             foreach (var item in list)
             {
-                if (!Directory.Exists(item)) continue;
+                if (!Directory.Exists(item))
+                    continue;
 
-                if (!判断是否为尤复(item)) continue;
+                if (!判断是否为尤复(item))
+                    continue;
 
                 if (判断是否为Mod(item, true))
                 {
-                    var r = 导入具体Mod(item, copyFile, deepImport,true,m:m);
+                    var r = 导入具体Mod(item, copyFile, deepImport, true, m: m);
                     if (r != null)
                     {
                         id = r.ID;
@@ -795,17 +739,16 @@ public class ModManager : XNAWindow
         ReLoad();
         触发刷新?.Invoke();
 
-
         return id;
-
     }
 
-    public static Mod 导入具体Mod(string path, bool copyFile, bool deepImport, bool isYR,string startPath = null,Mod m = null)
+    public static Mod 导入具体Mod(string path, bool copyFile, bool deepImport, bool isYR, string startPath = null, Mod m = null)
     {
         startPath ??= ProgramConstants.GamePath;
         var md = isYR ? "md" : null;
 
-        if (!判断是否为Mod(path, isYR)) return null;
+        if (!判断是否为Mod(path, isYR))
+            return null;
 
         var id = m?.ID ?? Path.GetFileName(path);
         if (path == ProgramConstants.GamePath)
@@ -907,7 +850,6 @@ public class ModManager : XNAWindow
                     }
                     Countries = Countries.TrimEnd(',').ConvertValuesToSimplified();
                 }
-
             }
         }
         #endregion
@@ -915,14 +857,14 @@ public class ModManager : XNAWindow
         var mod = m;
 
         mod ??= new Mod
-            {
-                ID = id,
-                Name = Name,
-                FileName = Path.Combine(startPath, $"Mod&AI\\Mod&AI{id}.ini"),
-                md = md,
-                MuVisible = mod?.MuVisible ?? true,
-                SettingsFile = SettingsFile
-            };
+        {
+            ID = id,
+            Name = Name,
+            FileName = Path.Combine(startPath, $"Mod&AI\\Mod&AI{id}.ini"),
+            md = md,
+            MuVisible = mod?.MuVisible ?? true,
+            SettingsFile = SettingsFile
+        };
 
         if (copyFile)
             mod.FilePath = $"Mod&AI\\{id}";
@@ -942,9 +884,9 @@ public class ModManager : XNAWindow
             mod.Colors = Colors;
 
         if (copyFile)
-            整合Mod文件(startPath,path, mod, deepImport);
+            整合Mod文件(startPath, path, mod, deepImport);
 
-        var BattleFilePath = Path.Combine(path,"INI",BattleFile);
+        var BattleFilePath = Path.Combine(path, "INI", BattleFile);
         var newBattleFilePath = Path.Combine("Maps\\CP\\", $"Battle{mod.ID}.ini");
 
         if (BattleFile != string.Empty && File.Exists(BattleFilePath))
@@ -954,18 +896,15 @@ public class ModManager : XNAWindow
             ini.AddSection("MissionPack")
                 .SetValue("Mod", mod.ID)
                 .SetValue("Name", mod.Name)
-                .SetValue("Other",true)
+                .SetValue("Other", true)
                 .SetValue("Mission", mod.FilePath)
                 .SetValue("Description", mod.Name)
                 .SetValue("LongDescription", mod.Name)
-                .SetValue("BuildOffAlly", mod.Name)
-                ;
-            
-            ini.GetSections().ToList().ForEach(section => {
-              
-                ini.SetValue(0,section, "MissionPack", mod.ID);
-                }
-            );
+                .SetValue("BuildOffAlly", mod.Name);
+            ini.GetSections().ToList().ForEach(section =>
+            {
+                ini.SetValue(0, section, "MissionPack", mod.ID);
+            });
             ini.WriteIniFile();
         }
 
@@ -973,15 +912,12 @@ public class ModManager : XNAWindow
         return mod;
     }
 
-
-
     private void UpdateBase()
     {
         if (DDModAI.SelectedIndex == 0)
             UpdateMod(ListBoxModAi.SelectedItem.Tag as Mod);
         if (DDModAI.SelectedIndex == 1)
             UpdateMissionPack(ListBoxModAi.SelectedItem.Tag as MissionPack);
-
     }
 
     /// <summary>
@@ -1008,7 +944,6 @@ public class ModManager : XNAWindow
             {
                 foreach (var csfFile in Directory.GetFiles(mod.FilePath, "*.csf"))
                 {
-
                     var d = new CSF(csfFile).GetCsfDictionary();
 
                     if (d == null)
@@ -1039,7 +974,7 @@ public class ModManager : XNAWindow
 
         if (!Directory.Exists(pack.FilePath))
         {
-            XNAMessageBox.Show(WindowManager, "Info".L10N("UI:Main:Info"), $"任务包路径 {pack. FilePath} 不存在!");
+            XNAMessageBox.Show(WindowManager, "Info".L10N("UI:Main:Info"), $"任务包路径 {pack.FilePath} 不存在!");
             return;
         }
 
@@ -1081,7 +1016,6 @@ public class ModManager : XNAWindow
 
     private void BtnNew_LeftClick(object sender, EventArgs e)
     {
-
         var infoWindows = new 导入选择窗口(WindowManager);
 
         infoWindows.selected += (b1, b2, path) =>
@@ -1093,22 +1027,14 @@ public class ModManager : XNAWindow
         };
 
         var dp = DarkeningPanel.AddAndInitializeWithControl(WindowManager, infoWindows);
-
     }
 
     private void ReLoad()
     {
         Mod.ReLoad();
-
         MissionPack.ReLoad();
-
         // listBoxModAI.Clear();
-
-
-
         DDModAI_SelectedIndexChanged(DDModAI, null);
-
-
         LoadModInfo();
     }
 
@@ -1120,22 +1046,23 @@ public class ModManager : XNAWindow
             return;
         }
 
-
         if (DDModAI.SelectedIndex == 1)
         {
-            if (ListBoxModAi.SelectedItem.Tag is not MissionPack missionPack) return;
+            if (ListBoxModAi.SelectedItem.Tag is not MissionPack missionPack)
+                return;
 
             删除任务包(missionPack);
         }
         else if (DDModAI.SelectedIndex == 0)
         {
-            if (ListBoxModAi.SelectedItem.Tag is not Mod mod) return;
+            if (ListBoxModAi.SelectedItem.Tag is not Mod mod)
+                return;
 
             foreach (var missionPack in MissionPack.MissionPacks)
             {
                 if (missionPack.Mod == mod.ID && !mod.MuVisible)
                 {
-                    XNAMessageBox.Show(WindowManager, "Error".L10N("UI:Main:Error"), $"这个Mod被任务包 {missionPack. Name} 使用, 无法删除, 如要删除请删除任务包");
+                    XNAMessageBox.Show(WindowManager, "Error".L10N("UI:Main:Error"), $"这个Mod被任务包 {missionPack.Name} 使用, 无法删除, 如要删除请删除任务包");
                     return;
                 }
             }
@@ -1149,7 +1076,6 @@ public class ModManager : XNAWindow
 
     public void 删除任务包(MissionPack missionPack)
     {
-
         if (!missionPack.CanDel)
         {
             XNAMessageBox.Show(WindowManager, "Tips".L10N("UI:Main:Tips"), "The built-in mod cannot be deleted".L10N("UI:DTAConfig:DeleteBuilt-inMod"));
@@ -1166,7 +1092,7 @@ public class ModManager : XNAWindow
         }
 
         var xNAMessageBox = new XNAMessageBox(WindowManager, "Delete Confirmation".L10N("UI:Main:DeleteConfirmation"),
-            $"您确定要删除任务包 {missionPack. Name}? 它包含以下任务: {Environment.NewLine}{m} ", XNAMessageBoxButtons.YesNo);
+            $"您确定要删除任务包 {missionPack.Name}? 它包含以下任务: {Environment.NewLine}{m} ", XNAMessageBoxButtons.YesNo);
         xNAMessageBox.YesClickedAction += (_) => { DelMissionPack(missionPack); };
         xNAMessageBox.Show();
     }
@@ -1237,14 +1163,13 @@ public class ModManager : XNAWindow
         }
         try
         {
-            if (mod.FilePath.Replace('/','\\').Contains("Mod&AI"))
+            if (mod.FilePath.Replace('/', '\\').Contains("Mod&AI"))
                 FileHelper.ForceDeleteDirectory(mod.FilePath);
         }
         catch
         {
             XNAMessageBox.Show(WindowManager, "Error".L10N("UI:Main:Error"), "Deleting file failed, possibly due to a file being occupied".L10N("UI:DTAConfig:DeleteFileOccupied"));
         }
-
         ReLoad();
         触发刷新?.Invoke();
         RenderImage.RenderImages();
@@ -1277,7 +1202,6 @@ public class ModManager : XNAWindow
             _tooltip.Text = text;
         _mcListBoxInfo.OnMouseLeave();
         _mcListBoxInfo.OnMouseEnter();
-
     }
 
     private void ListBoxModAISelectedIndexChanged(object sender, EventArgs e)
@@ -1311,7 +1235,6 @@ public class ModManager : XNAWindow
                 BtnNew.Enable();
                 BtnDel.Enable();
                 break;
-
         }
 
         if (properties != null)
@@ -1321,21 +1244,19 @@ public class ModManager : XNAWindow
                 _mcListBoxInfo.AddItem(new[] { new XNAListBoxItem(property.Key), new XNAListBoxItem(property.Value) });
             }
         }
-
     }
 
     private ModManager(WindowManager windowManager) : base(windowManager) { }
 
     public static ModManager GetInstance(WindowManager windowManager)
     {
-        if (_instance != null) return _instance;
-        
+        if (_instance != null)
+            return _instance;
         
         _instance = new ModManager(windowManager);
         _instance.Initialize();
         return _instance;
     }
-
 }
 
 public class 导入选择窗口(WindowManager windowManager) : XNAWindow(windowManager)
@@ -1436,11 +1357,13 @@ public class 导入选择窗口(WindowManager windowManager) : XNAWindow(windowM
     private void BtnCancel_LeftClick(object sender, EventArgs e)
     {
         var box = new XNAMessageBox(WindowManager, "Tips".L10N("UI:Main:Tips"), "Are you sure to exit the import?".L10N("UI:DTAConfig:ExitImport"),XNAMessageBoxButtons.YesNo);
+
         box.YesClickedAction += (_) =>
         {
             Disable();
             Dispose();
         };
+
         if (lblPath.Text == string.Empty)
         {
             box.YesClickedAction.Invoke(box);
@@ -1459,8 +1382,6 @@ public class 导入选择窗口(WindowManager windowManager) : XNAWindow(windowM
             return;
         }
 
-        
-
         selected?.Invoke(chkCopyFile.Checked, chkDeepImport.Checked, lblPath.Tag as string);
         Disable();
         Dispose();
@@ -1468,7 +1389,6 @@ public class 导入选择窗口(WindowManager windowManager) : XNAWindow(windowM
 
     private void BtnZip_LeftClick(object sender, EventArgs e)
     {
-       
         using OpenFileDialog fileDialog = new OpenFileDialog();
         fileDialog.Filter = "压缩包 (*.zip;*.7z;*.rar)|*.zip;*.7z;*.rar";
         fileDialog.Title = "选择压缩包";
@@ -1777,14 +1697,12 @@ public class ModInfoWindows : XNAWindow
                                             //    _mod.ExtensionOn = _mod.ExtensionOn; //必须启用扩展
         _mod.Author = _ctbAuthor.Text.Trim();
         return _mod;
-
     }
 }
 
 
 public class MissionPackInfoWindows : XNAWindow
 {
-
     private const int CtbW = 130;
     private const int CtbH = 25;
 
@@ -1807,6 +1725,7 @@ public class MissionPackInfoWindows : XNAWindow
     public bool csfExist;
     private MissionPack _pack;
     public int missionCount;
+
     public MissionPackInfoWindows(WindowManager windowManager, MissionPack pack, string title, bool missionMix, bool csfExist) : base(windowManager)
     {
         _pack = pack;
@@ -2018,7 +1937,6 @@ public class MissionPackInfoWindows : XNAWindow
             _chkCsf.Text = "重新转换为简体中文";
             _chkCsf.Checked = false;
         }
-
     }
 
     public bool GetCsf()
@@ -2048,7 +1966,6 @@ public class MissionPackInfoWindows : XNAWindow
         _pack.LongDescription = _ctbMissionPackDescription.Text.Trim();
         _pack.Mod = _ctbCp.Text.Trim();
         return _pack;
-
     }
 }
 
@@ -2061,6 +1978,7 @@ public class EditCSFWindows : XNAWindow
         this._csf = _csf;
         _csfDictionary = _csf.GetCsfDictionary();
     }
+
     private WindowManager windowManager;
     private XNASuggestionTextBox _tbSearch;
     private XNAMultiColumnListBox _mcListBoxCsfInfo;
@@ -2227,6 +2145,7 @@ public class AddCsfWindows : XNAWindow
         _key = key;
         _value = value;
     }
+
     private Dictionary<string, string> _csfDictionary;
     private string _key;
     private string _value;
@@ -2234,6 +2153,7 @@ public class AddCsfWindows : XNAWindow
     private XNATextBox _tbValue;
     public delegate void ReloadDelegate();
     public event ReloadDelegate _reload;
+
     public override void Initialize()
     {
         base.Initialize();

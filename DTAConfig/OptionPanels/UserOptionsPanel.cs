@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Entity;
 using ClientCore.Settings;
@@ -520,7 +520,6 @@ namespace DTAConfig.OptionPanels
             //WorkshopControls.ForEach(c => c.Visible = tabControl.SelectedTab != 0);
 
         }
-
 
         private void 跳转上传窗口(object sender, EventArgs e)
         {

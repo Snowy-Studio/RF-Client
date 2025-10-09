@@ -210,10 +210,7 @@ namespace DTAConfig.OptionPanels
                 btnUpload.Text = "上传";
                 btnUpload.LeftClick += 上传;
             }
-
         }
-
-
 
         private void Tab切换事件(object sender, EventArgs e)
         {
@@ -264,7 +261,6 @@ namespace DTAConfig.OptionPanels
 
         private string[] OtherFiles = [];
         private string[] MapFiles = [];
-
 
         private void btnSelectOther_LeftClick(object sender, EventArgs e)
         {
@@ -459,7 +455,6 @@ namespace DTAConfig.OptionPanels
             }
             return null;
         }
-
 
         private string 检查并打包(string selectedFile)
         {
@@ -700,9 +695,6 @@ namespace DTAConfig.OptionPanels
                 }
                 #endregion
             }
-
-
-
         }
 
         private string Check(bool upLoad = true)

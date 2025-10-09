@@ -88,7 +88,7 @@ namespace Ra2Client.DXGUI.Generic
                 
                 Disable();
                 BoilerEventLog?.Invoke();
-                WindowManager.progress?.Report(string.Empty);
+                WindowManager.progress.Report(string.Empty);
             };
 
             base.Initialize();
