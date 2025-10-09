@@ -232,12 +232,12 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             }
         }
 
-        public override void OnLeftClick(InputEventArgs inputEventArgs)
+        public override void OnLeftClick()
         {
             if (!AllowChanges)
                 return;
 
-            base.OnLeftClick(inputEventArgs);
+            base.OnLeftClick();
             UserChecked = Checked;
 
 

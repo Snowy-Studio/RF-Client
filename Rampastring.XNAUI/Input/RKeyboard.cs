@@ -1,9 +1,8 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 
 namespace Rampastring.XNAUI.Input;
 
@@ -49,29 +48,16 @@ public class RKeyboard : GameComponent
 
     private void DoKeyPress(Keys key)
     {
-        var handler = OnKeyPressed;
-        if (handler == null)
-            return;
-
-        var args = new KeyPressEventArgs(key);
-
-        foreach (KeyPressedEventHandler subscriber in handler.GetInvocationList())
+        if (OnKeyPressed != null)
         {
-            try
+            Delegate[] delegates = OnKeyPressed.GetInvocationList();
+            var args = new KeyPressEventArgs(key);
+            for (int i = 0; i < delegates.Length; i++)
             {
-                subscriber(this, args);
+                delegates[i].DynamicInvoke(this, args);
+                if (args.Handled)
+                    return;
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[RKeyboard] 处理按键 {key} 时出错: {ex.Message}\n{ex.StackTrace}");
-
-#if DEBUG
-            throw;
-#endif
-            }
-
-            if (args.Handled)
-                break;
         }
     }
 

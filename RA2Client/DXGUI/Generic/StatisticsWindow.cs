@@ -659,7 +659,7 @@ namespace Ra2Client.DXGUI.Generic
         {
             if (e.PressedKey == Keys.Escape)
             {
-                btnReturnToMenu.OnLeftClick(null);
+                btnReturnToMenu.OnLeftClick();
             }
 
         }

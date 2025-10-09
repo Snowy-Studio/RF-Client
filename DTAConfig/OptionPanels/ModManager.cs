@@ -92,7 +92,7 @@ public class ModManager : XNAWindow
         _modMenu.AddItem(new XNAContextMenuItem
         {
             Text = "Add".L10N("UI:DTAConfig:Add"),
-            SelectAction = () => BtnNew.OnLeftClick(null)
+            SelectAction = () => BtnNew.OnLeftClick()
         });
         //_menu.AddItem(new XNAContextMenuItem
         //{
@@ -102,7 +102,7 @@ public class ModManager : XNAWindow
         _modMenu.AddItem(new XNAContextMenuItem
         {
             Text = "Delete".L10N("UI:DTAConfig:Delete"),
-            SelectAction = () => BtnDel.OnLeftClick(null)
+            SelectAction = () => BtnDel.OnLeftClick()
         });
         _modMenu.AddItem(new XNAContextMenuItem
         {

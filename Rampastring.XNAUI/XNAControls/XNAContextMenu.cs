@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -115,7 +115,6 @@ public class XNAContextMenu : XNAControl
     /// <param name="windowManager">The WindowManager associated with this context menu.</param>
     public XNAContextMenu(WindowManager windowManager) : base(windowManager)
     {
-        ItemHeight = UISettings.ActiveSettings.ContextMenuDefaultItemHeight.GetValueOrDefault((int)Renderer.MeasureString("Test String @", FontIndex).Y + 1);
         Height = BORDER_WIDTH * 2;
         DisabledItemColor = Color.Gray;
         Disable();
@@ -271,30 +270,28 @@ public class XNAContextMenu : XNAControl
         if (windowPoint.X + Width > WindowManager.RenderResolutionX)
             X -= Width;
 
-        int totalScaledHeight = TotalScaledHeight;
-
-        if (windowPoint.Y + totalScaledHeight > WindowManager.RenderResolutionY)
+        if (windowPoint.Y + Height > WindowManager.RenderResolutionY)
         {
             int screenTopPointY = point.Y - windowPoint.Y;
 
-            if (totalScaledHeight > WindowManager.RenderResolutionY)
+            if (Height > WindowManager.RenderResolutionY)
             {
                 // The context menu is too big for the screen.
                 // Open it so that the last item is visible at the bottom of the screen.
-                Y = WindowManager.RenderResolutionY + screenTopPointY - totalScaledHeight;
+                Y = WindowManager.RenderResolutionY + screenTopPointY - Height;
             }
             else
             {
-                if (Y - totalScaledHeight < screenTopPointY)
+                if (Y - Height < screenTopPointY)
                 {
                     // We cannot open up fully above our location, but not also fully below.
                     // Stick to the bottom of the screen so that the entire context menu is visible.
-                    Y = screenTopPointY + (WindowManager.RenderResolutionY - ScaledHeight);
+                    Y = screenTopPointY + (WindowManager.RenderResolutionY - Height);
                 }
                 else
                 {
                     // We have enough space to fully open above.
-                    Y -= ScaledHeight;
+                    Y -= Height;
                 }
             }
         }
@@ -317,7 +314,7 @@ public class XNAContextMenu : XNAControl
             // Hide the drop-down if the left mouse button is clicked while the
             // cursor isn't on this control
             if (Cursor.LeftClicked && !leftClickHandled && !openedOnThisFrame)
-                OnLeftClick(new InputEventArgs());
+                OnLeftClick();
 
             leftClickHandled = false;
             openedOnThisFrame = false;
@@ -333,12 +330,11 @@ public class XNAContextMenu : XNAControl
         }
     }
 
-    public override void OnLeftClick(InputEventArgs inputEventArgs)
+    public override void OnLeftClick()
     {
-        base.OnLeftClick(inputEventArgs);
+        base.OnLeftClick();
 
         leftClickHandled = true;
-        inputEventArgs.Handled = true;
 
         int itemIndexOnCursor = GetItemIndexOnCursor();
 
@@ -348,18 +344,17 @@ public class XNAContextMenu : XNAControl
             {
                 Items[itemIndexOnCursor].SelectAction?.Invoke();
                 OptionSelected?.Invoke(this, new ContextMenuItemSelectedEventArgs(itemIndexOnCursor));
+
+                if (Detached)
+                    Attach();
+                Disable();
             }
-            else
-            {
-                return;
-            }
+
+            return;
         }
 
-        IsActive = false;
+        Attach();
         Disable();
-
-        if (Detached)
-            Attach();
     }
 
     /// <summary>

@@ -43,10 +43,6 @@ public class UISettings
     public Texture2D CheckBoxDisabledCheckedTexture { get; set; }
 
     public Texture2D CheckBoxDisabledClearTexture { get; set; }
-    public int? DropDownDefaultItemHeight { get; set; }
-    public int? ListBoxDefaultItemHeight { get; set; }
-    public int? ContextMenuDefaultItemHeight { get; set; }
-    public int? TextBoxDefaultHeight { get; set; }
 
     public Texture2D RatingBoxCheckedTexture { get; set; }
 

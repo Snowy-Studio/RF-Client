@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using System;
@@ -212,16 +212,15 @@ public class XNACheckBox : XNAControl
     /// <summary>
     /// Handles left mouse button clicks on the check box.
     /// </summary>
-    public override void OnLeftClick(InputEventArgs inputEventArgs)
+    public override void OnLeftClick()
     {
         if (AllowChecking)
         {
             Checked = !Checked;
             CheckSoundEffect?.Play();
-            inputEventArgs.Handled = true;
         }
 
-        base.OnLeftClick(inputEventArgs);
+        base.OnLeftClick();
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using System;
@@ -91,13 +91,12 @@ public class XNATrackbar : XNAPanel
         }
     }
 
-    public override void OnLeftClick(InputEventArgs inputEventArgs)
+    public override void OnLeftClick()
     {
         isHeldDown = true;
         Scroll();
-        inputEventArgs.Handled = true;
 
-        base.OnLeftClick(inputEventArgs);
+        base.OnLeftClick();
     }
 
     public override void Update(GameTime gameTime)

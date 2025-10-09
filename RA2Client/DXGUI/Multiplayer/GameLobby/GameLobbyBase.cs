@@ -368,7 +368,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             mapContextMenu.AddItem(new XNAContextMenuItem
             {
                 Text = "Import a new map".L10N("UI:Main:ImportNewMap"),
-                SelectAction =  () => btnLoadMaps.OnLeftClick(null)
+                SelectAction = btnLoadMaps.OnLeftClick
             });
             
             mapContextMenu.AddItem("删除地图".L10N("UI:Main:DeleteMap"), DeleteMapConfirmation, null, CanDeleteMap);
@@ -750,7 +750,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             //cmbGame.AllowDropDown = false;
         }
 
-        private void MapPreviewBox_LeftClick(object sender, InputEventArgs e)
+        private void MapPreviewBox_LeftClick(object sender, EventArgs e)
         {
 
             if (count % 2 == 0)
@@ -762,7 +762,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             count++;
 
-            base.OnLeftClick(e);
+            base.OnLeftClick();
 
         }
         private void DdPeople_SelectedIndexChanged(object sender, EventArgs e)

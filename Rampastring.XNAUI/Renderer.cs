@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -148,8 +148,6 @@ public static class Renderer
     {
         return TextParseReturnValue.GetFixedTextLines(fonts[fontIndex], width, text, splitWords, keepBlankLines);
     }
-
-    public static Vector2 MeasureString(string text, int fontIndex) => fonts[fontIndex].MeasureString(text);
 
     /// <summary>
     /// Pushes new settings into the renderer's internal stack and applies them.

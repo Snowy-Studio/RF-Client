@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ClientCore;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -45,12 +45,12 @@ namespace ClientGUI
             base.ParseControlINIAttribute(iniFile, key, value);
         }
 
-        public override void OnLeftClick(InputEventArgs inputEventArgs)
+        public override void OnLeftClick()
         {
             if(URL!=null)
                 ProcessLauncher.StartShellProcess(URL);
 
-            base.OnLeftClick(inputEventArgs);
+            base.OnLeftClick();
         }
     }
 }

@@ -1,4 +1,4 @@
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 
@@ -13,21 +13,7 @@ public class XNASuggestionTextBox : XNATextBox
     {
     }
 
-    private string _suggestion = string.Empty;
-
-    public string Suggestion
-    {
-        get => _suggestion;
-        set
-        {
-            bool isTextDefault = Text == Suggestion;
-            _suggestion = value;
-            if (isTextDefault)
-            {
-                Text = _suggestion;
-            }
-        }
-    }
+    public string Suggestion { get; set; }
 
     private Color? _suggestedTextColor;
 
@@ -67,9 +53,7 @@ public class XNASuggestionTextBox : XNATextBox
         if (WindowManager.SelectedControl == this)
         {
             if (Text == Suggestion)
-            {
                 Text = string.Empty;
-            }
         }
         else
         {

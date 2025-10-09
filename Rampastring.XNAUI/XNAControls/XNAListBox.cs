@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #if WINFORMS
@@ -19,6 +19,8 @@ public class XNAListBox : XNAPanel
 {
     private const int MARGIN = 2;
     private const int ITEM_TEXT_TEXTURE_MARGIN = 2;
+    private const double SCROLL_REPEAT_TIME = 0.03;
+    private const double FAST_SCROLL_TRIGGER_TIME = 0.4;
 
     /// <summary>
     /// Creates a new list box instance.
@@ -27,7 +29,6 @@ public class XNAListBox : XNAPanel
     public XNAListBox(WindowManager windowManager) : base(windowManager)
     {
         DrawMode = ControlDrawMode.UNIQUE_RENDER_TARGET;
-        _lineHeight = UISettings.ActiveSettings.ListBoxDefaultItemHeight.GetValueOrDefault((int)Renderer.MeasureString("Test String @", FontIndex).Y - 1);
         ScrollBar = new XNAScrollBar(WindowManager);
         ScrollBar.Name = "XNAListBoxScrollBar";
         ScrollBar.ScrollStep = LineHeight;
@@ -78,7 +79,7 @@ public class XNAListBox : XNAPanel
         set { _defaultItemColor = value; }
     }
 
-    private int _lineHeight;
+    private int _lineHeight = 15;
 
     /// <summary>
     /// Gets or sets the height of a single line of text in the list box.
@@ -735,14 +736,14 @@ public class XNAListBox : XNAPanel
         {
             timeSinceLastScroll += gameTime.ElapsedGameTime;
 
-            if (timeSinceLastScroll > TimeSpan.FromSeconds(XNAUIConstants.KEYBOARD_SCROLL_REPEAT_TIME))
+            if (timeSinceLastScroll > TimeSpan.FromSeconds(SCROLL_REPEAT_TIME))
             {
                 timeSinceLastScroll = TimeSpan.Zero;
                 action();
             }
         }
 
-        if (scrollKeyTime > TimeSpan.FromSeconds(XNAUIConstants.KEYBOARD_FAST_SCROLL_TRIGGER_TIME) && !isScrollingQuickly)
+        if (scrollKeyTime > TimeSpan.FromSeconds(FAST_SCROLL_TRIGGER_TIME) && !isScrollingQuickly)
         {
             isScrollingQuickly = true;
             timeSinceLastScroll = TimeSpan.Zero;
@@ -809,10 +810,8 @@ public class XNAListBox : XNAPanel
     /// <summary>
     /// Handles input from a scroll wheel.
     /// </summary>
-    public override void OnMouseScrolled(InputEventArgs inputEventArgs)
+    public override void OnMouseScrolled()
     {
-        inputEventArgs.Handled = true;
-
         if (GetTotalLineCount() <= NumberOfLinesOnList)
         {
             TopIndex = 0;
@@ -833,7 +832,7 @@ public class XNAListBox : XNAPanel
             ScrollToBottom();
         }
 
-        base.OnMouseScrolled(inputEventArgs);
+        base.OnMouseScrolled();
     }
 
     /// <summary>
@@ -850,23 +849,19 @@ public class XNAListBox : XNAPanel
     /// <summary>
     /// Clears the selection on right-click.
     /// </summary>
-    public override void OnRightClick(InputEventArgs inputEventArgs)
+    public override void OnRightClick()
     {
         if (AllowRightClickUnselect)
-        {
-            inputEventArgs.Handled = true;
             SelectedIndex = -1;
-        }
 
-        base.OnRightClick(inputEventArgs);
+        base.OnRightClick();
     }
 
     /// <summary>
     /// Selects an item when the user left-clicks on this control.
     /// </summary>
-    public override void OnMouseLeftDown(InputEventArgs inputEventArgs)
+    public override void OnMouseLeftDown()
     {
-        inputEventArgs.Handled = true;
         int itemIndex = GetItemIndexOnCursor(GetCursorPoint());
 
         if (itemIndex == -1)
@@ -880,15 +875,15 @@ public class XNAListBox : XNAPanel
             SelectedIndex = itemIndex;
         }
 
-        base.OnMouseLeftDown(inputEventArgs);
+        base.OnMouseLeftDown();
     }
 
-    public override void OnDoubleLeftClick(InputEventArgs inputEventArgs)
+    public override void OnDoubleLeftClick()
     {
         // We don't want to send a "double left click" message if the user
         // is just quickly changing the selected index
         if (!selectedIndexChanged)
-            base.OnDoubleLeftClick(inputEventArgs);
+            base.OnDoubleLeftClick();
     }
 
     /// <summary>
@@ -929,21 +924,20 @@ public class XNAListBox : XNAPanel
         for (int i = drawInfo.TopIndex; i < Items.Count; i++)
         {
             XNAListBoxItem lbItem = Items[i];
+            int itemHeight = lbItem.TextLines.Count * LineHeight;
 
             if (!lbItem.Visible)
                 continue;
 
-            height += lbItem.TextLines.Count * LineHeight;
-
-            if (height > mouseLocation.Y)
+            if (mouseLocation.Y >= height && mouseLocation.Y < height + itemHeight)
             {
                 return i;
             }
 
+            height += itemHeight;
+
             if (height > Height)
-            {
-                return -1;
-            }
+                break;
         }
 
         return -1;
@@ -966,10 +960,10 @@ public class XNAListBox : XNAPanel
         int h = 0;
         for (int i = 0; i < Items.Count; i++)
         {
-            int heightIncrease = Items[i].TextLines.Count * LineHeight;
-            if (h + heightIncrease > ViewTop)
+            int itemHeight = Items[i].TextLines.Count * LineHeight;
+            if (h + itemHeight > ViewTop)
                 return new ListBoxItemDrawInfo(i, h - ViewTop);
-            h += heightIncrease;
+            h += itemHeight;
         }
 
         return new ListBoxItemDrawInfo(Items.Count, 0);

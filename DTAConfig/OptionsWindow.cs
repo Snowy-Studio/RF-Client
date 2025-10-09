@@ -109,10 +109,10 @@ namespace DTAConfig
                 new AudioOptionsPanel(WindowManager, UserINISettings.Instance),                     //1 "音频"页面
                 new GameOptionsPanel(WindowManager, UserINISettings.Instance, topBar),              //2 "游戏"页面
                 new CnCNetOptionsPanel(WindowManager, UserINISettings.Instance, gameCollection),    //3 "CnCNet"页面
-                // new LocalSkinPanel(WindowManager, UserINISettings.Instance),                     //4 "皮肤"页面
+                // new LocalSkinPanel(WindowManager, UserINISettings.Instance),                        //4 "皮肤"页面
                 updaterOptionsPanel,                                                                //5 "更新器"页面
-                componentsPanel,                                                                    //6 "创意工坊"页面
-                //new UserOptionsPanel(WindowManager, UserINISettings.Instance)                     //7 "创作者"页面
+                componentsPanel,                                                                    //6 "工坊"页面
+                //new UserOptionsPanel(WindowManager, UserINISettings.Instance)                       //7 "创作"页面
             ];
 
             // 找到拦截的方法再启用
@@ -248,11 +248,11 @@ namespace DTAConfig
             {
                 if (e.PressedKey == Keys.Escape)
                 {
-                    btnCancel.OnLeftClick(null);
+                    btnCancel.OnLeftClick();
                 }
                 if (e.PressedKey == Keys.Enter)
                 {
-                    btnSave.OnLeftClick(null);
+                    btnSave.OnLeftClick();
                 }
             }
         }

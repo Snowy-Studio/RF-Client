@@ -638,11 +638,11 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             base.OnMouseLeave();
         }
 
-        public override void OnMouseLeftDown(InputEventArgs inputEventArgs)
+        public override void OnMouseLeftDown()
         {
-            base.OnMouseLeftDown(inputEventArgs);
+            base.OnMouseLeftDown();
         }
-        public override void OnLeftClick(InputEventArgs inputEventArgs)
+        public override void OnLeftClick()
         {
             if (Keyboard.IsKeyHeldDown(Keys.LeftControl))
             {
@@ -653,7 +653,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             }
 
 
-            base.OnLeftClick(inputEventArgs);
+            base.OnLeftClick();
         }
 
         public override void Draw(GameTime gameTime)

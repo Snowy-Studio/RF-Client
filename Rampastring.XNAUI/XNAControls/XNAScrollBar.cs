@@ -1,15 +1,13 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace Rampastring.XNAUI.XNAControls;
 
 /// <summary>
-/// A vertical scroll bar that can be utilized for various other controls.
+/// A vertical scroll bar, mainly for list boxes but it could also be utilized
+/// by other controls.
 /// </summary>
-/// <remarks>
-/// See also the sibling <see cref="XNAHorizontalScrollBar"/> class.
-/// </remarks>
 public class XNAScrollBar : XNAControl
 {
     private const int MIN_BUTTON_HEIGHT = 10;
@@ -25,21 +23,15 @@ public class XNAScrollBar : XNAControl
         var scrollUpTexture = AssetLoader.LoadTexture("sbUpArrow.png");
 
         btnScrollUp = new XNAButton(WindowManager);
-        btnScrollUp.Name = nameof(btnScrollUp);
         btnScrollUp.ClientRectangle = new Rectangle(0, 0, scrollUpTexture.Width, scrollUpTexture.Height);
         btnScrollUp.IdleTexture = scrollUpTexture;
-        if (AssetLoader.AssetExists("sbUpArrowHovered.png"))
-            btnScrollUp.HoverTexture = AssetLoader.LoadTexture("sbUpArrowHovered.png");
 
         var scrollDownTexture = AssetLoader.LoadTexture("sbDownArrow.png");
 
         btnScrollDown = new XNAButton(WindowManager);
-        btnScrollDown.Name = nameof(btnScrollDown);
         btnScrollDown.ClientRectangle = new Rectangle(0, Height - scrollDownTexture.Height,
             scrollDownTexture.Width, scrollDownTexture.Height);
         btnScrollDown.IdleTexture = scrollDownTexture;
-        if (AssetLoader.AssetExists("sbDownArrowHovered.png"))
-            btnScrollDown.HoverTexture = AssetLoader.LoadTexture("sbDownArrowHovered.png");
 
         ClientRectangleUpdated += XNAScrollBar_ClientRectangleUpdated;
     }
@@ -131,17 +123,6 @@ public class XNAScrollBar : XNAControl
         thumbBottom = AssetLoader.LoadTexture("sbThumbBottom.png");
     }
 
-    public override void Kill()
-    {
-        // These textures are cached, don't allow the buttons to dispose them
-        btnScrollDown.IdleTexture = null;
-        btnScrollDown.HoverTexture = null;
-        btnScrollUp.IdleTexture = null;
-        btnScrollUp.HoverTexture = null;
-
-        base.Kill();
-    }
-
     /// <summary>
     /// Scrolls up when the user presses on the "scroll up" arrow.
     /// </summary>
@@ -220,15 +201,11 @@ public class XNAScrollBar : XNAControl
     /// <summary>
     /// Scrolls the scrollbar when it's clicked on.
     /// </summary>
-    public override void OnLeftClick(InputEventArgs inputEventArgs)
+    public override void OnLeftClick()
     {
-        if (IsDrawn())
-        {
-            inputEventArgs.Handled = true;
-            base.OnLeftClick(inputEventArgs);
+        base.OnLeftClick();
 
-            Scroll();
-        }
+        Scroll();
     }
 
     /// <summary>
@@ -261,7 +238,7 @@ public class XNAScrollBar : XNAControl
         }
 
 
-        if (point.Y <= buttonMinY || DisplayedPixelCount >= Length)
+        if (point.Y <= buttonMinY)
         {
             ViewTop = 0;
             RefreshButtonY();

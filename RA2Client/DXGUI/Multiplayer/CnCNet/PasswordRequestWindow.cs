@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ClientGUI;
 using Ra2Client.Domain.Multiplayer.CnCNet;
 using Localization;
@@ -85,11 +85,11 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             {
                 if (e.PressedKey == Keys.Escape)
                 {
-                    btnCancel.OnLeftClick(null);
+                    btnCancel.OnLeftClick();
                 }
                 if (e.PressedKey == Keys.Enter)
                 {
-                    btnOK.OnLeftClick(null);
+                    btnOK.OnLeftClick();
                 }
             }
         }

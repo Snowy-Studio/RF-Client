@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Rampastring.Tools;
 using Rampastring.XNAUI.Input;
@@ -16,6 +16,8 @@ public class XNATextBox : XNAControl
 {
     protected const int TEXT_HORIZONTAL_MARGIN = 3;
     protected const int TEXT_VERTICAL_MARGIN = 2;
+    protected const double SCROLL_REPEAT_TIME = 0.03;
+    protected const double FAST_SCROLL_TRIGGER_TIME = 0.4;
     protected const double BAR_ON_TIME = 0.5;
     protected const double BAR_OFF_TIME = 0.5;
 
@@ -25,8 +27,6 @@ public class XNATextBox : XNAControl
     /// <param name="windowManager">The WindowManager that will be associated with this control.</param>
     public XNATextBox(WindowManager windowManager) : base(windowManager)
     {
-        Height = UISettings.ActiveSettings.TextBoxDefaultHeight.GetValueOrDefault((int)Renderer.MeasureString("Test String @@", FontIndex).Y + 4);
-        HandledMouseInputs = MouseInputFlags.LeftMouseButton;
     }
 
     /// <summary>
@@ -296,7 +296,6 @@ public class XNATextBox : XNAControl
              * So, we detect that input here and return on these keys.
             /*/
             case '\r':      // Enter / return
-            case '\n':      // Line feed
             case '\x0009':  // Tab
             case '\b':      // Backspace
             case '\x001b':  // ESC
@@ -489,7 +488,7 @@ public class XNATextBox : XNAControl
                     FontIndex).X < Width - TEXT_HORIZONTAL_MARGIN * 2;
     }
 
-    public override void OnLeftClick(InputEventArgs inputEventArgs)
+    public override void OnLeftClick()
     {
         int x = GetCursorPoint().X;
         int inputPosition = TextEndPosition;
@@ -511,7 +510,7 @@ public class XNATextBox : XNAControl
 
         barTimer = TimeSpan.Zero;
 
-        base.OnLeftClick(inputEventArgs);
+        base.OnLeftClick();
     }
 
     public override void Update(GameTime gameTime)
@@ -664,14 +663,14 @@ public class XNATextBox : XNAControl
         {
             timeSinceLastScroll += gameTime.ElapsedGameTime;
 
-            if (timeSinceLastScroll > TimeSpan.FromSeconds(XNAUIConstants.KEYBOARD_SCROLL_REPEAT_TIME))
+            if (timeSinceLastScroll > TimeSpan.FromSeconds(SCROLL_REPEAT_TIME))
             {
                 timeSinceLastScroll = TimeSpan.Zero;
                 action();
             }
         }
 
-        if (scrollKeyTime > TimeSpan.FromSeconds(XNAUIConstants.KEYBOARD_FAST_SCROLL_TRIGGER_TIME) && !isScrollingQuickly)
+        if (scrollKeyTime > TimeSpan.FromSeconds(FAST_SCROLL_TRIGGER_TIME) && !isScrollingQuickly)
         {
             isScrollingQuickly = true;
             timeSinceLastScroll = TimeSpan.Zero;
