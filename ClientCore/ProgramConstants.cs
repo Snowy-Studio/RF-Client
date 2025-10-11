@@ -223,30 +223,47 @@ namespace ClientCore
         {
             try
             {
-                // 设置白名单，白名单中的文件不会被删除（大小写敏感）
-                var 白名单 = new HashSet<string>
+                // 设置文件白名单（这些文件不会被删除）
+                var 文件白名单 = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "KeyboardMD.ini"
+        };
+
+                // 设置文件夹白名单（这些文件夹不会被删除）
+                var 文件夹白名单 = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 {
-                "KeyboardMD.ini",
+                    // 例如 "Maps", "Logs"
                 };
 
+                // 删除文件
                 foreach (var file in Directory.GetFiles(游戏目录))
                 {
                     var 文件名 = Path.GetFileName(file);
-                    if (!白名单.Contains(文件名))
+                    if (!文件白名单.Contains(文件名))
                     {
                         File.Delete(file);
                     }
                 }
 
-                // 下面两个文件不在白名单里，所以尝试删除
-                File.Delete("spawn.ini");
-                File.Delete("spawnmap.ini");
+                // 删除 spawn 文件（不在白名单中）
+                File.Delete(Path.Combine(游戏目录, "spawn.ini"));
+                File.Delete(Path.Combine(游戏目录, "spawnmap.ini"));
+
+                // 删除文件夹
+                foreach (var dir in Directory.GetDirectories(游戏目录))
+                {
+                    var 文件夹名 = Path.GetFileName(dir);
+                    if (!文件夹白名单.Contains(文件夹名))
+                    {
+                        Directory.Delete(dir, recursive: true);
+                    }
+                }
 
                 return true;
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message);
+                Logger.Log($"清理缓存失败: {ex.Message}");
                 return false;
             }
         }

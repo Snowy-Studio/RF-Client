@@ -1,4 +1,4 @@
-﻿namespace ClientUpdater;
+namespace ClientUpdater;
 
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using Fun;
 
@@ -16,7 +17,7 @@ internal sealed class Program
     private const int MOVEFILEDELAYUNTILREBOOT = 0x00000004;
     private const int MOVEFILEREPLACEEXISTING = 0x00000001;
 
-    private static ConsoleColor defaultColor;
+    private static ConsoleColor defaultColor = ConsoleColor.White;
     private static StreamWriter errorWriter;
 
     // P/Invoke 声明，用于安排文件在下次重启时替换
@@ -42,11 +43,12 @@ internal sealed class Program
 
         if (!Directory.Exists(logDirectory))
         {
-            Directory.CreateDirectory(logDirectory); // 创建日志文件目录
+            Directory.CreateDirectory(logDirectory);
         }
 
-        errorWriter = new StreamWriter(errorLogPath);
-        Console.SetOut(errorWriter);
+        var fileWriter = new StreamWriter(errorLogPath, append: true, Encoding.UTF8);
+        var dualWriter = new DualWriter(Console.Out, fileWriter);
+        Console.SetOut(dualWriter);
 
         try
         {
@@ -92,10 +94,31 @@ internal sealed class Program
                     Console.ReadKey();
                     Environment.Exit(1);
                 }
+                else
+                {
+                    try
+                    {
+                        // 递归清空目录
+                        ClearDirectory(updaterDirectory);
+                        Write($"已清空 {updaterDirectory.Name} 目录.", ConsoleColor.Yellow);
+                    }
+                    catch (Exception ex)
+                    {
+                        Write($"清空目录失败: {ex.Message}", ConsoleColor.Red);
+                     //   Write($"请关闭窗口，并手动清空", ConsoleColor.Red);
+                     //   Console.ReadKey();
+                       // return;
+                    }
+                }
 
                 Write("开始更新文件.", ConsoleColor.Green);
 
                 IEnumerable<FileInfo> files = updaterDirectory.EnumerateFiles("*", SearchOption.AllDirectories);
+              //  Console.ReadKey();
+                //foreach (var file in files)
+                //{
+                //    Write(file.FullName, ConsoleColor.Green);
+                //}
                 FileInfo executableFile = SafePath.GetFile(Assembly.GetExecutingAssembly().Location);
                 FileInfo relativeExecutableFile = SafePath.GetFile(executableFile.FullName[baseDirectory.FullName.Length..]);
 
@@ -271,6 +294,12 @@ internal sealed class Program
                     continue;
                 }
 
+                if (!destFile.Directory.Exists)
+                {
+                    destFile.Directory.Create();
+                }
+
+
                 // 尝试复制文件
                 sourceFile.CopyTo(destFile.FullName, true);
                 return true;
@@ -389,5 +418,73 @@ internal sealed class Program
         Console.ForegroundColor = color;
         Console.WriteLine(text);
         Console.ForegroundColor = defaultColor;
+    }
+
+    /// <summary>
+    /// 清空指定目录（包括子文件夹和文件），并解除只读属性
+    /// </summary>
+    private static void ClearDirectory(DirectoryInfo dir)
+    {
+        // 先确保当前目录本身可写
+        if ((dir.Attributes & FileAttributes.ReadOnly) != 0)
+            dir.Attributes &= ~FileAttributes.ReadOnly;
+
+        // 删除所有文件
+        foreach (FileInfo file in dir.GetFiles())
+        {
+            try
+            {
+                if ((file.Attributes & FileAttributes.ReadOnly) != 0)
+                    file.Attributes &= ~FileAttributes.ReadOnly;
+
+                file.Delete();
+            }
+            catch (Exception ex)
+            {
+                Write($"无法删除文件 {file.FullName}: {ex.Message}", ConsoleColor.Red);
+            }
+        }
+
+        // 递归删除所有子目录
+        foreach (DirectoryInfo subDir in dir.GetDirectories())
+        {
+            try
+            {
+                ClearDirectory(subDir);
+                subDir.Delete(true);
+            }
+            catch (Exception ex)
+            {
+                Write($"无法删除目录 {subDir.FullName}: {ex.Message}", ConsoleColor.Red);
+            }
+        }
+    }
+}
+
+
+class DualWriter : TextWriter
+{
+    private readonly TextWriter consoleOut;
+    private readonly TextWriter fileOut;
+
+    public DualWriter(TextWriter consoleOut, TextWriter fileOut)
+    {
+        this.consoleOut = consoleOut;
+        this.fileOut = fileOut;
+    }
+
+    public override Encoding Encoding => consoleOut.Encoding;
+
+    public override void WriteLine(string? value)
+    {
+        consoleOut.WriteLine(value);
+        fileOut.WriteLine(value);
+        fileOut.Flush(); // 确保实时写入文件
+    }
+
+    public override void Write(string? value)
+    {
+        consoleOut.Write(value);
+        fileOut.Write(value);
     }
 }

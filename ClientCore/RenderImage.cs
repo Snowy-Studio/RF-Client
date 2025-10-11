@@ -164,11 +164,11 @@ namespace ClientCore
                 try
                 {
                     File.Delete(file);
-                    Console.WriteLine($"已删除: {file}");
+                 //   Console.WriteLine($"已删除: {file}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"删除失败: {file}, 错误: {ex.Message}");
+                   // Console.WriteLine($"删除失败: {file}, 错误: {ex.Message}");
                 }
             }
 
