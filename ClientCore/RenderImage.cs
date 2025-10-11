@@ -157,18 +157,18 @@ namespace ClientCore
                 string fileName = Path.GetFileName(file);
                 if (ProgramConstants.PureHashes.ContainsKey(fileName))
                 {
-                    //Console.WriteLine($"白名单文件，跳过删除: {fileName}");
+                    // Console.WriteLine($"白名单文件，跳过删除: {fileName}");
                     continue;
                 }
 
                 try
                 {
                     File.Delete(file);
-                 //   Console.WriteLine($"已删除: {file}");
+                    // Console.WriteLine($"已删除: {file}");
                 }
                 catch (Exception ex)
                 {
-                   // Console.WriteLine($"删除失败: {file}, 错误: {ex.Message}");
+                    // Console.WriteLine($"删除失败: {file}, 错误: {ex.Message}");
                 }
             }
 

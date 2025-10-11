@@ -12,6 +12,9 @@ using System.Threading;
 
 namespace ClientUpdater;
 
+/// <summary>
+/// 更新器主程序.
+/// </summary>
 internal sealed class Program
 {
     private const int MOVEFILEDELAYUNTILREBOOT = 0x00000004;
@@ -47,8 +50,10 @@ internal sealed class Program
         }
 
         var fileWriter = new StreamWriter(errorLogPath, append: true, Encoding.UTF8);
-        var dualWriter = new DualWriter(Console.Out, fileWriter);
-        Console.SetOut(dualWriter);
+        using (var dualWriter = new DualWriter(Console.Out, fileWriter))
+        {
+            Console.SetOut(dualWriter);
+        }
 
         try
         {
@@ -102,7 +107,7 @@ internal sealed class Program
                         ClearDirectory(updaterDirectory);
                         Write($"已清空 {updaterDirectory.Name} 目录.", ConsoleColor.Yellow);
                     }
-                    catch (Exception ex)
+                    catch (IOException ex)
                     {
                         Write($"清空目录失败: {ex.Message}", ConsoleColor.Red);
 
@@ -177,7 +182,7 @@ internal sealed class Program
                     {
                         Directory.Delete(updaterDirectory.FullName, true);
                     }
-                    catch
+                    catch (IOException)
                     {
                         Write("删除临时目录失败", ConsoleColor.Yellow);
                     }
@@ -200,7 +205,7 @@ internal sealed class Program
                 // {
                 //     Write("发现启动程序: " + launcherExeFile.FullName, ConsoleColor.Green);
 
-                //     string strDotnet = @"C:\Program Files\dotnet\dotnet.exe";
+                    // string strDotnet = @"C:\Program Files\dotnet\dotnet.exe";
                 //     using var process = Process.Start(new ProcessStartInfo
                 //     {
                 //         FileName = strDotnet,
@@ -305,7 +310,7 @@ internal sealed class Program
                 sourceFile.CopyTo(destFile.FullName, true);
                 return true;
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 Write($"更新文件失败: {ex}", ConsoleColor.Yellow);
                 retry++;
@@ -349,7 +354,7 @@ internal sealed class Program
                 Write($"MoveFileEx 失败，错误码: {err}", ConsoleColor.Yellow);
             }
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
             Write($"安排更新失败: {ex}", ConsoleColor.Yellow);
         }
@@ -402,7 +407,7 @@ internal sealed class Program
 
             return false; // 文件未被占用
         }
-        catch (Exception)
+        catch (IOException)
         {
             return true; // 捕获异常表示文件可能被占用
         }
@@ -444,7 +449,7 @@ internal sealed class Program
 
                 file.Delete();
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 Write($"无法删除文件 {file.FullName}: {ex.Message}", ConsoleColor.Red);
             }
@@ -458,7 +463,7 @@ internal sealed class Program
                 ClearDirectory(subDir);
                 subDir.Delete(true);
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 Write($"无法删除目录 {subDir.FullName}: {ex.Message}", ConsoleColor.Red);
             }
@@ -466,10 +471,14 @@ internal sealed class Program
     }
 }
 
-class DualWriter : TextWriter
+/// <summary>
+/// 同时写入控制台和文件的 TextWriter.
+/// </summary>
+class DualWriter : TextWriter, IDisposable
 {
     private readonly TextWriter consoleOut;
     private readonly TextWriter fileOut;
+    private bool disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DualWriter"/> class.
@@ -482,9 +491,16 @@ class DualWriter : TextWriter
         this.fileOut = fileOut;
     }
 
+    /// <summary>
+    /// Gets the encoding of the underlying console output.
+    /// </summary>
     public override Encoding Encoding => this.consoleOut.Encoding;
 
 #nullable enable
+    /// <summary>
+    /// 将字符串写入控制台和文件(不带换行).
+    /// </summary>
+    /// <param name="value">要写入的文本内容.</param>
     public override void WriteLine(string? value)
     {
         this.consoleOut.WriteLine(value);
@@ -492,10 +508,37 @@ class DualWriter : TextWriter
         this.fileOut.Flush(); // 确保实时写入文件
     }
 
+    /// <summary>
+    /// 将字符串写入控制台和文件，并在末尾追加换行符.
+    /// </summary>
+    /// <param name="value">要写入的文本内容.</param>
     public override void Write(string? value)
     {
         this.consoleOut.Write(value);
         this.fileOut.Write(value);
     }
 #nullable restore
+
+    /// <summary>
+    /// 释放由 <see cref="DualWriter"/> 占用的资源。
+    /// 当 <paramref name="disposing"/> 为 <c>true</c> 时，同时释放托管与非托管资源；
+    /// 为 <c>false</c> 时，仅释放非托管资源，供终结器调用.
+    /// </summary>
+    /// <param name="disposing">
+    /// <c>true</c> 表示由用户代码显式调用；<c>false</c> 表示由终结器线程调用.
+    /// </param>
+    protected override void Dispose(bool disposing)
+    {
+        if (!this.disposed)
+        {
+            if (disposing)
+            {
+                this.fileOut?.Dispose();
+                this.consoleOut?.Dispose();
+            }
+
+            this.disposed = true;
+            base.Dispose(disposing);
+        }
+    }
 }
