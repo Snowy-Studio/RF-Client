@@ -50,10 +50,10 @@ internal sealed class Program
         }
 
         var fileWriter = new StreamWriter(errorLogPath, append: true, Encoding.UTF8);
-        using (var dualWriter = new DualWriter(Console.Out, fileWriter))
-        {
-            Console.SetOut(dualWriter);
-        }
+#pragma warning disable CA2000 // 丢失范围之前释放对象
+        var dualWriter = new DualWriter(Console.Out, fileWriter);
+#pragma warning restore CA2000 // 丢失范围之前释放对象
+        Console.SetOut(dualWriter);
 
         try
         {
@@ -129,7 +129,9 @@ internal sealed class Program
                 FileInfo executableFile = SafePath.GetFile(Assembly.GetExecutingAssembly().Location);
                 FileInfo relativeExecutableFile = SafePath.GetFile(executableFile.FullName[baseDirectory.FullName.Length..]);
 
+#pragma warning disable CA1851 // “IEnumerable”集合可能的多个枚举
                 FileInfo delUpdateFile = files.FirstOrDefault(file => file.Name.Equals("delUpdate", StringComparison.OrdinalIgnoreCase));
+#pragma warning restore CA1851 // “IEnumerable”集合可能的多个枚举
                 if (delUpdateFile != null)
                 {
                     DeleteListedFiles(baseDirectory, delUpdateFile);
@@ -140,6 +142,7 @@ internal sealed class Program
                 const int retryDelay = 1000; // 1秒
 
                 // 对每个文件进行更新操作
+#pragma warning disable CA1851 // “IEnumerable”集合可能的多个枚举
                 foreach (FileInfo fileInfo in files)
                 {
                     FileInfo relativeFileInfo = SafePath.GetFile(fileInfo.FullName[updaterDirectory.FullName.Length..]);
@@ -175,6 +178,7 @@ internal sealed class Program
                         }
                     }
                 }
+#pragma warning restore CA1851 // “IEnumerable”集合可能的多个枚举
 
                 if (updaterDirectory.Exists)
                 {
@@ -474,7 +478,11 @@ internal sealed class Program
 /// <summary>
 /// 同时写入控制台和文件的 TextWriter.
 /// </summary>
+#pragma warning disable SA1400 // File may only contain a single type
+#pragma warning disable SA1402 // Access modifier should be declared
 class DualWriter : TextWriter, IDisposable
+#pragma warning restore SA1400 // Access modifier should be declared
+#pragma warning restore SA1402 // File may only contain a single type
 {
     private readonly TextWriter consoleOut;
     private readonly TextWriter fileOut;
