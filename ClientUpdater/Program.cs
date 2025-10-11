@@ -105,20 +105,22 @@ internal sealed class Program
                     catch (Exception ex)
                     {
                         Write($"清空目录失败: {ex.Message}", ConsoleColor.Red);
-                     //   Write($"请关闭窗口，并手动清空", ConsoleColor.Red);
-                     //   Console.ReadKey();
-                       // return;
+
+                        // Write($"请关闭窗口，并手动清空", ConsoleColor.Red);
+                        // Console.ReadKey();
+                        // return;
                     }
                 }
 
                 Write("开始更新文件.", ConsoleColor.Green);
 
                 IEnumerable<FileInfo> files = updaterDirectory.EnumerateFiles("*", SearchOption.AllDirectories);
-              //  Console.ReadKey();
-                //foreach (var file in files)
-                //{
-                //    Write(file.FullName, ConsoleColor.Green);
-                //}
+
+                // Console.ReadKey();
+                // foreach (var file in files)
+                // {
+                //     Write(file.FullName, ConsoleColor.Green);
+                // }
                 FileInfo executableFile = SafePath.GetFile(Assembly.GetExecutingAssembly().Location);
                 FileInfo relativeExecutableFile = SafePath.GetFile(executableFile.FullName[baseDirectory.FullName.Length..]);
 
@@ -299,7 +301,6 @@ internal sealed class Program
                     destFile.Directory.Create();
                 }
 
-
                 // 尝试复制文件
                 sourceFile.CopyTo(destFile.FullName, true);
                 return true;
@@ -328,7 +329,7 @@ internal sealed class Program
     /// </summary>
     /// <param name="source">更新文件的完整路径.</param>
     /// <param name="target">目标文件的完整路径.</param>
-    /// <returns>安排成功返回 true，否则 false.</returns>
+    /// <returns>安排成功返回 true, 否则 false.</returns>
     private static bool ScheduleFileReplacement(string source, string target)
     {
         try
@@ -421,13 +422,15 @@ internal sealed class Program
     }
 
     /// <summary>
-    /// 清空指定目录（包括子文件夹和文件），并解除只读属性
+    /// 清空指定目录（包括子文件夹和文件），并解除只读属性.
     /// </summary>
     private static void ClearDirectory(DirectoryInfo dir)
     {
         // 先确保当前目录本身可写
         if ((dir.Attributes & FileAttributes.ReadOnly) != 0)
+        {
             dir.Attributes &= ~FileAttributes.ReadOnly;
+        }
 
         // 删除所有文件
         foreach (FileInfo file in dir.GetFiles())
@@ -435,7 +438,9 @@ internal sealed class Program
             try
             {
                 if ((file.Attributes & FileAttributes.ReadOnly) != 0)
+                {
                     file.Attributes &= ~FileAttributes.ReadOnly;
+                }
 
                 file.Delete();
             }
@@ -461,30 +466,36 @@ internal sealed class Program
     }
 }
 
-
 class DualWriter : TextWriter
 {
     private readonly TextWriter consoleOut;
     private readonly TextWriter fileOut;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DualWriter"/> class.
+    /// </summary>
+    /// <param name="consoleOut">控制台输出流.</param>
+    /// <param name="fileOut">文件输出流.</param>
     public DualWriter(TextWriter consoleOut, TextWriter fileOut)
     {
         this.consoleOut = consoleOut;
         this.fileOut = fileOut;
     }
 
-    public override Encoding Encoding => consoleOut.Encoding;
+    public override Encoding Encoding => this.consoleOut.Encoding;
 
+#nullable enable
     public override void WriteLine(string? value)
     {
-        consoleOut.WriteLine(value);
-        fileOut.WriteLine(value);
-        fileOut.Flush(); // 确保实时写入文件
+        this.consoleOut.WriteLine(value);
+        this.fileOut.WriteLine(value);
+        this.fileOut.Flush(); // 确保实时写入文件
     }
 
     public override void Write(string? value)
     {
-        consoleOut.Write(value);
-        fileOut.Write(value);
+        this.consoleOut.Write(value);
+        this.fileOut.Write(value);
     }
+#nullable restore
 }

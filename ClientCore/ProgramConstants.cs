@@ -225,9 +225,9 @@ namespace ClientCore
             {
                 // 设置文件白名单（这些文件不会被删除）
                 var 文件白名单 = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "KeyboardMD.ini"
-        };
+                {
+                    "KeyboardMD.ini"
+                };
 
                 // 设置文件夹白名单（这些文件夹不会被删除）
                 var 文件夹白名单 = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
