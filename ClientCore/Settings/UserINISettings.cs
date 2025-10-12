@@ -198,6 +198,7 @@ namespace ClientCore
 
         public IntSetting IngameScreenWidth { get; private set; }
 
+        public int startPort;
         public IntSetting IngameScreenHeight { get; private set; }
         public StringSetting ClientTheme { get; private set; }
 

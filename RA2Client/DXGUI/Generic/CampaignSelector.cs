@@ -837,7 +837,7 @@ namespace Ra2Client.DXGUI.Generic
                 DarkeningPanel.RemoveControl(dp, WindowManager, modManager);
             };
 
-            //_modManager.DDModAI.SelectedIndex = index;
+            _modManager.DDModAI.SelectedIndex = index;
 
         }
 

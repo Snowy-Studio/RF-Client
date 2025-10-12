@@ -227,16 +227,19 @@ public class ModManager : XNAWindow
     {
         打开创意工坊(3 - DDModAI.SelectedIndex);
     }
-
     public void 打开创意工坊(int selectIndex)
     {
-        optionsWindow.Open();
-        optionsWindow.tabControl.SelectedTab = 5;
-        optionsWindow.componentsPanel.comboBoxtypes.SelectedIndex = selectIndex;
-        Disable();
 
-        //Detach();
+        string type;
+        if (selectIndex == 3)
+            type = "mod";
+        else
+            type = "missionPack";
+
+        FunExtensions.OpenUrl($"https://creator.yra2.com/workshop/{type}/list?token={UserINISettings.Instance.Token}&port={UserINISettings.Instance.startPort}");
+       
     }
+
 
     private void 解压MIX()
     {
@@ -1251,7 +1254,9 @@ public class ModManager : XNAWindow
     public static ModManager GetInstance(WindowManager windowManager)
     {
         if (_instance != null)
+        {
             return _instance;
+        }
         
         _instance = new ModManager(windowManager);
         _instance.Initialize();
@@ -1360,6 +1365,7 @@ public class 导入选择窗口(WindowManager windowManager) : XNAWindow(windowM
 
         box.YesClickedAction += (_) =>
         {
+
             Disable();
             Dispose();
         };
@@ -1643,6 +1649,7 @@ public class ModInfoWindows : XNAWindow
         AddChild(btnOk);
         btnOk.LeftClick += (_, _) =>
         {
+
             Disable();
         };
 
@@ -1897,6 +1904,7 @@ public class MissionPackInfoWindows : XNAWindow
             //        return;
             //    }
             //}
+
             Disable();
         };
 

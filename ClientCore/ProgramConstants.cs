@@ -232,7 +232,7 @@ namespace ClientCore
                 // 设置文件夹白名单（这些文件夹不会被删除）
                 var 文件夹白名单 = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 {
-                    // 例如 "Maps", "Logs"
+                    "Saved Games"
                 };
 
                 // 删除文件

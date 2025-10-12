@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using ClientCore;
@@ -310,7 +310,7 @@ namespace Ra2Client.DXGUI.Generic
                 return;
             var dp = DarkeningPanel.AddAndInitializeWithControl(WindowManager, modManager);
 
-            // modManager.DDModAI.SelectedIndex = 0;
+            modManager.DDModAI.SelectedIndex = 0;
             modManager.Enable();
             modManager.EnabledChanged += (_, _) =>
             {

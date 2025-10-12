@@ -424,6 +424,9 @@ namespace ClientGUI
                     加载音乐(ProgramConstants.游戏目录);
                 }
 
+                if (!Directory.Exists(Path.Combine(ProgramConstants.游戏目录, "Saved Games")))
+                    Directory.CreateDirectory(Path.Combine(ProgramConstants.游戏目录, "Saved Games"));
+
                 var ra2md = Path.Combine(ProgramConstants.游戏目录, mod.SettingsFile);
 
 
