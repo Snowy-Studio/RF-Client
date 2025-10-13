@@ -1,17 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using Serilog;
 using Rampastring.Tools;
 using RandomMapGenerator.TileInfo;
-using System.Linq.Expressions;
-using System.Diagnostics;
-using Serilog;
-using System.Globalization;
 
 namespace RandomMapGenerator
 {

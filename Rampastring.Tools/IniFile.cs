@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Text;
 using System.Linq;
 using Localization.Tools;
+
 namespace Rampastring.Tools;
 
 /// <summary>

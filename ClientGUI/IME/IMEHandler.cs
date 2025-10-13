@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-
 using Microsoft.Xna.Framework;
-
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.Input;
 using Rampastring.XNAUI.XNAControls;

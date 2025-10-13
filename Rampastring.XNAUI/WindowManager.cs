@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Rampastring.XNAUI.XNAControls;
-using Rampastring.Tools;
-using Microsoft.Xna.Framework.Content;
-using Color = Microsoft.Xna.Framework.Color;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Rampastring.XNAUI.Input;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
+using Rampastring.Tools;
+using Rampastring.XNAUI.Input;
 using Rampastring.XNAUI.PlatformSpecific;
+using Rampastring.XNAUI.XNAControls;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 #if NETFRAMEWORK
 using System.Reflection;
 #endif

@@ -1,11 +1,10 @@
-﻿using RandomMapGenerator.NonTileObjects;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Rampastring.Tools;
 using RandomMapGenerator.NonTileObjects;
+using Rampastring.Tools;
 
 namespace RandomMapGenerator.TileInfo
 {

@@ -1,10 +1,7 @@
-﻿#nullable enable
+#nullable enable
 using System;
-
 using ImeSharp;
-
 using Microsoft.Xna.Framework;
-
 using Rampastring.Tools;
 
 namespace ClientGUI.IME;
