@@ -556,7 +556,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         private void 打开地图位置()
         {
-            var path = Path.Combine(ProgramConstants.GamePath, Map.BaseFilePath);
+            var path = Path.Combine(ProgramConstants.GamePath, Map.BaseFilePath.Replace(@"/",@"\"));
             System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{path}\"");
         }
 
@@ -2437,6 +2437,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     .SetValue("OccupantAnim", "UCFLASH")
                     ;
 
+            
 
             if (Name == "SkirmishLobby")
                 IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
