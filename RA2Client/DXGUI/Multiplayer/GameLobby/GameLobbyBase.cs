@@ -22,13 +22,13 @@ using Ra2Client.DXGUI.Generic;
 using Ra2Client.DXGUI.Multiplayer.CnCNet;
 using Ra2Client.Online.EventArguments;
 using Localization;
+using Localization.Tools;
 using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using Localization.Tools;
 using SixLabors.ImageSharp.Processing;
 using SharpDX.Direct3D9;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
@@ -56,8 +56,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         private const int RANK_EASY = 1;
         private const int RANK_MEDIUM = 2;
         private const int RANK_HARD = 3;
-
-
 
         /// <summary>
         /// Creates a new instance of the game lobby base.
@@ -144,7 +142,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         protected XNAClientButton btnDownLoad;
         protected XNAClientButton btnRandomMap;
 
-
         protected XNALabel lblMapName;
         protected XNALabel lblMapAuthor;
         protected XNALabel lblGameMode;
@@ -213,7 +210,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         /// </summary>
         protected bool RemoveStartingLocations { get; set; } = false;
         protected IniFile GameOptionsIni { get; private set; }
-
         protected XNAClientButton BtnSaveLoadGameOptions { get; set; }
         private XNAContextMenu loadSaveGameOptionsMenu { get; set; }
 
@@ -244,7 +240,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             _modManager = ModManager.GetInstance(WindowManager);
             
-            
             _modManager.触发刷新 += ReloadMod;
 
             PlayerOptionsPanel = FindChild<XNAPanel>(nameof(PlayerOptionsPanel));
@@ -258,7 +253,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             MapPreviewBox = FindChild<MapPreviewBox>("MapPreviewBox");
 
             MapPreviewBoxPosition = MapPreviewBox.ClientRectangle;
-
 
             MapPreviewBox.SetFields(Players, AIPlayers, MPColors, GameOptionsIni.GetStringValue("General", "Sides", String.Empty).Split(','), GameOptionsIni);
             
@@ -328,8 +322,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             cmbGame.SelectedIndexChanged += CmbGame_SelectedChanged;
 
             cmbGame.RightClick += (s, e) => ModMenu.Open(GetCursorPoint());
-
-          
 
             mapContextMenu = new XNAContextMenu(WindowManager);
             mapContextMenu.Name = nameof(mapContextMenu);
@@ -411,8 +403,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             btnPickRandomMap = FindChild<XNAClientButton>(nameof(btnPickRandomMap));
             btnPickRandomMap.LeftClick += BtnPickRandomMap_LeftClick;
 
-            
-
             lblscreen = new XNALabel(WindowManager);
             lblscreen.Name = nameof(lblscreen);
             lblscreen.Text = "Number:".L10N("UI:Main:Number");
@@ -444,7 +434,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             };
             btnDownLoad.LeftClick += BtnDownLoad_LeftClick;
 
-
             AddChild(btnDownLoad);
 
             randomMap = new 生成随机地图窗口(WindowManager, MapLoader);
@@ -454,7 +443,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             randomMap.EnabledChanged += randomMap_EnabledChanged;
 
             btnRandomMap = new XNAClientButton(WindowManager);
-            //  btnRandomMap = FindChild<XNAClientButton>(nameof(btnRandomMap));
+            // btnRandomMap = FindChild<XNAClientButton>(nameof(btnRandomMap));
             btnRandomMap.Text = "Generate map".L10N("UI:Main:RanMap");
             btnRandomMap.Enabled = false;
             btnRandomMap.Disable();
@@ -504,7 +493,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             {
                 导入地图(openFileDialog.FileNames);
             }
-
         }
 
         private void 导入地图(string[] files)
@@ -600,8 +588,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             DarkeningPanel.AddAndInitializeWithControl(WindowManager, new 添加至游戏模式(WindowManager, Map, GameModeMaps));
         }
 
-
-
         protected virtual void ModManagerEnabled()
         {
             var modManager = ModManager.GetInstance(WindowManager);
@@ -683,8 +669,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 chkTerrain.AllowChecking = true;
             }
 
-
-
             MPColors = MultiplayerColor.LoadColors(mod.Colors?.Split('|')?.ToList());
             string randomColor = GameOptionsIni.GetStringValue("General", "RandomColor", "255,255,255");
             if(ddPlayerColors != null)
@@ -763,14 +747,13 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             count++;
 
             base.OnLeftClick();
-
         }
+
         private void DdPeople_SelectedIndexChanged(object sender, EventArgs e)
         {
             gameModeMapFilter = new GameModeMapFilter(GetPeopleGameModeMaps(ddGameModeMapFilter.SelectedItem.Text, ddPeople.SelectedIndex));
                
             ListMaps();
-
         }
 
         /// <summary>
@@ -946,8 +929,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             MapLoader.AgainLoadMaps();
             LocalHttpServer.RefreshInstalledMapIds();
             重新显示地图();
-
-            
         }
 
         public void 重新显示地图(string 游戏模式名 = null, string mapID = null)
@@ -988,8 +969,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         private void randomMap_EnabledChanged(object sender, EventArgs e)
         {
             var r = randomMap.GetIsSave();
-
-            
             
             if (!randomMap.Enabled && !string.IsNullOrEmpty(r))
             {
@@ -1048,7 +1027,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             }
         }
 
-
         private void ChkBox_CheckedChanged(object sender, EventArgs e)
         {
             if (disableGameOptionUpdateBroadcast)
@@ -1095,12 +1073,10 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             gameModeMapFilter = new GameModeMapFilter(GetPeopleGameModeMaps(ddGameModeMapFilter.SelectedItem.Text, ddPeople.SelectedIndex));
                 
 
-                tbMapSearch.Text = string.Empty;
+            tbMapSearch.Text = string.Empty;
             tbMapSearch.OnSelectedChanged();
 
             ListMaps();
-
-            
 
             if (lbGameModeMapList.SelectedIndex == -1)
                 lbGameModeMapList.SelectedIndex = 0; // Select default GameModeMap
@@ -1118,7 +1094,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             {
                 ddGameModeMapFilter.SetToolTipText(string.Empty);
             }
-
         }
 
         protected void BtnPlayerExtraOptions_LeftClick(object sender, EventArgs e)
@@ -1181,8 +1156,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             return gameModeMaps;
         }
 
-
-        
         protected void ListMaps()
         {
             lbGameModeMapList.SelectedIndexChanged -= LbGameModeMapList_SelectedIndexChanged;
@@ -1991,8 +1964,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             foreach (var checkBox in CheckBoxes)
                 checkBox.ApplyDisallowedSideIndex(returnValue);
 
-
-
             return returnValue;
         }
 
@@ -2120,8 +2091,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             
             //写入新游戏
             settings.SetValue("Game", newGame);
-          
-
             settings.SetValue("Name", ProgramConstants.PLAYERNAME);
             settings.SetValue("Scenario", ProgramConstants.SPAWNMAP_INI);
             settings.SetValue("UIGameMode", GameMode.UIName);
@@ -2261,8 +2230,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                         startingWaypoint);
                 }
             }
-
-         
 
             return houseInfos;
         }
@@ -2436,7 +2403,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     .SetValue("Report", "SovietOccupiedAttack")
                     .SetValue("OccupantAnim", "UCFLASH")
                     ;
-
             
 
             if (Name == "SkirmishLobby")
@@ -2474,8 +2440,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             
             mapIni.WriteIniFile(spawnMapIniFile.FullName, Encoding.GetEncoding("Big5"));
-
-
         }
 
         /// <summary>

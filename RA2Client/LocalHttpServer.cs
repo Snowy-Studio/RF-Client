@@ -52,9 +52,6 @@ namespace Ra2Client
                     listener.Prefixes.Add(prefix);
                     listener.Start();
 
-                    
-                   
-
                     listenerThread = new Thread(() =>
                     {
                         while (listener.IsListening)

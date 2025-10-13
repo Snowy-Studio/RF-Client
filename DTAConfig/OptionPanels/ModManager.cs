@@ -227,6 +227,7 @@ public class ModManager : XNAWindow
     {
         打开创意工坊(3 - DDModAI.SelectedIndex);
     }
+
     public void 打开创意工坊(int selectIndex)
     {
 
@@ -1365,7 +1366,6 @@ public class 导入选择窗口(WindowManager windowManager) : XNAWindow(windowM
 
         box.YesClickedAction += (_) =>
         {
-
             Disable();
             Dispose();
         };
@@ -1649,7 +1649,6 @@ public class ModInfoWindows : XNAWindow
         AddChild(btnOk);
         btnOk.LeftClick += (_, _) =>
         {
-
             Disable();
         };
 

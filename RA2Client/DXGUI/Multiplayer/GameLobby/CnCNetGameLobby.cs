@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.CnCNet5;
+using ClientCore.Entity;
+using ClientCore.Settings;
 using ClientGUI;
 using Ra2Client.Domain;
 using Ra2Client.Domain.Multiplayer;
@@ -19,10 +23,6 @@ using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using ClientCore.Settings;
-using System.Net.Http;
-using System.Threading.Tasks;
-using ClientCore.Entity;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {
@@ -100,14 +100,11 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 // new NoParamCommandHandler(CHEAT_DETECTED_MESSAGE, HandleCheatDetectedMessage),
                 new StringCommandHandler(GAME_NAME_CHANGED, HandleGameNameChangeMessage),
                 new StringCommandHandler(CHANGE_TUNNEL_SERVER_MESSAGE, HandleTunnelServerChangeMessage),
-
-                 
             ];
 
             // CnCNetLobby.Download_Notice += HandleMapDownloadNotice;
             CnCNetLobby.下载房主传输的地图 += HandleMapDownload;
             
-
             MapSharer.MapDownloadFailed += MapSharer_MapDownloadFailed;
             MapSharer.MapDownloadComplete += MapSharer_MapDownloadComplete;
             MapSharer.MapUploadFailed += MapSharer_MapUploadFailed;
@@ -213,7 +210,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             //};
 
             messageBox.Show();
-    
         }
 
         private async void HandleMapDownload(object sender, EventArgs e)
@@ -316,8 +312,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 CnCNetLobby.下载完成?.Invoke(s, null);
             }
         }
-
-
 
         public event EventHandler GameLeft;
 

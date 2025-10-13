@@ -30,8 +30,6 @@ namespace Localization.Tools
             }
         }
 
-
-
         public static string FindDeepestMainDir(string startDir)
         {
             var dirQueue = new Queue<string>();
@@ -64,7 +62,6 @@ namespace Localization.Tools
             // 如果没找到，返回起始目录
             return startDir;
         }
-
 
         /// <summary>
         /// 判断字符串是否包含中文
