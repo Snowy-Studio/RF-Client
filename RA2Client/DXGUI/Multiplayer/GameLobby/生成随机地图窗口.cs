@@ -1,18 +1,18 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using ClientCore;
 using ClientGUI;
+using DTAConfig;
 using Ra2Client.Domain.Multiplayer;
 using Localization;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using Microsoft.VisualBasic.Logging;
 using Rampastring.Tools;
 using RandomMapGenerator;
-using DTAConfig;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {

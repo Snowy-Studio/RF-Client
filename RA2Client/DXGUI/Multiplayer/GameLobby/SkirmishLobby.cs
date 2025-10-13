@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using ClientCore;
@@ -12,7 +13,6 @@ using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
-using System.Data;
 using Rampastring.XNAUI.XNAControls;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby

@@ -1,9 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
+using System.Text;
 using System.Text.Json;
+using System.Threading;
+using System.Windows.Forms;
 using ClientCore;
 using ClientGUI;
 using Ra2Client.Domain;
@@ -16,16 +21,11 @@ using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using ClientCore.Settings;
+using DTAConfig;
+using DTAConfig.Settings;
 using DTAConfig.Entity;
 using DTAConfig.OptionPanels;
 using Mission = DTAConfig.Entity.Mission;
-using DTAConfig;
-using DTAConfig.Settings;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Threading;
-using System.Text;
-using System.Diagnostics;
 
 
 namespace Ra2Client.DXGUI.Generic

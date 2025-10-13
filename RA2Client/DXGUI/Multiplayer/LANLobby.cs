@@ -14,6 +14,7 @@ using Ra2Client.Domain;
 using Ra2Client.Domain.LAN;
 using Ra2Client.Domain.Multiplayer;
 using Ra2Client.Domain.Multiplayer.LAN;
+using Ra2Client.DXGUI.Multiplayer.CnCNet;
 using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Ra2Client.Online;
 using Localization;
@@ -25,7 +26,6 @@ using Rampastring.XNAUI.XNAControls;
 using SixLabors.ImageSharp;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Ra2Client.DXGUI.Multiplayer.CnCNet;
 
 namespace Ra2Client.DXGUI.Multiplayer
 {

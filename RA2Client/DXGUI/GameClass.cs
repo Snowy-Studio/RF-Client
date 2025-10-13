@@ -1,10 +1,15 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Settings;
 using ClientGUI;
+using ClientGUI.IME;
+using DTAConfig;
+using DTAConfig.Settings;
+using DTAConfig.OptionPanels;
 using Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -22,11 +27,6 @@ using Ra2Client.DXGUI.Multiplayer;
 using Ra2Client.DXGUI.Multiplayer.CnCNet;
 using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Ra2Client.Online;
-using DTAConfig;
-using DTAConfig.Settings;
-using DTAConfig.OptionPanels;
-using ClientGUI.IME;
-using System.Threading.Tasks;
 
 
 namespace Ra2Client.DXGUI

@@ -1,7 +1,3 @@
-using ClientCore;
-using Localization;
-using Rampastring.Tools;
-using Rampastring.XNAUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +14,10 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ClientCore;
+using Localization;
+using Rampastring.Tools;
+using Rampastring.XNAUI;
 
 namespace Ra2Client.Online
 {

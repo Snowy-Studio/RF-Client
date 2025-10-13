@@ -1,11 +1,11 @@
-﻿using System;
+using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 using ClientCore;
 using ClientGUI;
-using System.IO;
 using Localization;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;

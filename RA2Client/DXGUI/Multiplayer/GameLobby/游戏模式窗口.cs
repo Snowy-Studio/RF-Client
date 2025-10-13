@@ -1,14 +1,14 @@
-﻿using ClientGUI;
-using Localization;
-using Microsoft.Xna.Framework;
-using Ra2Client.Domain.Multiplayer;
-using Rampastring.XNAUI;
-using Rampastring.XNAUI.XNAControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClientGUI;
+using Localization;
+using Microsoft.Xna.Framework;
+using Ra2Client.Domain.Multiplayer;
+using Rampastring.XNAUI;
+using Rampastring.XNAUI.XNAControls;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {

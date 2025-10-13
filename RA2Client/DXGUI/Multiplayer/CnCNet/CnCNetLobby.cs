@@ -7,7 +7,9 @@ using System.Threading;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Enums;
+using ClientCore.Settings;
 using ClientGUI;
+using Ra2Client.Domain;
 using Ra2Client.Domain.Multiplayer;
 using Ra2Client.Domain.Multiplayer.CnCNet;
 using Ra2Client.DXGUI.Generic;
@@ -24,8 +26,6 @@ using Rampastring.XNAUI.XNAControls;
 using SixLabors.ImageSharp;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using ClientCore.Settings;
-using Ra2Client.Domain;
 
 namespace Ra2Client.DXGUI.Multiplayer.CnCNet
 {
