@@ -1,16 +1,13 @@
-﻿using System;
+using System;
 using System.Linq;
-//using System.Reflection.Metadata;
-
+using System.Reflection.Metadata;
 using ClientCore;
 using ClientCore.Extensions;
-
 using ClientGUI;
 using Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 
@@ -24,6 +21,7 @@ namespace DTAConfig.OptionPanels
 
         private int TileSize = 21; // 方块大小
         private double _TileSize = 21;
+
         // 默认的行数、列数和地雷数量
         private int DefaultRows = 25;
         private int DefaultColumns = 38;

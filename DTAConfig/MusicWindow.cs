@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Windows.Forms;
 using ClientCore;
 using ClientGUI;
 using DTAConfig.Entity;
@@ -7,10 +10,6 @@ using NAudio.Wave;
 using NAudio.Flac;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.IO;
-using System.Windows.Forms;
-
 using Rampastring.Tools;
 using NAudio.Vorbis;
 
