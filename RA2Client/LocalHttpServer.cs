@@ -456,9 +456,11 @@ namespace Ra2Client
                     // 路径使用正斜杠，符合配置格式
                
                     mapIni.SetValue(sectionName, "Mission", baseDir);
-                    string csfURL = Path.Combine(NetWorkINISettings.Address, map.otherFile).Replace("\\", "/");
-                    await NetWorkINISettings.DownLoad(csfURL, Path.Combine("tmp", $"{map.id}.zip"));
-                    SevenZip.ExtractWith7Zip(Path.Combine("tmp", $"{map.id}.zip"),Path.Combine("tmp", $"{map.id}"));
+                    string otherFileURL = Path.Combine(NetWorkINISettings.Address, map.otherFile).Replace("\\", "/");
+                    await NetWorkINISettings.DownLoad(otherFileURL, Path.Combine("tmp", $"{map.id}.zip"));
+
+                    SevenZip.ExtractWith7Zip(Path.Combine("tmp", $"{map.id}.zip"),Path.Combine("tmp", $"{map.id}"),needDel:true);
+
                     var mainDir = FunExtensions.FindDeepestMainDir(Path.Combine("tmp", $"{map.id}"));
               
                     // 复制文件
@@ -471,8 +473,10 @@ namespace Ra2Client
                         // 确保目标目录存在
                         Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
 
-                        File.Copy(file, targetPath, true);
+                        File.Move(file, targetPath, true);
                     }
+
+                    Directory.Delete(mainDir, true);
 
                     mapIni.SetValue(sectionName, "OtherFile", baseDir);
                 }

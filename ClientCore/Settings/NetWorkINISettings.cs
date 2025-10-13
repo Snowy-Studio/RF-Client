@@ -378,7 +378,7 @@ public class NetWorkINISettings
             var fullPath = Path.Combine(saveDir, fileName);
             await File.WriteAllBytesAsync(fullPath, content);
 
-            Console.WriteLine($"图片已保存到：{fullPath}");
+            //Console.WriteLine($"图片已保存到：{fullPath}");
             return fullPath.Replace("\\", "/");
         }
         catch (Exception ex)
