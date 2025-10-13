@@ -47,6 +47,7 @@ namespace Ra2Client.DXGUI.Generic
 
     class GuideWindow(WindowManager windowManager) : XNAWindow(windowManager), ISwitchable
     {
+        private Random random = new Random();
         public override void Initialize()
         {
 
@@ -54,6 +55,12 @@ namespace Ra2Client.DXGUI.Generic
             {
                 ClientRectangle = new Rectangle(20, 10, 0, 0),
                 Text = "It looks like you're playing the game for the first time, so let's give yourself a name!".L10N("UI:Main:GiveYourselfAName")
+            };
+
+            var secondLabel = new XNALabel(WindowManager)
+            {
+                ClientRectangle = new Rectangle(20, 30, 0, 0),
+                Text = "If you don't know what name to use, you can click \"Random Player Name\"".L10N("UI:Main:RandomNameSuggestion")
             };
 
 
@@ -65,9 +72,19 @@ namespace Ra2Client.DXGUI.Generic
                 Suggestion = "(cannot be empty, no more than 10 digits in length)".L10N("UI:Main:NameRequirements")
             };
 
+            var btnRandomName = new XNAClientButton(WindowManager)
+            {
+                ClientRectangle = new Rectangle(20, 90, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT),
+                Text = "Random Player Name".L10N("UI:Main:RandomPlayerName")
+            };
+            btnRandomName.LeftClick += (sender, e) =>
+            {
+                tbxName.Text = GenerateRandomName();
+            };
+
             var btnConfirm = new XNAClientButton(WindowManager)
             {
-                ClientRectangle = new Rectangle(100, 90, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT),
+                ClientRectangle = new Rectangle(200, 90, UIDesignConstants.BUTTON_WIDTH_75, UIDesignConstants.BUTTON_HEIGHT),
                 Text = "确认".L10N("UI:Main:Yes")
             };
             btnConfirm.LeftClick += (sender, e) =>
@@ -76,7 +93,7 @@ namespace Ra2Client.DXGUI.Generic
 
                 if (error != null)
                 {
-                    XNAMessageBox.Show(windowManager, "Tips".L10N("UI:Main:Tips"), error);
+                    XNAMessageBox.Show(WindowManager, "Tips".L10N("UI:Main:Tips"), error);
                     return;
                 }
 
@@ -93,12 +110,53 @@ namespace Ra2Client.DXGUI.Generic
             base.Initialize();
 
             AddChild(firstLabel);
+            AddChild(secondLabel);
             AddChild(tbxName);
+            AddChild(btnRandomName);
             AddChild(btnConfirm);
 
             WindowManager.CenterControlOnScreen(this);
 
         }
+
+        private string GenerateRandomName()
+        {
+            string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string numbers = "0123456789";
+            string randomName = "";
+            Random random = new Random();
+
+            // 随机生成6-10个字符
+            int charCount = random.Next(6, 11);
+
+            // 保证首个字符是字母且大写
+            randomName += letters[random.Next(letters.Length)];
+
+            // 随机生成剩余的字符
+            for (int i = 1; i < charCount; i++)
+            {
+                // 随机决定生成字母还是数字
+                if (random.Next(0, 2) == 0)
+                {
+                    // 生成小写字母
+                    randomName += letters[random.Next(letters.Length)].ToString().ToLower();
+                }
+                else
+                {
+                    // 生成数字
+                    randomName += numbers[random.Next(numbers.Length)];
+                }
+            }
+
+            // 截断，保证总长度不超过10位
+            if (randomName.Length > 10)
+            {
+                randomName = randomName.Substring(0, 10);
+            }
+
+            return randomName;
+        }
+
         public void Show()
         {
             DarkeningPanel.AddAndInitializeWithControl(WindowManager, this);
@@ -119,7 +177,7 @@ namespace Ra2Client.DXGUI.Generic
         }
     }
 
-    
+
     class   ModSelectWindow(WindowManager windowManager) : XNAWindow(windowManager), ISwitchable
     {
         public override void Initialize()
@@ -134,7 +192,7 @@ namespace Ra2Client.DXGUI.Generic
             chkTerrain.X = 12;
             chkTerrain.Y = 8;
             chkTerrain.SetToolTipText("选中后，地形扩展将被启用，例如TX地形扩展。".L10N("UI:Main:TPchkTerrain"));
-            chkTerrain_Window.AddChild(chkTerrain);    //生成chkTerrain//chk启用地形扩展
+            chkTerrain_Window.AddChild(chkTerrain);    //生成chkTerrain //chk启用地形扩展
 
             var label = new XNALabel(WindowManager)
             {
@@ -815,9 +873,13 @@ namespace Ra2Client.DXGUI.Generic
 
             return;
 
-            if(_timer!=null)
+            if (_timer!=null)
+            {
                 _timer.Elapsed -= TimerElapsedHandler;
+            }
+
             var modManager = ModManager.GetInstance(WindowManager);
+
             if (ModManager.判断是否为Mod(ProgramConstants.GamePath,true))
             {
 
