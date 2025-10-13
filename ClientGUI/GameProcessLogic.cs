@@ -226,7 +226,11 @@ namespace ClientGUI
         {
             Mix.PackToMix($"{ProgramConstants.GamePath}Resources/thememd/", Path.Combine(ProgramConstants.游戏目录, "thememd.mix"));
             FileHelper.CopyFile($"{ProgramConstants.GamePath}Resources/thememd/thememd.ini", Path.Combine(ProgramConstants.游戏目录, "thememd.ini"),true);
+
+
             var csfPath = Path.Combine(modPath, "ra2md.csf");
+            if (File.Exists(Path.Combine(ProgramConstants.游戏目录, "ra2md.csf")))
+                csfPath = Path.Combine(ProgramConstants.游戏目录, "ra2md.csf");
             if (File.Exists(csfPath))
             {
                 var d = new CSF(csfPath).GetCsfDictionary();
@@ -415,7 +419,9 @@ namespace ClientGUI
                     复制CSF(newGame);
                 if (newMission != newGame && newMission != string.Empty)
                         复制CSF(newMission);
-                
+                if(otherFile != string.Empty)
+                    复制CSF(otherFile);
+
                 iniFile.WriteIniFile(spawnerSettingsFile.FullName);
 
                 if (!File.Exists(Path.Combine(ProgramConstants.游戏目录, "thememd.mix")) && !File.Exists(Path.Combine(ProgramConstants.游戏目录, "thememd.ini")))
