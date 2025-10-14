@@ -493,7 +493,7 @@ public class ModManager : XNAWindow
             FileName = Path.Combine(startPath, $"Maps/Cp/battle{mp?.ID ?? id}.ini"),
             Name = mp?.Name ?? Path.GetFileName(missionPath),
             YR = isYR,
-            Other = true,
+            Other = mp?.Other ?? true,
             LongDescription = mp?.LongDescription ?? Path.GetFileName(missionPath),
             Mod = isYR ? "YR" : "RA2",
             DefaultMod = isYR ? "YR+" : "RA2+",

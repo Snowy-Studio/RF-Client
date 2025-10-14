@@ -219,7 +219,7 @@ namespace Ra2Client
             }
             else if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/downloadMod")
             {
-                #region 下载任务包
+                #region 下载Mod
                 try
                 {
                     using var reader = new StreamReader(request.InputStream, request.ContentEncoding);
@@ -537,6 +537,7 @@ namespace Ra2Client
                     LongDescription = missionPackVo.description,
                     UpdateTime = missionPackVo.updateTime,
                     Author = missionPackVo.author,
+                    Other = false,
                 };
 
                
