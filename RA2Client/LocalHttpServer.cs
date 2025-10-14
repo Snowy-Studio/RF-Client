@@ -1,23 +1,23 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
-using Ra2Client.Domain.Multiplayer;
-using ClientCore.Entity;
-using System.Text.Json;
 using ClientCore;
-using Rampastring.Tools;
+using ClientCore.Entity;
 using ClientCore.Settings;
 using ClientGUI;
-using Rampastring.XNAUI;
-using Localization.Tools;
 using DTAConfig.OptionPanels;
 using DTAConfig.Entity;
+using Localization.Tools;
+using Ra2Client.Domain.Multiplayer;
+using Rampastring.Tools;
+using Rampastring.XNAUI;
 using SharpDX.Direct3D9;
 
 namespace Ra2Client
@@ -51,9 +51,6 @@ namespace Ra2Client
                     listener = new HttpListener();
                     listener.Prefixes.Add(prefix);
                     listener.Start();
-
-                    
-                   
 
                     listenerThread = new Thread(() =>
                     {

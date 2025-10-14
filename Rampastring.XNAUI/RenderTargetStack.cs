@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
 using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Rampastring.XNAUI;
 

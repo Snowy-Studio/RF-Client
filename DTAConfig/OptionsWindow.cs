@@ -1,6 +1,8 @@
 using System;
+using System.Windows.Forms;
 using ClientCore;
 using ClientCore.CnCNet5;
+using ClientCore.Settings;
 using ClientGUI;
 using DTAConfig.OptionPanels;
 using Localization;
@@ -9,8 +11,6 @@ using Microsoft.Xna.Framework.Input;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using ClientCore.Settings;
-using System.Windows.Forms;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 using Localization.Tools;
 

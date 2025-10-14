@@ -1,7 +1,5 @@
-﻿
 using System;
 using System.Windows.Forms;
-
 
 namespace Rampastring.XNAUI.PlatformSpecific;
 

@@ -1,10 +1,10 @@
-using Microsoft.Xna.Framework;
-using Rampastring.XNAUI;
-using Rampastring.XNAUI.XNAControls;
+using System;
 using System.Windows.Forms;
 using ClientCore;
 using ClientGUI;
-using System;
+using Microsoft.Xna.Framework;
+using Rampastring.XNAUI;
+using Rampastring.XNAUI.XNAControls;
 
 namespace Ra2Client.DXGUI.Generic
 {

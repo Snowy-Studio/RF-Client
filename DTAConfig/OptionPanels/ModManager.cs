@@ -1,31 +1,31 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using ClientCore;
+using ClientCore.Entity;
+using ClientCore.Settings;
 using ClientGUI;
+using DTAConfig.Entity;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using ToolTip = ClientGUI.ToolTip;
 using Localization;
 using Localization.Tools;
-using System.Linq;
-using DTAConfig.Entity;
-using ClientCore;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Diagnostics;
-using System.Reflection;
-using System.Xml.Linq;
-using Microsoft.Xna.Framework.Input;
-using System.Diagnostics.Eventing.Reader;
-using ClientCore.Settings;
 using SharpDX.Direct2D1;
 using TsfSharp;
-using System.Threading;
-using ClientCore.Entity;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace DTAConfig.OptionPanels;
 
@@ -227,6 +227,7 @@ public class ModManager : XNAWindow
     {
         打开创意工坊(3 - DDModAI.SelectedIndex);
     }
+
     public void 打开创意工坊(int selectIndex)
     {
 
@@ -1365,7 +1366,6 @@ public class 导入选择窗口(WindowManager windowManager) : XNAWindow(windowM
 
         box.YesClickedAction += (_) =>
         {
-
             Disable();
             Dispose();
         };
@@ -1649,7 +1649,6 @@ public class ModInfoWindows : XNAWindow
         AddChild(btnOk);
         btnOk.LeftClick += (_, _) =>
         {
-
             Disable();
         };
 

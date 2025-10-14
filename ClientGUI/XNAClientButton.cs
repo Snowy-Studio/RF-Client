@@ -1,7 +1,7 @@
-﻿using Rampastring.Tools;
+using System;
+using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
 
 namespace ClientGUI
 {

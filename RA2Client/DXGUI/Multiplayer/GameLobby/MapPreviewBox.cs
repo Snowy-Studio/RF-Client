@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using ClientCore;
 using ClientGUI;
 using Ra2Client.Domain.Multiplayer;
@@ -12,7 +13,6 @@ using Microsoft.Xna.Framework.Input;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System.Text;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {

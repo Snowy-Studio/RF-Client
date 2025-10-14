@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Rampastring.XNAUI;
 

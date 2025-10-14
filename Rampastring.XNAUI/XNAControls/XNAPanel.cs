@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+using System.Globalization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
-using System.Globalization;
 
 namespace Rampastring.XNAUI.XNAControls;
 

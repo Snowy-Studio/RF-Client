@@ -1,3 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using ClientCore;
 using ClientCore.Entity;
 using ClientCore.Settings;
@@ -9,15 +18,6 @@ using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 
 namespace DTAConfig.OptionPanels

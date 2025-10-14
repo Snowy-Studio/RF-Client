@@ -1,7 +1,7 @@
-﻿using RandomMapGenerator.TileInfo;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Drawing;
@@ -9,7 +9,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using CommandLine;
 using Rampastring.Tools;
-using System.IO;
+using RandomMapGenerator.TileInfo;
 
 namespace RandomMapGenerator
 {

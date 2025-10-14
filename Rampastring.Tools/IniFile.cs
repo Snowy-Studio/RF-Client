@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Text;
 using System.Linq;
 using Localization.Tools;
+
 namespace Rampastring.Tools;
 
 /// <summary>
@@ -166,8 +167,6 @@ public class IniFile : IIniFile
             s.Keys.AddRange(section.Keys);
             return s;
         }
-
-        
     }
 
     /// <summary>
@@ -247,7 +246,7 @@ public class IniFile : IIniFile
     /// Parses and returns a list value in the INI file.
     /// </summary>
     /// <typeparam name="T">The type of the list elements.</typeparam>
-    /// <param name="section">The name of the INI section.</param>
+    /// <param name="sectionName">The name of the INI section.</param>
     /// <param name="key">The INI key.</param>
     /// <param name="separator">The separator between the list elements.</param>
     /// <param name="converter">The function that converts the list elements from strings to the given type.</param>

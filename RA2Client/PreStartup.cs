@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Security.AccessControl;
@@ -9,13 +8,14 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Windows.Forms;
+using ClientCore;
 using ClientCore.Settings;
+using ClientGUI;
+using DTAConfig.Entity;
+using Localization;
 using Ra2Client.Domain;
 using Rampastring.Tools;
-using ClientCore;
-using Localization;
-using DTAConfig.Entity;
-using ClientGUI;
 
 namespace Ra2Client
 {

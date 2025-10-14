@@ -1,14 +1,14 @@
-﻿using RandomMapGenerator.TileInfo;
-using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Weighted_Randomizer;
-using RandomMapGenerator.NonTileObjects;
 using Serilog;
-using System.Drawing;
+using RandomMapGenerator.NonTileObjects;
+using RandomMapGenerator.TileInfo;
+using Rampastring.Tools;
+using Weighted_Randomizer;
 
 namespace RandomMapGenerator
 {

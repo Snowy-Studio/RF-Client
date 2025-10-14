@@ -1,7 +1,3 @@
-using ClientCore;
-using ClientGUI;
-using DTAConfig.OptionPanels;
-using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +13,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ClientCore;
+using ClientGUI;
+using DTAConfig.OptionPanels;
+using Rampastring.Tools;
 /* !! We cannot use references to other projects or non-framework assemblies in this class, assembly loading events not hooked up yet !! */
 
 namespace Ra2Client

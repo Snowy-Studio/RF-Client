@@ -1,5 +1,5 @@
-﻿using Rampastring.XNAUI.XNAControls;
 using System;
+using Rampastring.XNAUI.XNAControls;
 
 namespace Rampastring.XNAUI.Input;
 

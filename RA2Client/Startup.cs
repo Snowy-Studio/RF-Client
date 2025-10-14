@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.INIProcessing;
 using ClientCore.Settings;
+using ClientGUI;
+using DTAConfig.OptionPanels;
 using Ra2Client.Domain;
 using Ra2Client.DXGUI;
 using Ra2Client.Online;
 using Microsoft.Win32;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
-using DTAConfig.OptionPanels;
-using ClientGUI;
 
 
 namespace Ra2Client

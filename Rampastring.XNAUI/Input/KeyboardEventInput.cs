@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
 using System;
-using Windows.Win32;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
-using System.ComponentModel;
+using Microsoft.Xna.Framework;
 
 
 namespace Rampastring.XNAUI.Input

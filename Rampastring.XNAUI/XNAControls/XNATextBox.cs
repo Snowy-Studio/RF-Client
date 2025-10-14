@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Rampastring.Tools;
-using Rampastring.XNAUI.Input;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Rampastring.Tools;
+using Rampastring.XNAUI.Input;
 using TextCopy;
 
 namespace Rampastring.XNAUI.XNAControls;

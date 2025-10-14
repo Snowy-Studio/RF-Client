@@ -1,16 +1,15 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.International.Converters.TraditionalChineseToSimplifiedConverter;
 using Rampastring.Tools;
-using System.Diagnostics;
-using System.Management;
 
 namespace Localization.Tools
 {
@@ -30,8 +29,6 @@ namespace Localization.Tools
                 return false;
             }
         }
-
-
 
         public static string FindDeepestMainDir(string startDir)
         {
@@ -65,7 +62,6 @@ namespace Localization.Tools
             // 如果没找到，返回起始目录
             return startDir;
         }
-
 
         /// <summary>
         /// 判断字符串是否包含中文

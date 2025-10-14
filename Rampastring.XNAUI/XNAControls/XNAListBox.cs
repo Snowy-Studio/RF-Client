@@ -1,14 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Rampastring.Tools;
 #if WINFORMS
 using Rampastring.XNAUI.Input;
 using TextCopy;
 #endif
-using System;
-using System.Collections.Generic;
-using Rampastring.Tools;
-using System.Globalization;
 
 namespace Rampastring.XNAUI.XNAControls;
 

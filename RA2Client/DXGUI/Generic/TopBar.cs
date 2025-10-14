@@ -1,27 +1,27 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using ClientCore;
+using ClientCore.Settings;
+using ClientCore.Entity;
 using ClientGUI;
 using Ra2Client.Domain.Multiplayer.CnCNet;
 using Ra2Client.Online;
 using Ra2Client.Online.EventArguments;
 using DTAConfig;
+using DTAConfig.OptionPanels;
 using Localization;
+using Localization.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.Input;
 using Rampastring.XNAUI.XNAControls;
-using DTAConfig.OptionPanels;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Diagnostics;
-using System.IO;
-using System.Timers;
-using System.Threading.Tasks;
-using ClientCore.Settings;
-using ClientCore.Entity;
-using Localization.Tools;
 
 namespace Ra2Client.DXGUI.Generic
 {

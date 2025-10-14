@@ -1,3 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.NetworkInformation;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.Entity;
 using ClientCore.Settings;
@@ -10,15 +19,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace DTAConfig.OptionPanels
 {

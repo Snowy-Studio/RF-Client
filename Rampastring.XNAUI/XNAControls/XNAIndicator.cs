@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Rampastring.Tools;
 
 namespace Rampastring.XNAUI.XNAControls;
 

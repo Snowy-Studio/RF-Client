@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
 using ClientCore;
 using ClientCore.Entity;
 using ClientCore.Settings;
@@ -6,12 +12,6 @@ using DTAConfig.Entity;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml;
 using Localization;
 
 namespace DTAConfig.OptionPanels

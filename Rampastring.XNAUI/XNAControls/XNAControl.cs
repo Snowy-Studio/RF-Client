@@ -1,12 +1,12 @@
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using Rampastring.XNAUI.Input;
-using System.Collections.ObjectModel;
-using System.Linq;
-using Microsoft.Xna.Framework.Graphics;
-using System.Globalization;
 
 namespace Rampastring.XNAUI.XNAControls;
 
@@ -741,7 +741,7 @@ public class XNAControl : DrawableGameComponent
             AddChildImmediate(child);
     }
 
-    // 重载的方法，接受一个List<XNAControl>
+    // 閲嶈浇鐨勬柟娉曪紝鎺ュ彈涓�涓狶ist<XNAControl>
     public virtual void AddChild(List<XNAControl> children)
     {
         if (children == null)

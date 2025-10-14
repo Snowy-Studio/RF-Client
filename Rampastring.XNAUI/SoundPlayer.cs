@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Media;
-using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Media;
+using Rampastring.Tools;
 
 namespace Rampastring.XNAUI;
 

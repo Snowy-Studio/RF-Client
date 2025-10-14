@@ -86,7 +86,6 @@ namespace ClientGUI
 
             OSVersion osVersion = ClientConfiguration.Instance.GetOperatingSystemVersion();
 
-
             string additionalExecutableName = string.Empty;
 
             string launcherExecutableName = ClientConfiguration.Instance.GameLauncherExecutableName;
@@ -138,7 +137,7 @@ namespace ClientGUI
             //    if (Environment.ProcessorCount > 1 && SingleCoreAffinity)
             //        QResProcess.ProcessorAffinity = (IntPtr)2;
             //}
-           // else
+            //else
             //{
                 string arguments;
                 var 启用连点器 = true; //不启用连点
@@ -195,7 +194,7 @@ namespace ClientGUI
                     DebugCount = Directory.GetDirectories(Path.Combine(ProgramConstants.游戏目录,"Debug")).Length;
 
                 //旧存档数 = Directory.GetFiles(ProgramConstants.存档目录, "*.sav");
-            try
+                try
                 {
                     if(启用连点器 && UserINISettings.Instance.启用连点器.Value) ShiftClickAutoClicker.Instance.Start();
                     gameProcess.Start();
@@ -213,8 +212,7 @@ namespace ClientGUI
                     Process_Exited(gameProcess, EventArgs.Empty);
                     return;
                 }  
-
-          //  }
+            //}
 
             GameProcessStarted?.Invoke();
 
@@ -226,7 +224,6 @@ namespace ClientGUI
         {
             Mix.PackToMix($"{ProgramConstants.GamePath}Resources/thememd/", Path.Combine(ProgramConstants.游戏目录, "thememd.mix"));
             FileHelper.CopyFile($"{ProgramConstants.GamePath}Resources/thememd/thememd.ini", Path.Combine(ProgramConstants.游戏目录, "thememd.ini"),true);
-
 
             var csfPath = Path.Combine(modPath, "ra2md.csf");
             if (File.Exists(Path.Combine(ProgramConstants.游戏目录, "ra2md.csf")))
@@ -250,9 +247,9 @@ namespace ClientGUI
                     }
                     CSF.WriteCSF(d, Path.Combine(ProgramConstants.游戏目录, "ra2md.csf"));
                 }
-
             }
         }
+
         private static void 获取新的存档()
         {
             if (!Directory.Exists(ProgramConstants.存档目录)) return;
@@ -296,8 +293,8 @@ namespace ClientGUI
                 iniFile.SetValue(sectionName, "chkAres", chkAres);
                 iniFile.SetValue(sectionName, "BuildOffAlly", buildOffAlly);
             }
+
             iniFile.WriteIniFile();
-            
         }
 
         public static bool IsNtfs(string path)
@@ -305,6 +302,7 @@ namespace ClientGUI
             var drive = new DriveInfo(Path.GetPathRoot(path));
             return string.Equals(drive.DriveFormat, "NTFS", StringComparison.OrdinalIgnoreCase);
         }
+
         public static bool 加载模组文件(WindowManager windowManager, IniFile iniFile) { 
 
             var newSection = iniFile.GetSection("Settings");
@@ -354,7 +352,7 @@ namespace ClientGUI
                 所有需要复制的文件.Add("zh");
                 所有需要复制的文件.Add("cncnet5.dll");
 
-          //      if(!Ares && !File.Exists(Path.Combine(newGame,"ares.dll")))
+                // if(!Ares && !File.Exists(Path.Combine(newGame,"ares.dll")))
                     所有需要复制的文件.Add("gamemd-spawn.exe");
 
                 if (Ares)
@@ -480,12 +478,10 @@ namespace ClientGUI
                 Logger.Log(ex.Message);
                 return false;
             }
-
         }
 
         private static string 复制文件(List<string> 所有需要复制的文件)
         {
-          
             Dictionary<string, string> 文件字典 = [];
 
             try
@@ -528,7 +524,6 @@ namespace ClientGUI
                 return $"复制文件失败：{ex.Message}";
             }
             return string.Empty;
-          
         }
 
         private static string 符号链接(List<string> 所有需要链接的文件, string 存档目标, List<string> 白名单)
@@ -667,6 +662,5 @@ namespace ClientGUI
             }
                 RenderImage.RenderImages();
         }
-
     }
 }
