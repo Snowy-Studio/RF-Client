@@ -541,7 +541,7 @@ namespace Ra2Client.DXGUI.Generic
             }
 
             string missionName = _screenMissions[_lbxCampaignList.SelectedIndex].SectionName;
-            var missionPack = _screenMissions[_lbxCampaignList.SelectedIndex].MPack.Name;
+            var missionPack = _screenMissions[_lbxCampaignList.SelectedIndex].MPack?.Name ?? "";
             var brief = _screenMissions[_lbxCampaignList.SelectedIndex].GUIName;
             var ini = new IniFile(ProgramConstants.GamePath + SETTINGS_PATH);
             if (!ini.SectionExists(missionName))
@@ -559,7 +559,7 @@ namespace Ra2Client.DXGUI.Generic
                      ini.SetValue(missionName, "Mark", _scoreLevel);
                      ini.WriteIniFile();
 
-                    _ = updateMark(missionName);
+                    _ = updateMark(missionName, missionPack);
                  });
 
             }
@@ -841,12 +841,12 @@ namespace Ra2Client.DXGUI.Generic
 
         }
 
-        private Task updateMark(string name)
+        private Task updateMark(string name,string missionPack)
         {
             //显示远程总分数
             try
             {
-                var score = NetWorkINISettings.Get<ClientCore.Entity.Score>($"score/getScore?name={name}").GetAwaiter().GetResult().Item1;
+                var score = NetWorkINISettings.Get<ClientCore.Entity.Score>($"score/getScore?name={name}&missionPack={missionPack}").GetAwaiter().GetResult().Item1;
                 if (score != null)
                     _lblRatingResult.Text = string.Format("Mission Rating: {0:F1} (Number of participants: {1})".L10N("UI:Main:MissionRating"), score.score, score.total);
                 else
@@ -1102,7 +1102,7 @@ namespace Ra2Client.DXGUI.Generic
 
                     if (!mission.Other)
                     {
-                        await updateMark(mission.SectionName).ConfigureAwait(false);
+                        await updateMark(mission.SectionName,mission.MPack?.Name ?? "").ConfigureAwait(false);
                         if (!_ratingBox.Visible)
                         {
                             _lblRatingResult.Visible = _ratingBox.Visible = _btnRatingDone.Visible = true;

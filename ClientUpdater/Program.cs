@@ -21,7 +21,7 @@ internal sealed class Program
     private const int MOVEFILEREPLACEEXISTING = 0x00000001;
 
     private static ConsoleColor defaultColor = ConsoleColor.White;
-    private static StreamWriter errorWriter;
+    //private static StreamWriter errorWriter;
 
     // P/Invoke 声明，用于安排文件在下次重启时替换
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode, BestFitMapping = false, ThrowOnUnmappableChar = true)]
@@ -261,7 +261,7 @@ internal sealed class Program
             Environment.Exit(1);
         }
 
-        errorWriter.Close();
+     //   errorWriter.Close();
     }
 
     /// <summary>
