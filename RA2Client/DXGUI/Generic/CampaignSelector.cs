@@ -26,6 +26,7 @@ using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using Mission = DTAConfig.Entity.Mission;
+using Ra2Client.Domain.Multiplayer;
 
 
 namespace Ra2Client.DXGUI.Generic
@@ -222,6 +223,11 @@ namespace Ra2Client.DXGUI.Generic
             //_campaignMenu.AddItem("删除这组任务");
             _campaignMenu.AddItem(new XNAContextMenuItem
             {
+                Text = "打开地图位置",
+                SelectAction = () => 打开地图位置()
+            });
+            _campaignMenu.AddItem(new XNAContextMenuItem
+            {
                 Text = "刷新任务列表".L10N("UI:Main:RefreshMapList"),
                 SelectAction = () => ReadMissionList()
             });
@@ -240,7 +246,12 @@ namespace Ra2Client.DXGUI.Generic
                 Text = "Mission Packs Management".L10N("UI:Main:MissionPacksManagement"),
                 SelectAction = () => ModManagerEnabled(1)
             });
-            
+            _campaignMenu.AddItem(new XNAContextMenuItem
+            {
+                Text = "重新渲染此地图",
+                SelectAction = 重新渲染此地图
+            });
+
 
             AddChild(_campaignMenu);
 
@@ -449,6 +460,50 @@ namespace Ra2Client.DXGUI.Generic
 
             chkTerrain.Visible = false;
             chkTerrain.Checked = false;
+        }
+
+        private void 打开地图位置()
+        {
+            var m = _screenMissions[_lbxCampaignList.SelectedIndex];
+            var path = Path.Combine(ProgramConstants.GamePath,m.Path, m.Scenario).Replace(@"/", @"\");
+
+            System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{path}\"");
+        }
+
+        private void 重新渲染此地图()
+        {
+            var mod = _cmbGame.SelectedItem.Tag as Mod;
+            var m = _screenMissions[_lbxCampaignList.SelectedIndex];
+            var path = Path.Combine(ProgramConstants.GamePath, m.Path, m.Scenario).Replace(@"/", @"\");
+
+            var box = new XNAMessageBox(WindowManager,
+                "重新渲染地图",
+                $"确定删掉旧预览图并重新渲染地图:{m.GUIName}? 渲染配置如下：\n\n模组:{mod.Name}",
+                XNAMessageBoxButtons.YesNo
+                );
+            box.YesClickedAction += (_) =>
+            {
+                string basePath = Path.Combine(Path.GetDirectoryName(path)!, Path.GetFileNameWithoutExtension(path));
+
+                // 判断并删除同名 jpg 文件
+                string jpgPath = basePath + ".jpg";
+                if (File.Exists(jpgPath))
+                    File.Delete(jpgPath);
+
+                // 判断并删除同名 png 文件
+                string pngPath = basePath + ".png";
+                if (File.Exists(pngPath))
+                    File.Delete(pngPath);
+
+                Task.Run(async () =>
+                {
+                    List<string> paths = [mod.FilePath];
+                    await RenderImage.RenderPreviewImageAsync([path], paths);
+                    加载预览图(m);
+                    //return Task.CompletedTask;
+                });
+            };
+            box.Show();
         }
 
         private void _lbxInforBox_DoubleLeftClick(object sender, EventArgs e)
@@ -1038,7 +1093,7 @@ namespace Ra2Client.DXGUI.Generic
                     _gameOptionsPanel.Visible = File.Exists(Path.Combine(ProgramConstants.GamePath, mission.Path, mission.Scenario));
 
                     lblModify.Visible = _gameOptionsPanel.Visible;
-                    _mapPreviewBox.Visible = false;
+                    
 
                     //重新加载Mod选择器
 
@@ -1048,56 +1103,7 @@ namespace Ra2Client.DXGUI.Generic
 
                     if (!string.IsNullOrEmpty(mission.Scenario))
                     {
-                        string img = Path.Combine(ProgramConstants.GamePath, mission.Path,
-                            mission.Scenario[..mission.Scenario.LastIndexOf('.')] + ".png");
-                        if(!File.Exists(img))
-                            img = Path.Combine(ProgramConstants.GamePath, mission.Path,
-                            mission.Scenario[..mission.Scenario.LastIndexOf('.')] + ".jpg");
-                        if (File.Exists(img))
-                        {
-                            // 加载图像
-                            var originalImage = System.Drawing.Image.FromFile(img);
-
-                            // 获取图像的宽高比例
-                            float imageAspectRatio = (float)originalImage.Width / originalImage.Height;
-
-                            // 设置预览框的大小为设计时的大小
-                            float boxWidth = MapPreviewBoxPosition.Width;
-                            float boxHeight = MapPreviewBoxPosition.Height;
-
-                            // 计算预览框的宽高比例
-                            float boxAspectRatio = boxWidth / boxHeight;
-
-                            // 如果图像的宽高比例大于预览框的宽高比例，则以预览框的宽度为基准调整高度
-                            if (imageAspectRatio > boxAspectRatio)
-                            {
-                                boxHeight = boxWidth / imageAspectRatio;
-                            }
-                            // 如果图像的宽高比例小于预览框的宽高比例，则以预览框的高度为基准调整宽度
-                            else
-                            {
-                                boxWidth = boxHeight * imageAspectRatio;
-                            }
-
-                            // 计算预览框的位置
-                            int x = MapPreviewBoxPosition.Left + (MapPreviewBoxPosition.Width - (int)boxWidth) / 2;
-                            int y = MapPreviewBoxPosition.Top + (MapPreviewBoxPosition.Height - (int)boxHeight) / 2;
-
-                            // 设置预览框的大小
-
-
-                            MapPreviewBoxAspectPosition = new Rectangle(x, y, (int)boxWidth, (int)boxHeight);
-
-                            _mapPreviewBox.ClientRectangle = MapPreviewBoxAspectPosition;
-
-                            // 将图像设置为预览框的纹理
-                            _mapPreviewBox.IdleTexture = AssetLoader.LoadTexture(img);
-
-                            // 设置预览框可见
-                            _mapPreviewBox.Visible = true;
-                        }
-
-
+                        加载预览图(mission);
                     }
 
                     if (!mission.Other)
@@ -1121,6 +1127,58 @@ namespace Ra2Client.DXGUI.Generic
             }
         }
 
+        private void 加载预览图(Mission mission)
+        {
+            _mapPreviewBox.Visible = false;
+            string img = Path.Combine(ProgramConstants.GamePath, mission.Path,
+                            mission.Scenario[..mission.Scenario.LastIndexOf('.')] + ".png");
+            if (!File.Exists(img))
+                img = Path.Combine(ProgramConstants.GamePath, mission.Path,
+                mission.Scenario[..mission.Scenario.LastIndexOf('.')] + ".jpg");
+            if (File.Exists(img))
+            {
+                // 加载图像
+                var originalImage = System.Drawing.Image.FromFile(img);
+
+                // 获取图像的宽高比例
+                float imageAspectRatio = (float)originalImage.Width / originalImage.Height;
+
+                // 设置预览框的大小为设计时的大小
+                float boxWidth = MapPreviewBoxPosition.Width;
+                float boxHeight = MapPreviewBoxPosition.Height;
+
+                // 计算预览框的宽高比例
+                float boxAspectRatio = boxWidth / boxHeight;
+
+                // 如果图像的宽高比例大于预览框的宽高比例，则以预览框的宽度为基准调整高度
+                if (imageAspectRatio > boxAspectRatio)
+                {
+                    boxHeight = boxWidth / imageAspectRatio;
+                }
+                // 如果图像的宽高比例小于预览框的宽高比例，则以预览框的高度为基准调整宽度
+                else
+                {
+                    boxWidth = boxHeight * imageAspectRatio;
+                }
+
+                // 计算预览框的位置
+                int x = MapPreviewBoxPosition.Left + (MapPreviewBoxPosition.Width - (int)boxWidth) / 2;
+                int y = MapPreviewBoxPosition.Top + (MapPreviewBoxPosition.Height - (int)boxHeight) / 2;
+
+                // 设置预览框的大小
+
+
+                MapPreviewBoxAspectPosition = new Rectangle(x, y, (int)boxWidth, (int)boxHeight);
+
+                _mapPreviewBox.ClientRectangle = MapPreviewBoxAspectPosition;
+
+                // 将图像设置为预览框的纹理
+                _mapPreviewBox.IdleTexture = AssetLoader.LoadTextureUncached(img);
+
+                // 设置预览框可见
+                _mapPreviewBox.Visible = true;
+            }
+        }
         private void LbxCampaignListSelectedIndexChanged(object sender, EventArgs e)
         {
 

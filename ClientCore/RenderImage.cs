@@ -15,12 +15,12 @@ namespace ClientCore
     {
         public static int RenderCount = 0;
         public static event EventHandler RenderCompleted;
-
+        public static string 渲染目录 = "Resources\\RenderImage";
         public static CancellationTokenSource cts = new CancellationTokenSource();
         public static ManualResetEventSlim pauseEvent = new ManualResetEventSlim(true); // 初始为可运行状态
 
-        public static Dictionary<string, string> 需要渲染的地图列表 = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        public static Dictionary<string,string> 正在渲染的地图列表 = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public static Dictionary<string, List<string>> 需要渲染的地图列表 = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        public static Dictionary<string, List<string>> 正在渲染的地图列表 = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
         public static bool RenderOneImage(string mapPath)
         {
@@ -52,7 +52,7 @@ namespace ClientCore
             string mapName = Path.GetFileNameWithoutExtension(mapPath);
             string inputPath = Path.Combine(Path.GetDirectoryName(mapPath), $"thumb_{mapName}.jpg");
             string outputPath = Path.Combine(Path.GetDirectoryName(mapPath), $"{mapName}.jpg");
-            string strCmdText = $"-i \"{mapPath}\" -o \"{mapName}\" -m \"{ProgramConstants.GamePath}{UserINISettings.Instance.YRPath}\" -Y -z +(1280,768) --bkp ";
+            string strCmdText = $"-i \"{mapPath}\" -o \"{mapName}\" -m \"{ProgramConstants.GamePath}{渲染目录}\" -Y -z +(1280,768) --bkp ";
 
             using Process process = new Process();
             process.StartInfo.FileName = $"{ProgramConstants.GamePath}Resources\\RandomMapGenerator_RA2\\Map Renderer\\CNCMaps.Renderer.exe";
@@ -60,6 +60,8 @@ namespace ClientCore
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
             WindowManager.progress.Report($"正在渲染预览图{mapName}...");
+
+            Console.WriteLine(strCmdText);
 
             process.Start();
             process.WaitForExit();
@@ -87,7 +89,7 @@ namespace ClientCore
 
             return true;
         }
-        public static string 当前Mod;
+        private static List<string> 上次渲染配置 = [];
         // 渲染多张图片的方法
         public static void RenderImages()
         {
@@ -99,8 +101,8 @@ namespace ClientCore
 
             try
             {
-                _ = Task.Run(() =>
-                {
+                //_ = Task.Run(() =>
+                //{
                     TaskbarProgress.Instance.SetState(TaskbarProgress.TaskbarStates.Normal);
                     foreach (var map in 需要渲染的地图列表.ToList())
                     {
@@ -119,7 +121,14 @@ namespace ClientCore
                                 continue;
                             }
                             正在渲染的地图列表.Add(map.Key,map.Value);
-                            设置Mod(map.Value);
+
+                            if (!是否与上次配置相同(map.Value))
+                            {
+                                上次渲染配置 = map.Value;
+                                设置渲染配置(map.Value);
+                            }
+                            
+
                             RenderOneImage(map.Key);
                             Interlocked.Increment(ref RenderCount);
                             TaskbarProgress.Instance.SetValue(RenderCount, 需要渲染的地图列表.Count);
@@ -138,9 +147,7 @@ namespace ClientCore
                     IsCancelled = true;
                     TaskbarProgress.Instance.SetState(TaskbarProgress.TaskbarStates.NoProgress);
                     WindowManager.progress.Report(""); // 更新进度
-                });
-
-
+                //});
 
             }
             catch (Exception ex)
@@ -149,81 +156,117 @@ namespace ClientCore
             }
         }
 
-        private static void 设置Mod(string path)
+        private static bool 是否与上次配置相同(List<string> 当前配置)
         {
-            foreach (var file in Directory.GetFiles(UserINISettings.Instance.YRPath))
+            if (上次渲染配置 == null)
+                return false;
+
+            if (当前配置.Count != 上次渲染配置.Count)
+                return false;
+
+            for (int i = 0; i < 当前配置.Count; i++)
             {
-                string fileName = Path.GetFileName(file);
-                if (ProgramConstants.PureHashes.ContainsKey(fileName))
+                if (!string.Equals(当前配置[i], 上次渲染配置[i], StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
+
+            return true;
+        }
+        private static void 设置渲染配置(List<string> paths)
+        {
+            string yrPath = UserINISettings.Instance.YRPath;
+            
+
+            // 1️⃣ 准备渲染目录
+            if (!Directory.Exists(渲染目录))
+                Directory.CreateDirectory(渲染目录);
+            else
+            {
+                // 清空旧内容
+                foreach (var file in Directory.GetFiles(渲染目录))
                 {
-                    // Console.WriteLine($"白名单文件，跳过删除: {fileName}");
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"删除失败: {file}, 错误: {ex.Message}");
+                    }
+                }
+            }
+
+            // 2️⃣ 用字典记录最终文件映射（文件名 -> 源文件路径）
+            var fileMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            // 先处理 YRPath
+            if (Directory.Exists(yrPath))
+            {
+                foreach (var file in Directory.GetFiles(yrPath))
+                {
+                    string fileName = Path.GetFileName(file);
+                    if (ProgramConstants.PureHashes.ContainsKey(fileName))
+                        fileMap[fileName] = file;
+                }
+            }
+
+            // 再按顺序处理列表路径（索引越大优先级越高）
+            foreach (var path in paths)
+            {
+                if (!Directory.Exists(path))
+                {
+                    Console.WriteLine($"路径不存在，跳过: {path}");
                     continue;
                 }
 
-                try
+                foreach (var file in Directory.GetFiles(path))
                 {
-                    File.Delete(file);
-                    // Console.WriteLine($"已删除: {file}");
-                }
-                catch (Exception ex)
-                {
-                    // Console.WriteLine($"删除失败: {file}, 错误: {ex.Message}");
+                    string fileName = Path.GetFileName(file);
+                    fileMap[fileName] = file; // 覆盖前面的
                 }
             }
 
-            if (!Directory.Exists(path))
+            // 3️⃣ 创建符号链接
+            foreach (var kv in fileMap)
             {
-                return;
-            }
-
-            if (!Directory.Exists(UserINISettings.Instance.YRPath))
-            {
-                return;
-            }
-
-            foreach (var file in Directory.GetFiles(path))
-            {
-                string fileName = Path.GetFileName(file);
-                string linkPath = Path.Combine(UserINISettings.Instance.YRPath, fileName);
-
-                if (File.Exists(linkPath))
-                {
-                    Console.WriteLine($"已存在，跳过: {linkPath}");
-                    continue;
-                }
+                string linkPath = Path.Combine(渲染目录, kv.Key);
 
                 try
                 {
-                    File.CreateSymbolicLink(linkPath, file);
-                //    Console.WriteLine($"符号链接成功: {linkPath} -> {file}");
+                    File.CreateSymbolicLink(linkPath, Path.Combine(ProgramConstants.GamePath, kv.Value));
+                    // Console.WriteLine($"符号链接: {kv.Key} <- {kv.Value}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"创建符号链接失败: {linkPath} -> {file}, 错误: {ex.Message}");
+                    Console.WriteLine($"创建符号链接失败: {linkPath} -> {kv.Value}, 错误: {ex.Message}");
                 }
             }
+
+            Console.WriteLine($"渲染配置设置完成，共 {fileMap.Count} 个文件。");
         }
 
         public static bool IsCancelled = false;
-        public static Task RenderPreviewImageAsync(string[] mapFiles,string modPath = "")
+        public static async Task RenderPreviewImageAsync(string[] mapFiles,List<string> filePaths = null)
         {
-
+            filePaths ??= [];
             if (mapFiles.Length == 0)
-                return Task.CompletedTask;
+                return ;
             if (!UserINISettings.Instance.RenderPreviewImage.Value)
-                return Task.CompletedTask;
+                return ;
         
             foreach (var map in mapFiles)
             {
                 if (!需要渲染的地图列表.ContainsKey(map))
                 {
-                    需要渲染的地图列表.Add(map, modPath);
+                    需要渲染的地图列表.Add(map, filePaths);
                 }
             }
             CancelRendering();
-            RenderImages();
-            return Task.CompletedTask;
+
+            await Task.Run(RenderImage.RenderImages);
+            return ;
         }
+
         public static void PauseRendering()
         {
             pauseEvent.Reset(); // 暂停

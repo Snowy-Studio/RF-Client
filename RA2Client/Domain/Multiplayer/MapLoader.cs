@@ -125,7 +125,7 @@ namespace Ra2Client.Domain.Multiplayer
             //if (UserINISettings.Instance.RenderPreviewImage.Value)
             //    Task.Run(() =>
             //    {
-                    RenderImage.RenderImages();
+            Task.Run(RenderImage.RenderImages);
             //    });
 
         }

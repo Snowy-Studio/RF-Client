@@ -75,7 +75,7 @@ public class MissionPack : InfoBaseClass
                 if (File.Exists(Path.Combine(FilePath, png)) || File.Exists(Path.Combine(FilePath, jpg))) continue;
 
                 if(!RenderImage.需要渲染的地图列表.ContainsKey(map))
-                     RenderImage.需要渲染的地图列表.Add(map,FilePath);
+                     RenderImage.需要渲染的地图列表.Add(map,[FilePath]);
 
         }
     }
@@ -103,10 +103,7 @@ public class MissionPack : InfoBaseClass
             }
         }
 
-        //Task.Run(() =>
-        //{
-            RenderImage.RenderImages();
-        //});
+        Task.Run(RenderImage.RenderImages);
     }
 
     public bool BuildOffAlly { get; set; }

@@ -332,6 +332,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 Text = "Open Map Locations".L10N("UI:Main:OpenMapLocations"),
                 SelectAction = 打开地图位置
             });
+            
             toggleFavoriteItem = new XNAContextMenuItem
             {
                 Text = "Favorite".L10N("UI:Main:Favorite"),
@@ -364,7 +365,11 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             });
             
             mapContextMenu.AddItem("删除地图".L10N("UI:Main:DeleteMap"), DeleteMapConfirmation, null, CanDeleteMap);
-
+            mapContextMenu.AddItem(new XNAContextMenuItem
+            {
+                Text = "重新渲染此地图",
+                SelectAction = 重新渲染此地图
+            });
             mapContextMenu.AddItem(new XNAContextMenuItem
             {
                 Text = "Delete duplicate maps".L10N("UI:Main:DeleteDuplicateMaps"),
@@ -468,6 +473,48 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             InitializeGameOptionPresetUI();
 
             CmbGame_SelectedChanged(cmbGame, null);
+        }
+
+        private void 重新渲染此地图()
+        {
+            var mod = cmbGame.SelectedItem.Tag as Mod;
+            var ares = chkAres.Checked;
+            var tx = chkTerrain.Checked;
+            var otherFile = Map.OtherFile;
+
+            var box = new XNAMessageBox(WindowManager,
+                "重新渲染地图",
+                $"确定删掉旧预览图并重新渲染地图:{Map.Name}? 渲染配置如下：\n\n模组:{mod.Name},使用Ares:{(ares ? "是" : "否")},使用TX地形:{(tx ? "是" : "否")}",
+                XNAMessageBoxButtons.YesNo
+                );
+            box.YesClickedAction += (_) =>
+            {
+                string basePath = Path.Combine(Path.GetDirectoryName(Map.BaseFilePath)!, Path.GetFileNameWithoutExtension(Map.BaseFilePath));
+
+                // 判断并删除同名 jpg 文件
+                string jpgPath = basePath + ".jpg";
+                if (File.Exists(jpgPath))
+                    File.Delete(jpgPath);
+
+                // 判断并删除同名 png 文件
+                string pngPath = basePath + ".png";
+                if (File.Exists(pngPath))
+                    File.Delete(pngPath);
+
+                Task.Run(async () =>
+                {
+                    List<string> paths = [mod.FilePath];
+
+                    if (ares) paths.Add("Ares");
+                    if (tx) paths.Add("TX");
+                    if(!string.IsNullOrEmpty(otherFile)) paths.Add(otherFile);
+
+                   await RenderImage.RenderPreviewImageAsync([Map.BaseFilePath], paths);
+                    MapPreviewBox.UpdateMap();
+                    //return Task.CompletedTask;
+                });
+            };
+            box.Show();
         }
 
         private void ChkAres_CheckedChanged(object sender, EventArgs e)
@@ -1350,7 +1397,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 ListMaps();
                 ChangeMap(GameModeMap);
 
-                RenderImage.RenderImages();
+                Task.Run(RenderImage.RenderImages);
             }
             catch (Exception ex)
             {

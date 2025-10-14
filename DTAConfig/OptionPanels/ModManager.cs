@@ -467,7 +467,7 @@ public class ModManager : XNAWindow
        // if (UserINISettings.Instance.RenderPreviewImage.Value)
         Task.Run(() =>
         {
-            _ = RenderImage.RenderPreviewImageAsync(mapFiles.ToArray(), modPath);
+            _ = RenderImage.RenderPreviewImageAsync(mapFiles.ToArray(), [modPath]);
             return Task.CompletedTask;
         });
         触发刷新?.Invoke();
@@ -1144,7 +1144,7 @@ public class ModManager : XNAWindow
 
         ReLoad();
         触发刷新?.Invoke();
-        RenderImage.RenderImages();
+        Task.Run(RenderImage.RenderImages);
     }
 
     public void DelMod(Mod mod)

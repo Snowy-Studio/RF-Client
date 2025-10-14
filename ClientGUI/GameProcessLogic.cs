@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.INIProcessing;
 using DTAConfig.Entity;
@@ -660,7 +661,9 @@ namespace ClientGUI
             {
                 ProgramConstants.清理缓存();
             }
-                RenderImage.RenderImages();
+            Task.Run(RenderImage.RenderImages);
+            
+                
         }
     }
 }
