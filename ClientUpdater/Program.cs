@@ -50,9 +50,9 @@ internal sealed class Program
         }
 
         var fileWriter = new StreamWriter(errorLogPath, append: true, Encoding.UTF8);
-#pragma warning disable CA2000 // 丢失范围之前释放对象
-        var dualWriter = new DualWriter(Console.Out, fileWriter);
-#pragma warning restore CA2000 // 丢失范围之前释放对象
+
+        using var dualWriter = new DualWriter(Console.Out, fileWriter);
+
         Console.SetOut(dualWriter);
 
         try
