@@ -99,23 +99,7 @@ internal sealed class Program
                     Console.ReadKey();
                     Environment.Exit(1);
                 }
-                else
-                {
-                    try
-                    {
-                        // 递归清空目录
-                        ClearDirectory(updaterDirectory);
-                        Write($"已清空 {updaterDirectory.Name} 目录.", ConsoleColor.Yellow);
-                    }
-                    catch (IOException ex)
-                    {
-                        Write($"清空目录失败: {ex.Message}", ConsoleColor.Red);
 
-                        // Write($"请关闭窗口，并手动清空", ConsoleColor.Red);
-                        // Console.ReadKey();
-                        // return;
-                    }
-                }
 
                 Write("开始更新文件.", ConsoleColor.Green);
 
@@ -430,49 +414,7 @@ internal sealed class Program
         Console.ForegroundColor = defaultColor;
     }
 
-    /// <summary>
-    /// 清空指定目录（包括子文件夹和文件），并解除只读属性.
-    /// </summary>
-    private static void ClearDirectory(DirectoryInfo dir)
-    {
-        // 先确保当前目录本身可写
-        if ((dir.Attributes & FileAttributes.ReadOnly) != 0)
-        {
-            dir.Attributes &= ~FileAttributes.ReadOnly;
-        }
 
-        // 删除所有文件
-        foreach (FileInfo file in dir.GetFiles())
-        {
-            try
-            {
-                if ((file.Attributes & FileAttributes.ReadOnly) != 0)
-                {
-                    file.Attributes &= ~FileAttributes.ReadOnly;
-                }
-
-                file.Delete();
-            }
-            catch (IOException ex)
-            {
-                Write($"无法删除文件 {file.FullName}: {ex.Message}", ConsoleColor.Red);
-            }
-        }
-
-        // 递归删除所有子目录
-        foreach (DirectoryInfo subDir in dir.GetDirectories())
-        {
-            try
-            {
-                ClearDirectory(subDir);
-                subDir.Delete(true);
-            }
-            catch (IOException ex)
-            {
-                Write($"无法删除目录 {subDir.FullName}: {ex.Message}", ConsoleColor.Red);
-            }
-        }
-    }
 }
 
 /// <summary>
