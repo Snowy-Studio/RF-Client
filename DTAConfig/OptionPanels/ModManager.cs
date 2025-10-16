@@ -696,7 +696,16 @@ public class ModManager : XNAWindow
         if (!Directory.Exists(path))
             return false;
 
-        var maps = Directory.GetFiles(path, "*.map").Count(map => !FunExtensions.是否为多人图(map));
+        var maps = Directory.GetFiles(path, "*.map").Count(map =>
+        {
+            var fileName = Path.GetFileNameWithoutExtension(map).ToLower();
+            // 如果以 all 或 sov 开头，直接当任务图
+            if (fileName.StartsWith("all") || fileName.StartsWith("sov"))
+                return true;
+
+            // 否则按原逻辑判断
+            return !FunExtensions.是否为多人图(map);
+        });
         var mixs = Directory.GetFiles(path, "*.mix").Length;
 
         return maps + mixs != 0;

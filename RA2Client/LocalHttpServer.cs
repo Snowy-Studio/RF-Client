@@ -70,7 +70,7 @@ namespace Ra2Client
 
                     UserINISettings.Instance.startPort = Port;
                     listenerThread.Start();
-                    Console.WriteLine($"✅ 本地服务启动成功：{prefix}");
+                    Logger.Log($"✅ 本地服务启动成功：{prefix}");
                     return; // 启动成功，退出方法
                 }
                 catch (Exception ex)
