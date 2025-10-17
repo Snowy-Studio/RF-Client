@@ -102,7 +102,6 @@ internal sealed class Program
                     Environment.Exit(1);
                 }
 
-
                 Write("开始更新文件.", ConsoleColor.Green);
 
                 IEnumerable<FileInfo> files = updaterDirectory.EnumerateFiles("*", SearchOption.AllDirectories);
@@ -416,8 +415,6 @@ internal sealed class Program
         Console.WriteLine(text);
         Console.ForegroundColor = defaultColor;
     }
-
-
 }
 
 /// <summary>
