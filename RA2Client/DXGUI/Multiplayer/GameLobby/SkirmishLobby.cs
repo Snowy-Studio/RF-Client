@@ -302,33 +302,37 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         protected string CheckRules(Domain.Multiplayer.Rule rule,PlayerInfo seat1, PlayerInfo seat2)
         {
+            var s = "建议";
+            if (rule.Type == RuleType.Mandatory)
+                s = "强制";
+
             switch (rule.Requirement)
             {
                 case PositionRequirement.Player:
                     if (seat1?.IsAI != false)  // 玩家应该是IsAI = false
                     {
-                        return $"位置{rule.Position1}必须是玩家";
+                        return $"位置{rule.Position1}{s}是玩家";
                     }
                     break;
 
                 case PositionRequirement.AI:
                     if (seat1?.IsAI != true)  // AI应该是IsAI = true
                     {
-                        return $"位置{rule.Position1}必须是AI";
+                        return $"位置{rule.Position1}{s}是AI";
                     }
                     break;
 
                 case PositionRequirement.SameTeam:
                     if (seat1?.TeamId > 0 == false || seat2?.TeamId > 0 == false || seat1?.TeamId != seat2?.TeamId)
                     {
-                        return $"位置{rule.Position1}和位置{rule.Position2}必须同一队";
+                        return $"位置{rule.Position1}和位置{rule.Position2}{s}同一队";
                     }
                     break;
 
                 case PositionRequirement.DifferentTeam:
                     if (seat1?.TeamId < 0 == false && seat2?.TeamId < 0 == false && seat1?.TeamId == seat2?.TeamId)
                     {
-                        return $"位置{rule.Position1}和位置{rule.Position2}必须不同队";
+                        return $"位置{rule.Position1}和位置{rule.Position2}{s}不同队";
                     }
                     break;
                 default:
@@ -361,10 +365,10 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     }
                     else
                     {
-                        var mbox = new XNAMessageBox(WindowManager, "建议", e + "\n确定要继续游戏吗？", XNAMessageBoxButtons.YesNo);
+                        var mbox = new XNAMessageBox(WindowManager, "建议", err + "\n确定要继续游戏吗？", XNAMessageBoxButtons.YesNo);
 
                         mbox.NoClickedAction += (_) => { return; };
-
+                        mbox.Show();
                         if (isLast)
                         {
                             mbox.YesClickedAction += (_) => {
