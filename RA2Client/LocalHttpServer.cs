@@ -508,7 +508,7 @@ namespace Ra2Client
             {
                 var fileName = Path.GetFileName(missionPackVo.file);
                 string tmpFile = Path.Combine(ProgramConstants.GamePath, "tmp", fileName);
-                string extractDir = Path.Combine(ProgramConstants.GamePath, "tmp", "MissionPack");
+                string extractDir = Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id);
 
                 string downloadUrl;
                 if (missionPackVo.file.StartsWith("u"))
@@ -546,12 +546,12 @@ namespace Ra2Client
                     ModManager.GetInstance(wm).导入任务包(
                         true,
                         true,
-                        Path.Combine(ProgramConstants.GamePath, "tmp","MissionPack"), 
+                        Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id), 
                         m: missionPack
                     );
 
-                if(Directory.Exists(Path.Combine(ProgramConstants.GamePath, "tmp", "MissionPack")))
-                    Directory.Delete(Path.Combine(ProgramConstants.GamePath, "tmp", "MissionPack"),true);
+                if(Directory.Exists(Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id)))
+                    Directory.Delete(Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id),true);
 
                 UserINISettings.Instance.重新加载地图和任务包?.Invoke(null,null);
             }
