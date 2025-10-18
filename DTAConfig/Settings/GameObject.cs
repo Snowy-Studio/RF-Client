@@ -1,10 +1,8 @@
-﻿
-using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-
+using Rampastring.Tools;
 
 namespace DTAConfig.Settings
 {

@@ -53,9 +53,7 @@ internal sealed class Program
         var fileWriter = new StreamWriter(errorLogPath, append: true, Encoding.UTF8);
 
         var dualWriter = new DualWriter(Console.Out, fileWriter);
-        
         Console.SetOut(dualWriter);
-        
 
         try
         {
@@ -247,6 +245,7 @@ internal sealed class Program
         }
 
         dualWriter.Close();
+
         // errorWriter.Close();
     }
 

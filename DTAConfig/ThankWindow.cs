@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -135,7 +135,7 @@ namespace DTAConfig
                 "地图：达达利亚",
                 "bug修复：ruanhuhu,边缘星2020",
                 "汉化：黑色圣杯",
-                "服务器: 精武止戈",
+                "服务器赞助: 精武止戈 Peng",
             ];
 
             lblThankList.Clear();
