@@ -110,7 +110,8 @@ namespace DTAConfig.OptionPanels
                 chkWriteInstallPathToRegistry.Right + 120,
                 12, 0, 0);
             chkSkipLoginWindow.Text = "Skip login dialog".L10N("UI:DTAConfig:SkipLoginDialog");
-            chkSkipLoginWindow.CheckedChanged += ChkSkipLoginWindow_CheckedChanged;
+            //chkSkipLoginWindow.CheckedChanged += ChkSkipLoginWindow_CheckedChanged;
+            chkSkipLoginWindow.AllowChecking = false;
 
             AddChild(chkSkipLoginWindow);
 
