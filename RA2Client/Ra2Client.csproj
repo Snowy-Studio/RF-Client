@@ -9,8 +9,8 @@
 		<Product>RA2Client</Product>
 		<Copyright>Copyright © Snowy Studio 2022-2025</Copyright> 
 		<Trademark>RA2Client</Trademark>
-		<Version>1.5.1.53</Version>
-		<FileVersion>1.5.1.53</FileVersion>
+		<Version>1.5.1.56</Version>
+		<FileVersion>1.5.1.56</FileVersion>
 		<AssemblyName>RA2Client</AssemblyName>
 		<RootNamespace>RA2Client</RootNamespace>
 		<Nullable>disable</Nullable>
@@ -53,7 +53,7 @@
 		<PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
 		<PackageReference Include="lzo.net" Version="0.0.6" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
-		<PackageReference Include="Microsoft.NETCore.App" Version="2.1.30" />
+		<PackageReference Include="Microsoft.NETCore.App" Version="2.2.8" />
 		<PackageReference Include="Microsoft.NETCore.Jit" Version="2.0.8" />
 		<PackageReference Include="OpenMcdf" Version="2.4.1" />
 		<PackageReference Include="Sdcb.FFmpeg" Version="7.0.0" />

@@ -25,7 +25,7 @@ namespace Reunion
         private const string LicenseFileHash = "dc447a64136642636d7aa32e50c76e2465801c5f";
         private const string RequiredFileHash = "1dbb412e60371c4b5aff6a8609df1d1b0446e4517b46ec4a4b99a23b132d9f86";
         private const string FreeFileHash = "bf46a8a320bf587de81190854b210fa2";
-        private const string AntiCheatFileHash = "a8467ae500965eb453941aded8fef2a74838823bfc185cea50417e97a61a643f2b9075289bee9ec7848f74eafa44b5c4445b693c30b13b3fffb5a6ec93ee42b9";
+        private const string AntiCheatFileHash = "77d7dcd1448a96696cb1ba494f1c9e0d920a32dcbe91546da9363e06c6778ee6892ad41c23c4e527088f608956f6c91b1481bad4d4365c70b8f23ac310fabb62";
 
         private static readonly string dotnetPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet");
         private static string sharedPath = @"shared\Microsoft.WindowsDesktop.App";
@@ -162,49 +162,19 @@ namespace Reunion
                     switch (arch)
                     {
                         case "x86":
-                            {
-                                const string msg = "检测到缺少所需的.NET6 x86运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载x86运行时\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x86\n如果您确认您的PC并非x86系统, 请点击 '否' 跳转下载Arm64运行时";
-                                var dr = MessageBox.Show(msg, "警告: 缺少运行时环境", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                                switch (dr)
-                                {
-                                    case DialogResult.Yes:
-                                        Process.Start("https://url.yra2.com/net6x");
-                                        break;
-                                    case DialogResult.No:
-                                        Process.Start("https://url.yra2.com/net6a");
-                                        break;
-                                    case DialogResult.Cancel:
-                                    default:
-                                        break;
-                                }
-                                Environment.Exit(1);
-                                return;
-                            }
+                            message = "检测到缺少所需的.NET6 x86运行环境, 是否立即跳转到重聚未来官网进行下载?\n所需运行时版本要求: v6.0.36, 点击 '确定' 将自动跳转下载\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x86\n如果您确认您的PC并非x86系统, 请手动下载Arm64运行时\n\n不要下载SDK, 不要下载SDK, 不要下载SDK!!! 重要的事情说三遍, SDK是给开发者用的, 普通用户下载桌面运行时就可以了";
+                            url = $"https://url.yra2.com/net61";
+                            break;
                         case "x64":
-                            {
-                                const string msg = "检测到缺少所需的.NET6 x64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载x64运行时\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x64\n如果您确认您的PC并非x64系统, 请点击 '否' 跳转下载Arm64运行时";
-                                var dr = MessageBox.Show(msg, "警告: 缺少运行时环境", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                                switch (dr)
-                                {
-                                    case DialogResult.Yes:
-                                        Process.Start("https://url.yra2.com/net6");
-                                        break;
-                                    case DialogResult.No:
-                                        Process.Start("https://url.yra2.com/net6a");
-                                        break;
-                                    case DialogResult.Cancel:
-                                    default:
-                                        break;
-                                }
-                                Environment.Exit(1);
-                                return;
-                            }
+                            message = "检测到缺少所需的.NET6 x64运行环境, 是否立即跳转到重聚未来官网进行下载?\n所需运行时版本要求: v6.0.36, 点击 '确定' 将自动跳转下载\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x64\n如果您确认您的PC并非x64系统, 请手动下载Arm64运行时\n\n不要下载SDK, 不要下载SDK, 不要下载SDK!!! 重要的事情说三遍, SDK是给开发者用的, 普通用户下载桌面运行时就可以了";
+                            url = $"https://url.yra2.com/net60";
+                            break;
                         case "arm64":
-                            message = "检测到缺少所需的.NET6 Arm64运行环境, 是否立即跳转到重聚未来官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '是' 将自动跳转下载Arm64运行时";
-                            url = $"https://url.yra2.com/net6a";
+                            message = "检测到缺少所需的.NET6 Arm64运行环境, 是否立即跳转到重聚未来官网进行下载?\n所需运行时版本要求: v6.0.36, 点击 '确定' 将自动跳转下载Arm64运行时\n\n不要下载SDK, 不要下载SDK, 不要下载SDK!!! 重要的事情说三遍, SDK是给开发者用的, 普通用户下载桌面运行时就可以了";
+                            url = $"https://url.yra2.com/net62";
                             break;
                         default:
-                            message = "检测到缺少所需的.NET6 UnknownArch运行环境, 是否立即跳转到Microsoft官网进行下载?\n\n所需运行时版本要求: v6.0.36, 无法识别您的系统架构, 可能不兼容您的系统";
+                            message = "检测到缺少所需的.NET6 UnknownArch运行环境, 是否立即跳转到Microsoft官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '确定' 将自动跳转下载UnknownArch运行时\n\n无法识别您的系统架构, 客户端可能不兼容您的系统";
                             url = "https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0";
                             break;
                     }

@@ -30,7 +30,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageReference Include="ImeSharp" Version="1.4.1" />
     <PackageReference Include="ini-parser-netstandard" Version="2.5.3" />
-    <PackageReference Include="Microsoft.NETCore.App" Version="2.1.30" />
+    <PackageReference Include="Microsoft.NETCore.App" Version="2.2.8" />
     <PackageReference Include="Microsoft.NETCore.Jit" Version="2.0.8" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
