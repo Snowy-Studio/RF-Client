@@ -369,7 +369,7 @@ namespace Ra2Client.Domain.Multiplayer
                     {
                         if (!File.Exists($"{sectionName}.jpg") && UserINISettings.Instance.RenderPreviewImage.Value)
                         {
-                            RenderImage.需要渲染的地图列表.Add(BaseFilePath,[OtherFile]);
+                            RenderImage.需要渲染的地图列表.TryAdd(BaseFilePath,[OtherFile]);
                         }
                         PreviewPath = SafePath.CombineFilePath(SafePath.GetFile(BaseFilePath).DirectoryName, FormattableString.Invariant($"{previewImage}.jpg"));
                     }

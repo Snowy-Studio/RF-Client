@@ -161,7 +161,7 @@ namespace ClientCore
           
             SimplifiedCSF = new BoolSetting(iniFile, OPTIONS, "SimplifiedCSF", true);
             ForceEnableGameOptions = new BoolSetting(iniFile, OPTIONS, "ForceEnableGameOptions", true);
-            启用连点器 = new BoolSetting(iniFile, OPTIONS, "ConnectionDevice", false);
+            启用连点器 = new BoolSetting(iniFile, OPTIONS, "ConnectionDevice", true);
             PreloadMapPreviews = new BoolSetting(iniFile, VIDEO, "PreloadMapPreviews", false);
             ForceLowestDetailLevel = new BoolSetting(iniFile, VIDEO, "ForceLowestDetailLevel", false);
             MinimizeWindowsOnGameStart = new BoolSetting(iniFile, OPTIONS, "MinimizeWindowsOnGameStart", true);

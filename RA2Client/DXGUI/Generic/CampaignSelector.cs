@@ -510,7 +510,7 @@ namespace Ra2Client.DXGUI.Generic
         {
             if (_lbxInforBox.SelectedIndex == -1) return;
 
-            var path = _lbxInforBox.SelectedItem.Tag as string;
+            var path = _lbxInforBox.SelectedItem?.Tag as string;
 
             if (File.Exists(path))
             {

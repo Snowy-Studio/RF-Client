@@ -120,7 +120,7 @@ namespace ClientCore
                             {
                                 continue;
                             }
-                            正在渲染的地图列表.Add(map.Key,map.Value);
+                            正在渲染的地图列表.TryAdd(map.Key,map.Value);
 
                             if (!是否与上次配置相同(map.Value))
                             {
@@ -258,7 +258,7 @@ namespace ClientCore
             {
                 if (!需要渲染的地图列表.ContainsKey(map))
                 {
-                    需要渲染的地图列表.Add(map, filePaths);
+                    需要渲染的地图列表.TryAdd(map, filePaths);
                 }
             }
             CancelRendering();
