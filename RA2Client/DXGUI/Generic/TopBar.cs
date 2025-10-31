@@ -422,7 +422,7 @@ namespace Ra2Client.DXGUI.Generic
             {
                 username = ProgramConstants.PLAYERNAME,
                 mac = code,
-            }).Result; 
+            }).Result;
 
             optionsWindow.tabControl.MakeUnselectable(4);
             LastSwitchType = SwitchType.SECONDARY;

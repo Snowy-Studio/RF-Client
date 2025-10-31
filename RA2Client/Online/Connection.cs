@@ -9,7 +9,6 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Authentication;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
@@ -33,8 +32,9 @@ namespace Ra2Client.Online
         private const int MAXIMUM_LATENCY = 400;
         private const int BYTE_ARRAY_MSG_LEN = 1024;
 
+        public static string SelectedRegion { get; set; }
+
         private Dictionary<string, string> ipToDomainMap = null;
-        private string currentCertDomain = null;
 
         public Connection(IConnectionManager connectionManager, Random random)
         {
@@ -47,13 +47,16 @@ namespace Ra2Client.Online
         public Random Rng;
 
         /// <summary>
-        /// The list of Reunion IRC servers to connect to.
+        /// The list of available Reunion IRC servers.
         /// </summary>
         private static readonly IList<Server> Servers = new List<Server>
         {
-            new Server("ap-ircv1.cn.ra2yr.com", "Reunion China Prefix-64", new int[1] { 6697 }),
-            new Server("ap-ircv2.cn.ra2yr.com", "Reunion China Prefix-64", new int[1] { 6697 }),
-            new Server("ap-ircv3.cn.ra2yr.com", "Reunion China Prefix-64", new int[1] { 6697 }),
+            new Server("xe-6.irc.ra2yr.com", "Reunion Chinese Mainland Prefix-6406", new int[1] { 6697 }, "Chinese Mainland Zone 1"),
+            new Server("xe-7.irc.ra2yr.com", "Reunion Chinese Mainland Prefix-6407", new int[1] { 6697 }, "Chinese Mainland Zone 2"),
+            new Server("xf-2.irc.ra2yr.com", "Reunion Chinese Mainland Prefix-0402", new int[1] { 6697 }, "Chinese Mainland Zone 3"),
+            new Server("xg-4.irc.ra2yr.com", "Reunion Asia Pacific Prefix-6404", new int[1] { 6697 }, "Asia Pacific Zone 1"),
+            new Server("xg-5.irc.ra2yr.com", "Reunion Europe Prefix-6405", new int[1] { 6697 }, "Europe Zone 1"),
+            new Server("xf-3.irc.ra2yr.com", "Reunion North America Prefix-6403", new int[1] { 6697 }, "North America Zone 1"),
         }.AsReadOnly();
 
         bool _isConnected = false;
@@ -185,10 +188,8 @@ namespace Ra2Client.Online
                         SslProtocols[] protocols;
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                         {
-                            // Windows 才做细版本判断
                             var ver = Environment.OSVersion.Version;
-                            bool isHighWin = ver.Major > 10 ||
-                                             (ver.Major == 10 && ver.Build >= 20348);
+                            bool isHighWin = ver.Major > 10 || (ver.Major == 10 && ver.Build >= 20348);
 
                             if (isHighWin)
                             {
@@ -234,8 +235,8 @@ namespace Ra2Client.Online
                         }
 
                         tcpClient.ReceiveTimeout = 3000;
-                        tcpClient.SendTimeout    = 3000;
-                        sslStream.ReadTimeout    = 3000;
+                        tcpClient.SendTimeout = 3000;
+                        sslStream.ReadTimeout = 3000;
 
                         this.tcpClient = tcpClient;
                         this.sslStream = sslStream;
@@ -424,23 +425,28 @@ namespace Ra2Client.Online
         /// <returns>A list of Lobby servers sorted by latency.</returns>
         private IList<Server> GetServerListSortedByLatency()
         {
+            var filteredServers = Servers.Where(s => s.Region == SelectedRegion).ToList();
+            if (!filteredServers.Any())
+            {
+                Logger.Log($"No servers found for region: {SelectedRegion}. Falling back to all servers.");
+                filteredServers = Servers.ToList();
+            }
+
             ipToDomainMap = new Dictionary<string, string>();
 
             // Resolve the hostnames.
-            ICollection<Task<IEnumerable<Tuple<IPAddress, string, int[]>>>>
-                dnsTasks = new List<Task<IEnumerable<Tuple<IPAddress, string, int[]>>>>(Servers.Count);
-
-            foreach (Server server in Servers)
+            ICollection<Task<IEnumerable<Tuple<IPAddress, string, int[], string>>>>
+                dnsTasks = new List<Task<IEnumerable<Tuple<IPAddress, string, int[], string>>>>(filteredServers.Count);
+            foreach (Server server in filteredServers)
             {
                 string serverHostnameOrIPAddress = server.Host;
                 string serverName = server.Name;
                 int[] serverPorts = server.Ports;
-
-                Task<IEnumerable<Tuple<IPAddress, string, int[]>>> dnsTask = new Task<IEnumerable<Tuple<IPAddress, string, int[]>>>(() =>
+                string serverRegion = server.Region;
+                Task<IEnumerable<Tuple<IPAddress, string, int[], string>>> dnsTask = new Task<IEnumerable<Tuple<IPAddress, string, int[], string>>>(() =>
                 {
-                    Logger.Log($"Attempting to DNS resolve {serverName} ({serverHostnameOrIPAddress}).");
-                    ICollection<Tuple<IPAddress, string, int[]>> _serverInfos = new List<Tuple<IPAddress, string, int[]>>();
-
+                    Logger.Log($"Attempting to DNS resolve {serverName} ({serverHostnameOrIPAddress}) in region {serverRegion}.");
+                    ICollection<Tuple<IPAddress, string, int[], string>> _serverInfos = new List<Tuple<IPAddress, string, int[], string>>();
                     try
                     {
                         // If hostNameOrAddress is an IP address, this address is returned without querying the DNS server.
@@ -453,7 +459,7 @@ namespace Ra2Client.Online
                         // Store each IPAddress in a different tuple.
                         foreach (IPAddress serverIPAddress in serverIPAddresses)
                         {
-                            _serverInfos.Add(new Tuple<IPAddress, string, int[]>(serverIPAddress, serverName, serverPorts));
+                            _serverInfos.Add(new Tuple<IPAddress, string, int[], string>(serverIPAddress, serverName, serverPorts, serverRegion));
                             lock (ipToDomainMap)
                             {
                                 ipToDomainMap[serverIPAddress.ToString()] = serverHostnameOrIPAddress;
@@ -475,13 +481,14 @@ namespace Ra2Client.Online
             Task.WaitAll(dnsTasks.ToArray());
 
             // Group the tuples by IPAddress to merge duplicate servers.
-            IEnumerable<IGrouping<IPAddress, Tuple<string, int[]>>>
-                serverInfosGroupedByIPAddress = dnsTasks.SelectMany(dnsTask => dnsTask.Result)      // Tuple<IPAddress, serverName, serverPorts>
+            IEnumerable<IGrouping<IPAddress, Tuple<string, int[], string>>>
+                serverInfosGroupedByIPAddress = dnsTasks.SelectMany(dnsTask => dnsTask.Result)      // Tuple<IPAddress, serverName, serverPorts, region>
                                                         .GroupBy(
                                                             serverInfo => serverInfo.Item1,         // IPAddress
-                                                            serverInfo => new Tuple<string, int[]>(
+                                                            serverInfo => new Tuple<string, int[], string>(
                                                                 serverInfo.Item2,                   // serverName
-                                                                serverInfo.Item3                    // serverPorts
+                                                                serverInfo.Item3,                   // serverPorts
+                                                                serverInfo.Item4                    // region
                                                             )
                                                         );
 
@@ -490,36 +497,35 @@ namespace Ra2Client.Online
             //   2. Concatenate serverNames. 
             //   3. Remove duplicate ports.
             //   4. Construct and return a tuple that contains the IPAddress, concatenated serverNames and unique ports.
-            IEnumerable<Tuple<IPAddress, string, int[]>> serverInfos = serverInfosGroupedByIPAddress.Select(serverInfoGroup =>
+            IEnumerable<Tuple<IPAddress, string, int[], string>> serverInfos = serverInfosGroupedByIPAddress.Select(serverInfoGroup =>
             {
                 IPAddress ipAddress = serverInfoGroup.Key;
                 string serverNames = string.Join(", ", serverInfoGroup.Select(serverInfo => serverInfo.Item1));
                 int[] serverPorts = serverInfoGroup.SelectMany(serverInfo => serverInfo.Item2).Distinct().ToArray();
-
-                return new Tuple<IPAddress, string, int[]>(ipAddress, serverNames, serverPorts);
+                string region = serverInfoGroup.First().Item3;
+                return new Tuple<IPAddress, string, int[], string>(ipAddress, serverNames, serverPorts, region);
             });
 
             // Do logging.
-            foreach (Tuple<IPAddress, string, int[]> serverInfo in serverInfos)
+            foreach (Tuple<IPAddress, string, int[], string> serverInfo in serverInfos)
             {
                 string serverIPAddress = serverInfo.Item1.ToString();
                 string serverNames = string.Join(", ", serverInfo.Item2.ToString());
                 string serverPorts = string.Join(", ", serverInfo.Item3.Select(port => port.ToString()));
-
-                Logger.Log($"Got a Lobby server. IP: {serverIPAddress}; Name: {serverNames}; Ports: {serverPorts}.");
+                string region = serverInfo.Item4;
+                Logger.Log($"Got a Lobby server. IP: {serverIPAddress}; Name: {serverNames}; Ports: {serverPorts}; Region: {region}.");
             }
 
             Logger.Log($"The number of Lobby servers is {serverInfos.Count()}.");
 
             // Test the latency.
             ICollection<Task<Tuple<Server, long>>> pingTasks = new List<Task<Tuple<Server, long>>>(serverInfos.Count());
-
-            foreach (Tuple<IPAddress, string, int[]> serverInfo in serverInfos)
+            foreach (Tuple<IPAddress, string, int[], string> serverInfo in serverInfos)
             {
                 IPAddress serverIPAddress = serverInfo.Item1;
                 string serverNames = serverInfo.Item2;
                 int[] serverPorts = serverInfo.Item3;
-
+                string region = serverInfo.Item4;
                 if (failedServerIPs.Contains(serverIPAddress.ToString()))
                 {
                     Logger.Log($"Skipped a failed server {serverNames} ({serverIPAddress}).");
@@ -528,8 +534,7 @@ namespace Ra2Client.Online
                 Task<Tuple<Server, long>> pingTask = new Task<Tuple<Server, long>>(() =>
                 {
                     Logger.Log($"Attempting to ping {serverNames} ({serverIPAddress}).");
-                    Server server = new Server(serverIPAddress.ToString(), serverNames, serverPorts);
-
+                    Server server = new Server(serverIPAddress.ToString(), serverNames, serverPorts, region);
                     using (Ping ping = new Ping())
                     {
                         try
@@ -661,7 +666,7 @@ namespace Ra2Client.Online
                 }
                 else if (msg.Length != commandEndIndex + 1)
                 {
-                    string command = msg.Substring(0, commandEndIndex - 1);
+                    string command = msg.Substring(0, commandEndIndex);
                     PerformCommand(command);
 
                     msg = msg.Remove(0, commandEndIndex + 1);
@@ -796,9 +801,9 @@ namespace Ra2Client.Online
                         case 372: // MOTD content
                             connectionManager.OnGenericServerMessageReceived(parameters[1]);
                             break;
-                        //case 376: // End of MOTD (After being enabled, it is more in line with RFC specifications, but it is obviously redundant in CnCNet)
-                        //    connectionManager.OnGenericServerMessageReceived("End of Message of the Day");
-                        //    break;
+                            //case 376: // End of MOTD (After being enabled, it is more in line with RFC specifications, but it is obviously redundant in CnCNet)
+                            //    connectionManager.OnGenericServerMessageReceived("End of Message of the Day");
+                            //    break;
                     }
 
                     return;
@@ -908,7 +913,6 @@ namespace Ra2Client.Online
                     case "TOPIC":
                         if (parameters.Count < 2)
                             break;
-
                         connectionManager.OnChannelTopicChanged(prefix.Substring(0, prefix.IndexOf('!')),
                             parameters[0], parameters[1]);
                         break;

@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace ClientGUI
 {
@@ -56,11 +55,14 @@ namespace ClientGUI
 
         private readonly int[] _blockedKeys =
         {
-            0x5A, // Z
-            0x11, // Ctrl
-            0x12, // Alt
+            0x5A, // Z键
+            0x11, // Ctrl键
+            0x12, // Alt键
         };
 
+        /// <summary>
+        /// 启动监听
+        /// </summary>
         public void Start()
         {
             if (_monitoring) return;
@@ -75,6 +77,9 @@ namespace ClientGUI
             Console.WriteLine("ShiftClickAutoClicker 已开始监听...");
         }
 
+        /// <summary>
+        /// 停止监听
+        /// </summary>
         public void Stop()
         {
             _monitoring = false;
