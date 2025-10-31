@@ -90,6 +90,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             chkRememberMe.Text = "Remember me".L10N("UI:Main:RememberMe");
             chkRememberMe.TextPadding = 7;
             chkRememberMe.CheckedChanged += ChkRememberMe_CheckedChanged;
+            chkRememberMe.Visible = false;
 
             chkPersistentMode = new XNAClientCheckBox(WindowManager);
             chkPersistentMode.Name = "chkPersistentMode";
@@ -103,7 +104,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             chkAutoConnect.ClientRectangle = new Rectangle(12, chkPersistentMode.Bottom + 30, 0, 0);
             chkAutoConnect.Text = "Connect automatically on client startup".L10N("UI:Main:AutoConnect");
             chkAutoConnect.TextPadding = chkRememberMe.TextPadding;
-            chkAutoConnect.AllowChecking = false;
+            chkAutoConnect.Visible = false;
 
             btnConnect = new XNAClientButton(WindowManager);
             btnConnect.Name = "btnConnect";
@@ -191,7 +192,8 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
 
             ProgramConstants.PLAYERNAME = tbPlayerName.Text;
 
-            UserINISettings.Instance.SkipConnectDialog.Value = chkRememberMe.Checked;
+            //UserINISettings.Instance.SkipConnectDialog.Value = chkRememberMe.Checked;
+            UserINISettings.Instance.SkipConnectDialog.Value = false;
             UserINISettings.Instance.PersistentMode.Value = chkPersistentMode.Checked;
             UserINISettings.Instance.AutomaticCnCNetLogin.Value = chkAutoConnect.Checked;
             UserINISettings.Instance.PlayerName.Value = ProgramConstants.PLAYERNAME;
@@ -205,7 +207,8 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
         {
             chkAutoConnect.Checked = UserINISettings.Instance.AutomaticCnCNetLogin;
             chkPersistentMode.Checked = UserINISettings.Instance.PersistentMode;
-            chkRememberMe.Checked = UserINISettings.Instance.SkipConnectDialog;
+         //   chkRememberMe.Checked = UserINISettings.Instance.SkipConnectDialog;
+            chkRememberMe.Checked = false;
 
             tbPlayerName.Text = UserINISettings.Instance.PlayerName;
 

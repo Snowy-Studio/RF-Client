@@ -1113,8 +1113,8 @@ namespace Ra2Client.DXGUI.Generic
         {
             topBar.SetLanMode(false);
 
-            if (UserINISettings.Instance.AutomaticCnCNetLogin)
-                connectionManager.Connect();
+            //if (UserINISettings.Instance.AutomaticCnCNetLogin)
+            //    connectionManager.Connect();
 
             if (UserINISettings.Instance.StopMusicOnMenu)
                 PlayMusic();

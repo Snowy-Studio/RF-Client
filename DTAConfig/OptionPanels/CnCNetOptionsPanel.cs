@@ -111,7 +111,7 @@ namespace DTAConfig.OptionPanels
                 12, 0, 0);
             chkSkipLoginWindow.Text = "Skip login dialog".L10N("UI:DTAConfig:SkipLoginDialog");
             chkSkipLoginWindow.CheckedChanged += ChkSkipLoginWindow_CheckedChanged;
-           // chkSkipLoginWindow.AllowChecking = false;
+            chkSkipLoginWindow.Visible = false;
 
             AddChild(chkSkipLoginWindow);
 
@@ -131,7 +131,7 @@ namespace DTAConfig.OptionPanels
                 chkSkipLoginWindow.X,
                 chkPersistentMode.Bottom + 12, 0, 0);
             chkConnectOnStartup.Text = "Connect automatically on client startup".L10N("UI:DTAConfig:ConnectOnStart");
-            chkConnectOnStartup.AllowChecking = false;
+            chkConnectOnStartup.Visible = false;
 
             AddChild(chkConnectOnStartup);
 
@@ -141,6 +141,7 @@ namespace DTAConfig.OptionPanels
                 chkSkipLoginWindow.X,
                 chkConnectOnStartup.Bottom + 12, 0, 0);
             chkDiscordIntegration.Text = "Show detailed game info in Discord status".L10N("UI:DTAConfig:DiscordStatus");
+            chkDiscordIntegration.Visible = false;
 
             if (String.IsNullOrEmpty(ClientConfiguration.Instance.DiscordAppId))
             {
@@ -321,7 +322,8 @@ namespace DTAConfig.OptionPanels
             chkDisablePrivateMessagePopup.Checked = IniSettings.DisablePrivateMessagePopups;
             SetAllowPrivateMessagesFromState(IniSettings.AllowPrivateMessagesFromState);
             chkConnectOnStartup.Checked = IniSettings.AutomaticCnCNetLogin;
-            chkSkipLoginWindow.Checked = IniSettings.SkipConnectDialog;
+            //chkSkipLoginWindow.Checked = IniSettings.SkipConnectDialog;
+            chkSkipLoginWindow.Checked = false;
             chkPersistentMode.Checked = IniSettings.PersistentMode;
 
             chkDiscordIntegration.Checked = !String.IsNullOrEmpty(ClientConfiguration.Instance.DiscordAppId)
@@ -356,7 +358,7 @@ namespace DTAConfig.OptionPanels
             IniSettings.DisablePrivateMessagePopups.Value = chkDisablePrivateMessagePopup.Checked;
             IniSettings.AllowPrivateMessagesFromState.Value = GetAllowPrivateMessagesFromState();
             IniSettings.AutomaticCnCNetLogin.Value = chkConnectOnStartup.Checked;
-            IniSettings.SkipConnectDialog.Value = chkSkipLoginWindow.Checked;
+            //IniSettings.SkipConnectDialog.Value = chkSkipLoginWindow.Checked;
             IniSettings.PersistentMode.Value = chkPersistentMode.Checked;
 
             if (!String.IsNullOrEmpty(ClientConfiguration.Instance.DiscordAppId))

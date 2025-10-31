@@ -173,11 +173,11 @@ namespace Ra2Client.DXGUI.Generic
          
             mainMenu.PostInit();
            
-            if (UserINISettings.Instance.AutomaticCnCNetLogin &&
-                NameValidator.IsNameValid(ProgramConstants.PLAYERNAME) == null)
-            {
-                cncnetManager.Connect();
-            }
+            //if (UserINISettings.Instance.AutomaticCnCNetLogin &&
+            //    NameValidator.IsNameValid(ProgramConstants.PLAYERNAME) == null)
+            //{
+            //    cncnetManager.Connect();
+            //}
             
             //if (UserINISettings.Instance.video_wallpaper)
             //    UnloadContent();
