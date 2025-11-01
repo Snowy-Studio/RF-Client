@@ -162,15 +162,15 @@ namespace Reunion
                     switch (arch)
                     {
                         case "x86":
-                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: x86\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net61\n您现在想下载吗? (点击确定即可自动下载)";
+                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: x86\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net61\n\n您现在想下载吗? (点击确定即可自动下载)";
                             url = $"https://url.yra2.com/net61";
                             break;
                         case "x64":
-                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: x64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net60\n您现在想下载吗? (点击确定即可自动下载)";
+                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: x64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net60\n\n您现在想下载吗? (点击确定即可自动下载)";
                             url = $"https://url.yra2.com/net60";
                             break;
                         case "arm64":
-                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: Arm64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net62\n您现在想下载吗? (点击确定即可自动下载)";
+                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: Arm64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net62\n\n您现在想下载吗? (点击确定即可自动下载)";
                             url = $"https://url.yra2.com/net62";
                             break;
                         default:
