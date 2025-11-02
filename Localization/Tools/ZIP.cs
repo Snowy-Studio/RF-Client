@@ -121,24 +121,20 @@ public class SevenZip
 
             string architecture = RuntimeInformation.OSArchitecture switch
             {
-                Architecture.X64 => "x64",      // x64 系统
-                Architecture.X86 => "x86",      // x86 系统
-                Architecture.Arm64 => "arm64",  // ARM64 系统
-                _ => "unknown"                  // 其他架构 (如 Arm32、WASM 等)
+                Architecture.X64 => "x64",
+                Architecture.X86 => "x86",
+                Architecture.Arm64 => "arm64",
+                _ => "unknown"
             };
 
-            // 启动 7z.exe 进程
             ProcessStartInfo startInfo = new()
             {
                 FileName = $"Resources/Binaries/{architecture}/7z.exe",
                 Arguments = arguments,
-                CreateNoWindow = true, // 不显示命令行窗口
-                UseShellExecute = false, // 不使用操作系统外壳程序启动进程
-                RedirectStandardOutput = true // 重定向标准输出流
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true
             };
-
-            Console.WriteLine(startInfo.FileName);
-            Console.WriteLine(arguments);
 
             Logger.Log(startInfo.FileName);
             Logger.Log(arguments);
@@ -149,7 +145,6 @@ public class SevenZip
             {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
-                    // 解析输出流中的进度信息
                     if (int.TryParse(e.Data, out int progress))
                     {
                         progressCallback?.Invoke(progress);
@@ -158,11 +153,28 @@ public class SevenZip
             };
 
             process.Start();
-            process.BeginOutputReadLine(); // 开始异步读取标准输出流
+            process.BeginOutputReadLine();
+            process.WaitForExit();
 
-            process.WaitForExit(); // 等待解压完成
+            bool success = process.ExitCode == 0;
 
-            if (process.ExitCode == 0 && needDel)
+            if (success)
+            {
+                // ✅ 去掉解压出来文件的只读属性
+                try
+                {
+                    foreach (string file in Directory.EnumerateFiles(extractPath, "*", SearchOption.AllDirectories))
+                    {
+                        File.SetAttributes(file, FileAttributes.Normal);
+                    }
+                }
+                catch (Exception attrEx)
+                {
+                    Logger.Log($"Error removing read-only attributes: {attrEx.Message}");
+                }
+            }
+
+            if (success && needDel)
             {
                 try
                 {
@@ -174,7 +186,7 @@ public class SevenZip
                 }
             }
 
-            return process.ExitCode == 0;
+            return success;
         }
         catch (Exception ex)
         {
