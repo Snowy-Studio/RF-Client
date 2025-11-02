@@ -162,24 +162,24 @@ namespace Reunion
                     switch (arch)
                     {
                         case "x86":
-                            message = "检测到缺少所需的.NET6 x86运行环境, 是否立即跳转到重聚未来官网进行下载?\n所需运行时版本要求: v6.0.36, 点击 '确定' 将自动跳转下载\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x86\n如果您确认您的PC并非x86系统, 请手动下载Arm64运行时\n\n不要下载SDK, 不要下载SDK, 不要下载SDK!!! 重要的事情说三遍, SDK是给开发者用的, 普通用户下载桌面运行时就可以了";
+                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: x86\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net61\n\n您现在想下载吗? (点击确定即可自动下载)";
                             url = $"https://url.yra2.com/net61";
                             break;
                         case "x64":
-                            message = "检测到缺少所需的.NET6 x64运行环境, 是否立即跳转到重聚未来官网进行下载?\n所需运行时版本要求: v6.0.36, 点击 '确定' 将自动跳转下载\n\n请注意: 由于Arm64系统的仿真层, 程序可能会错误的识别为x64\n如果您确认您的PC并非x64系统, 请手动下载Arm64运行时\n\n不要下载SDK, 不要下载SDK, 不要下载SDK!!! 重要的事情说三遍, SDK是给开发者用的, 普通用户下载桌面运行时就可以了";
+                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: x64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net60\n\n您现在想下载吗? (点击确定即可自动下载)";
                             url = $"https://url.yra2.com/net60";
                             break;
                         case "arm64":
-                            message = "检测到缺少所需的.NET6 Arm64运行环境, 是否立即跳转到重聚未来官网进行下载?\n所需运行时版本要求: v6.0.36, 点击 '确定' 将自动跳转下载Arm64运行时\n\n不要下载SDK, 不要下载SDK, 不要下载SDK!!! 重要的事情说三遍, SDK是给开发者用的, 普通用户下载桌面运行时就可以了";
+                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: Arm64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net62\n\n您现在想下载吗? (点击确定即可自动下载)";
                             url = $"https://url.yra2.com/net62";
                             break;
                         default:
-                            message = "检测到缺少所需的.NET6 UnknownArch运行环境, 是否立即跳转到Microsoft官网进行下载?\n\n所需运行时版本要求: v6.0.36, 点击 '确定' 将自动跳转下载UnknownArch运行时\n\n无法识别您的系统架构, 客户端可能不兼容您的系统";
+                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: Unknown\n运行时版本: 6.0.36\n\n应用程序貌似与您的系统不兼容, 请尝试更换系统";
                             url = "https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0";
                             break;
                     }
 
-                    var result = MessageBox.Show(message, "警告: 缺少运行时环境", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                    var result = MessageBox.Show(message, "错误: 缺少桌面运行时环境", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
                     if (result == DialogResult.OK)
                     {
                         Process.Start(url);
