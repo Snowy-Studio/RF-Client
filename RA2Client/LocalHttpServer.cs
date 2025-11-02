@@ -181,8 +181,8 @@ namespace Ra2Client
                     var missionPackVo = JsonSerializer.Deserialize<MissionPackVo>(requestBody);
 
                     
-                    _ = Task.Run(async () =>
-                    {
+                    //_ = Task.Run(async () =>
+                    //{
                         var messageBox = new XNAMessage(wm);
                         messageBox.caption = "写入任务包";
                         messageBox.description = $"正在写入任务包 {missionPackVo.name},请稍等";
@@ -191,7 +191,7 @@ namespace Ra2Client
                         messageBox.Disable();
                         messageBox.Detach();
                         messageBox.Dispose();
-                    });
+                    //});
                     
 
                     var result = new
