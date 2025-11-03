@@ -133,19 +133,6 @@ namespace Reunion
             }
         }
 
-        /// <summary>
-        /// 计算文件的RIPEMD160哈希值
-        /// </summary>
-        public static string ComputeFileRipeMd160(string filePath)
-        {
-            using (FileStream stream = File.OpenRead(filePath))
-            using (RIPEMD160 ripeMd160 = new RIPEMD160Managed())
-            {
-                byte[] hashBytes = ripeMd160.ComputeHash(stream);
-                return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-            }
-        }
-
         private static string GetClientProcessPath(string file) => Path.Combine(Resources, Binaries, file);
 
         private static void StartProcess(string relPath)
