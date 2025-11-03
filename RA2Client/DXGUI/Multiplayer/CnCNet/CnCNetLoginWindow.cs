@@ -22,6 +22,10 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
         XNALabel lblPlayerName;
         XNADropDown ddRegion;
         XNALabel lblRegion;
+        XNALabel lblRegionDescription;
+        XNAPanel pnlTopDivider;
+        XNAPanel pnlDivider;
+        XNAPanel pnlBottomDivider;
         XNAClientCheckBox chkRememberMe;
         XNAClientCheckBox chkPersistentMode;
         XNAClientCheckBox chkAutoConnect;
@@ -34,7 +38,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
         public override void Initialize()
         {
             Name = "CnCNetLoginWindow";
-            ClientRectangle = new Rectangle(0, 0, 340, 260);
+            ClientRectangle = new Rectangle(0, 0, 600, 270);
             BackgroundTexture = AssetLoader.LoadTextureUncached("logindialogbg.png");
 
             lblConnectToCnCNet = new XNALabel(WindowManager);
@@ -54,9 +58,15 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             lblServerNotice.CenterOnParent();
             lblServerNotice.ClientRectangle = new Rectangle(lblServerNotice.X, lblConnectToCnCNet.Bottom + 8, lblServerNotice.Width, lblServerNotice.Height);
 
+            pnlTopDivider = new XNAPanel(WindowManager);
+            pnlTopDivider.ClientRectangle = new Rectangle(12, lblServerNotice.Bottom + 8, Width - 24, 1);
+            AddChild(pnlTopDivider);
+
+            int contentY = pnlTopDivider.Y + 10;
+
             tbPlayerName = new XNATextBox(WindowManager);
             tbPlayerName.Name = "tbPlayerName";
-            tbPlayerName.ClientRectangle = new Rectangle(Width - 192, lblServerNotice.Bottom + 10, 188, 19);
+            tbPlayerName.ClientRectangle = new Rectangle(100, contentY, 188, 19);
             tbPlayerName.MaximumTextLength = ClientConfiguration.Instance.MaxNameLength;
             tbPlayerName.IMEDisabled = true;
             string defgame = ClientConfiguration.Instance.LocalGame;
@@ -69,7 +79,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
 
             ddRegion = new XNADropDown(WindowManager);
             ddRegion.Name = "ddRegion";
-            ddRegion.ClientRectangle = new Rectangle(Width - 192, lblPlayerName.Bottom + 10, 188, 21);
+            ddRegion.ClientRectangle = new Rectangle(100, lblPlayerName.Bottom + 10, 188, 21);
             ddRegion.AddItem("Chinese Mainland Zone 1".L10N("UI:Main:RegionChineseMainlandZone1"));
             ddRegion.AddItem("Chinese Mainland Zone 2".L10N("UI:Main:RegionChineseMainlandZone2"));
             ddRegion.AddItem("Chinese Mainland Zone 3".L10N("UI:Main:RegionChineseMainlandZone3"));
@@ -106,15 +116,39 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             chkAutoConnect.TextPadding = chkRememberMe.TextPadding;
             chkAutoConnect.Visible = false;
 
+            pnlDivider = new XNAPanel(WindowManager);
+            pnlDivider.ClientRectangle = new Rectangle(300, contentY, 1, 130);
+            AddChild(pnlDivider);
+
+            lblRegionDescription = new XNALabel(WindowManager);
+            lblRegionDescription.Name = "lblRegionDescription";
+            lblRegionDescription.FontIndex = 0;
+            lblRegionDescription.Text = GetRegionDescription(ddRegion.SelectedIndex);
+            lblRegionDescription.ClientRectangle = new Rectangle(305, contentY, 240, 130);
+            AddChild(lblRegionDescription);
+
+            ddRegion.SelectedIndexChanged += (s, e) =>
+            {
+                lblRegionDescription.Text = GetRegionDescription(ddRegion.SelectedIndex);
+            };
+
+            pnlBottomDivider = new XNAPanel(WindowManager);
+            pnlBottomDivider.ClientRectangle = new Rectangle(12, pnlDivider.Y + pnlDivider.Height + 5, Width - 24, 1);
+            AddChild(pnlBottomDivider);
+
+            int buttonY = pnlBottomDivider.Y + 15;
+            int totalButtonWidth = 110 + 110 + 10;
+            int startX = (Width - totalButtonWidth) / 2;
+
             btnConnect = new XNAClientButton(WindowManager);
             btnConnect.Name = "btnConnect";
-            btnConnect.ClientRectangle = new Rectangle(12, Height - 35, 110, 23);
+            btnConnect.ClientRectangle = new Rectangle(startX, buttonY, 110, 23);
             btnConnect.Text = "Connect".L10N("UI:Main:ButtonConnect");
             btnConnect.LeftClick += BtnConnect_LeftClick;
 
             btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = "btnCancel";
-            btnCancel.ClientRectangle = new Rectangle(Width - 122, btnConnect.Y, 110, 23);
+            btnCancel.ClientRectangle = new Rectangle(startX + 110 + 10, buttonY, 110, 23);
             btnCancel.Text = "Cancel".L10N("UI:Main:ButtonCancel");
             btnCancel.LeftClick += BtnCancel_LeftClick;
 
@@ -133,6 +167,27 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             CenterOnParent();
 
             UserINISettings.Instance.SettingsSaved += Instance_SettingsSaved;
+        }
+
+        private string GetRegionDescription(int index)
+        {
+            switch (index)
+            {
+                case 0: 
+                    return "Chinese Mainland Zone 1 Introduction (XE6):\n\nRegion: Zhejiang, China / Hubei, China\nApplicable region: Chinese Mainland\n\nLine: China Telecom (Single Line)\nNetwork support: IPv4+IPv6\nCloud service provider: Rainyun".L10N("UI:Main:RegionDescCN1");
+                case 1: 
+                    return "Chinese Mainland Zone 2 Introduction (XE7):\n\nRegion: Beijing, China / Guangdong, China\nApplicable region: Chinese Mainland\n\nLine: China BGP (Telecom, Unicom, Mobile)\nNetwork support: IPv4+IPv6\nCloud service provider: TencentCloud".L10N("UI:Main:RegionDescCN2");
+                case 2: 
+                    return "Chinese Mainland Zone 3 Introduction (XF2):\n\nRegion: Jiangsu, China\nApplicable region: Chinese Mainland\n\nLine: China BGP (Telecom, Unicom, Mobile)\nNetwork support: IPv4\nCloud service provider: 4299Cloud".L10N("UI:Main:RegionDescCN3");
+                case 3: 
+                    return "Asia Pacific Zone 1 Introduction (XG4):\n\nRegion: Hong Kong, China / Tokyo, Japan\nApplicable regions: Asia/Oceania\n\nLine: CN2+4837+CMI+Cogent+PCCWG+NTT+TATA+IIJ+JPNAP\nNetwork support: IPv4+IPv6\nCloud service provider: Yunyoo".L10N("UI:Main:RegionDescAP1");
+                case 4: 
+                    return "Europe Zone 1 Introduction (XG5):\n\nRegion: London, United Kingdom / Coventry, United Kingdom\nApplicable regions: Europe/Africa\n\nLine: GTT+NTT+PCCW+Arelion+RETN\nNetwork support: IPv4+IPv6\nCloud service provider: Yunyoo".L10N("UI:Main:RegionDescEU1");
+                case 5: 
+                    return "North America Zone 1 Introduction (XF3):\n\nRegion: Los Angeles, USA\nApplicable regions: North America/South America\n\nLine: GSL+CN2GIA+9929+10099+CMIN2\nNetwork support: IPv4+IPv6\nCloud service provider: DMIT".L10N("UI:Main:RegionDescNA1");
+                default: 
+                    return "Please select a server region to view the region introduction.".L10N("UI:Main:RegionDescDefault");
+            }
         }
 
         private void Instance_SettingsSaved(object sender, EventArgs e)
@@ -175,17 +230,23 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             string selectedRegion = "Chinese Mainland Zone 1";
             switch (ddRegion.SelectedIndex)
             {
-                case 0: selectedRegion = "Chinese Mainland Zone 1";
+                case 0: 
+                    selectedRegion = "Chinese Mainland Zone 1";
                     break;
-                case 1: selectedRegion = "Chinese Mainland Zone 2";
+                case 1: 
+                    selectedRegion = "Chinese Mainland Zone 2";
                     break;
-                case 2: selectedRegion = "Chinese Mainland Zone 3";
+                case 2: 
+                    selectedRegion = "Chinese Mainland Zone 3";
                     break;
-                case 3: selectedRegion = "Asia Pacific Zone 1";
+                case 3: 
+                    selectedRegion = "Asia Pacific Zone 1";
                     break;
-                case 4: selectedRegion = "Europe Zone 1";
+                case 4: 
+                    selectedRegion = "Europe Zone 1";
                     break;
-                case 5: selectedRegion = "North America Zone 1";
+                case 5: 
+                    selectedRegion = "North America Zone 1";
                     break;
             }
             Connection.SelectedRegion = selectedRegion;
@@ -207,7 +268,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
         {
             chkAutoConnect.Checked = UserINISettings.Instance.AutomaticCnCNetLogin;
             chkPersistentMode.Checked = UserINISettings.Instance.PersistentMode;
-         //   chkRememberMe.Checked = UserINISettings.Instance.SkipConnectDialog;
+            //chkRememberMe.Checked = UserINISettings.Instance.SkipConnectDialog;
             chkRememberMe.Checked = false;
 
             tbPlayerName.Text = UserINISettings.Instance.PlayerName;
