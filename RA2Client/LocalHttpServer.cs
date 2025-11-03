@@ -407,8 +407,8 @@ namespace Ra2Client
 
 
             mapIni.SetValue(sectionName, "MaxPlayers", map.maxPlayers);
-            mapIni.SetValue(sectionName, "Ares", map.ares == 1);
-            mapIni.SetValue(sectionName, "TX", map.tx == 1);
+            mapIni.SetValue(sectionName, "Ares", map.ares);
+            mapIni.SetValue(sectionName, "TX", map.tx);
             mapIni.SetValue(sectionName, "Description", $"[{map.maxPlayers}]{map.name}");
             mapIni.SetValue(sectionName, "GameModes", "常规作战,地图库");
             mapIni.SetValue(sectionName, "Author", map.author);

@@ -692,22 +692,35 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 chkAres.Checked = false;
                 chkAres.AllowChecking = false;
             }
-            else if(Map?.Ares == true)
+            else if(Map?.Ares == 1)
             {
                 chkAres.AllowChecking = false;
                 chkAres.Checked = true;
                 cmbGame.SelectedIndex = 0;
                 cmbGame.AllowDropDown = false;
             }
+            else if(Map?.Ares == 2)
+            {
+                chkAres.AllowChecking = false;
+                chkAres.Checked = false;
+                cmbGame.SelectedIndex = 0;
+                cmbGame.AllowDropDown = false;
+
+            } 
             else
             {
                 cmbGame.AllowDropDown = true;
                 chkAres.AllowChecking = true;
             }
 
-            if (Map?.TX == true)
+            if (Map?.TX == 1)
             {
                 chkTerrain.Checked = true;
+                chkTerrain.AllowChecking = false;
+            }
+            else if (Map?.TX == 2) 
+            {
+                chkTerrain.Checked = false;
                 chkTerrain.AllowChecking = false;
             }
             else
@@ -3116,7 +3129,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 cmbGame.AllowDropDown = true;
             }
 
-            if (Map.Ares)
+            if (Map.Ares != 0)
             {
                 cmbGame.SelectedIndex = 0;
             }

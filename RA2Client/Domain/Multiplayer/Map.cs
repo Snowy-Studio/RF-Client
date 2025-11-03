@@ -135,7 +135,7 @@ namespace Ra2Client.Domain.Multiplayer
         public string Author { get; private set; }
 
 
-        public bool Ares { get; private set; }
+        public int Ares { get; private set; }
 
         /// <summary>
         /// The calculated SHA1 of the map.
@@ -188,7 +188,7 @@ namespace Ra2Client.Domain.Multiplayer
         [JsonInclude]
         public bool ForceNoTeams { get; private set; }
 
-        public bool TX { get; private set; }
+        public int TX { get; private set; }
 
         /// <summary>
         /// The name of an extra INI file in INI\MapCode\ that should be
@@ -385,7 +385,7 @@ namespace Ra2Client.Domain.Multiplayer
                     iniFile.AddSection(sectionName);
 
                 section = iniFile.GetSection(sectionName);
-                TX = section.GetValue("TX", false);
+                TX = section.GetValue("TX", 0);
                 Author = section.GetValue("Author", string.Empty);
                 if (Author == string.Empty)
                 {
@@ -445,9 +445,7 @@ namespace Ra2Client.Domain.Multiplayer
                 }
                 Rules = LoadRulesFromSection(section);
 
-                Ares = section.GetValue("Ares", false);
-
-              
+                Ares = section.GetValue("Ares", 0);
 
                 int i = 0;
                 while (true)
