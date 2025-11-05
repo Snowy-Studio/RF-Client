@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -691,7 +692,7 @@ public class XNAListBox : XNAPanel
 
     public override void Update(GameTime gameTime)
     {
-        foreach (XNAListBoxItem lbItem in Items)
+        foreach (XNAListBoxItem lbItem in Items.ToList())
         {
             if (lbItem.Alpha < 1.0f)
                 lbItem.Alpha += ItemAlphaRate;

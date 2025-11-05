@@ -180,7 +180,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
                 case 2: 
                     return "Chinese Mainland Zone 3 Introduction (XF2):\n\nRegion: Jiangsu, China\nApplicable region: Chinese Mainland\n\nLine: China BGP (Telecom, Unicom, Mobile)\nNetwork support: IPv4\nCloud service provider: 4299Cloud".L10N("UI:Main:RegionDescCN3");
                 case 3: 
-                    return "Asia Pacific Zone 1 Introduction (XG4):\n\nRegion: Tokyo, Japan / Adelaide, Australia\nApplicable regions: Asia/Oceania\n\nLine: Cogent+GSL+EIE+BBIX+JPIX+IIJ+JPNAP\nNetwork support: IPv4+IPv6\nCloud service provider: Yunyoo".L10N("UI:Main:RegionDescAP1");
+                    return "Asia Pacific Zone 1 Introduction (XG4):\n\nRegion: Tokyo, Japan\nApplicable regions: Asia/Oceania\n\nLine: Cogent+GSL+EIE+BBIX+JPIX+IIJ+JPNAP\nNetwork support: IPv4+IPv6\nCloud service provider: Yunyoo".L10N("UI:Main:RegionDescAP1");
                 case 4: 
                     return "Europe Zone 1 Introduction (XG5):\n\nRegion: London, United Kingdom / Coventry, United Kingdom\nApplicable regions: Europe/Africa\n\nLine: GTT+NTT+PCCW+Arelion+RETN\nNetwork support: IPv4+IPv6\nCloud service provider: Yunyoo".L10N("UI:Main:RegionDescEU1");
                 case 5: 
