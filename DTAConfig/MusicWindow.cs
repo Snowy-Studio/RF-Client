@@ -425,8 +425,8 @@ namespace DTAConfig
             var ctbName = new XNATextBox(WindowManager)
             {
                 Name = "ctbName",
-                Text = _music.CName,
-                ClientRectangle = new Rectangle(lblName.Right + 50, lblName.Y, 100, 20)
+                ClientRectangle = new Rectangle(lblName.Right + 50, lblName.Y, 100, 20),
+                Text = _music.CName
             };
 
             var lblSide = new XNALabel(WindowManager)
