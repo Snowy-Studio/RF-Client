@@ -18,14 +18,16 @@ namespace Reunion
         private const string Binaries = "Binaries";
 
         private const string LicenseFile = "License-GPLv3.txt";
-        private const string RequiredFile = "使用前必读.txt";
+        private const string ReadmeFile = "使用前必读.txt";
         private const string FreeFile = "本游戏完全免费，祝倒卖的寿比昙花.txt";
         private const string AntiCheatFile = "Reunion Anti-Cheat.dll";
+        private const string LauncherFile = "Reunion.exe";
 
         private const string LicenseFileHash = "dc447a64136642636d7aa32e50c76e2465801c5f";
-        private const string RequiredFileHash = "1dbb412e60371c4b5aff6a8609df1d1b0446e4517b46ec4a4b99a23b132d9f86";
+        private const string ReadmeFileHash = "1dbb412e60371c4b5aff6a8609df1d1b0446e4517b46ec4a4b99a23b132d9f86";
         private const string FreeFileHash = "bf46a8a320bf587de81190854b210fa2";
         private const string AntiCheatFileHash = "77d7dcd1448a96696cb1ba494f1c9e0d920a32dcbe91546da9363e06c6778ee6892ad41c23c4e527088f608956f6c91b1481bad4d4365c70b8f23ac310fabb62";
+        private const string LauncherFileHash = "a4a561c91e8f615c97b7aa4273c218a88675c8ab174ed4cd91b21ace008192a12645a2908f5936126378e8d905ae229c";
 
         private static readonly string dotnetPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet");
         private static string sharedPath = @"shared\Microsoft.WindowsDesktop.App";
@@ -48,13 +50,13 @@ namespace Reunion
         {
             try
             {
-                if (!File.Exists(RequiredFile) || !File.Exists(FreeFile) || !File.Exists(LicenseFile) || !File.Exists(AntiCheatFile))
+                if (!File.Exists(ReadmeFile) || !File.Exists(FreeFile) || !File.Exists(LicenseFile) || !File.Exists(AntiCheatFile))
                 {
                     MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
-                if (!ComputeFileSHA256(RequiredFile).Equals(RequiredFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileMD5(FreeFile).Equals(FreeFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileSHA1(LicenseFile).Equals(LicenseFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileSHA512(AntiCheatFile).Equals(AntiCheatFileHash, StringComparison.OrdinalIgnoreCase))
+                if (!ComputeFileSHA256(ReadmeFile).Equals(ReadmeFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileMD5(FreeFile).Equals(FreeFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileSHA1(LicenseFile).Equals(LicenseFileHash, StringComparison.OrdinalIgnoreCase) || !ComputeFileSHA512(AntiCheatFile).Equals(AntiCheatFileHash, StringComparison.OrdinalIgnoreCase))
                 {
                     MessageBox.Show("发现未知错误，请联系重聚未来制作组", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -153,11 +155,11 @@ namespace Reunion
                             url = $"https://url.yra2.com/net61";
                             break;
                         case "x64":
-                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: x64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net60\n\n您现在想下载吗? (点击确定即可自动下载)";
+                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: x64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x64运行时: https://url.yra2.com/net60\n\n您现在想下载吗? (点击确定即可自动下载)";
                             url = $"https://url.yra2.com/net60";
                             break;
                         case "arm64":
-                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: Arm64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载x86运行时: https://url.yra2.com/net62\n\n您现在想下载吗? (点击确定即可自动下载)";
+                            message = "您必须安装 .NET 桌面运行时来运行此应用程序\n\n架构: Arm64\n运行时版本: 6.0.36\n\n如果不能正常跳转到下载地址, 请使用此地址手动下载Arm64运行时: https://url.yra2.com/net62\n\n您现在想下载吗? (点击确定即可自动下载)";
                             url = $"https://url.yra2.com/net62";
                             break;
                         default:
