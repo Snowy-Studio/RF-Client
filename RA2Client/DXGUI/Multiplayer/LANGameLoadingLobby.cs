@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -125,9 +125,9 @@ namespace Ra2Client.DXGUI.Multiplayer
                 this.client.GetStream().Write(buffer, 0, buffer.Length);
                 this.client.GetStream().Flush();
 
-                var fhc = new FileHashCalculator();
-                fhc.CalculateHashes(gameModes);
-                localFileHash = fhc.GetCompleteHash();
+                //var fhc = new FileHashCalculator();
+                //fhc.CalculateHashes();
+                //localFileHash = fhc.GetCompleteHash();
             }
             else
             {
@@ -144,9 +144,9 @@ namespace Ra2Client.DXGUI.Multiplayer
 
         public void PostJoin()
         {
-            var fhc = new FileHashCalculator();
-            fhc.CalculateHashes(gameModes);
-            SendMessageToHost(FILE_HASH_COMMAND + " " + fhc.GetCompleteHash());
+            //var fhc = new FileHashCalculator();
+            //fhc.CalculateHashes();
+            //SendMessageToHost(FILE_HASH_COMMAND + " " + fhc.GetCompleteHash());
             UpdateDiscordPresence(true);
         }
 

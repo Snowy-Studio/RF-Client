@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +15,9 @@ namespace Ra2Client.DXGUI.Generic
             //var uuid = GetSmBIOSUUID();
             //if (string.IsNullOrWhiteSpace(uuid))
             //{
-                var cpuID = GetCPUID();
-                var biosSerialNumber = GetBIOSSerialNumber();
-                var diskSerialNumber = GetDiskDriveSerialNumber();
+                var cpuID = GetCpuId();
+                var biosSerialNumber = GetSmBIOSUUID();
+                var diskSerialNumber = GetDiskSerialNumber();
                 var uuid = $"{cpuID}__{biosSerialNumber}__{diskSerialNumber}";
             //}
             return uuid;
@@ -24,45 +25,71 @@ namespace Ra2Client.DXGUI.Generic
 #nullable enable
         private static string? GetSmBIOSUUID()
         {
-            var cmd = "wmic csproduct get UUID";
-            return ExecuteCMD(cmd, output =>
+            try
             {
-                string? uuid = GetTextAfterSpecialText(output, "UUID");
-                if (uuid == "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")
+                // Win32_ComputerSystemProduct 的 UUID 字段即为 SMBIOS UUID
+                using var searcher = new ManagementObjectSearcher("SELECT UUID FROM Win32_ComputerSystemProduct");
+                foreach (ManagementObject mo in searcher.Get())
                 {
-                    uuid = null;
+                    var raw = mo["UUID"]?.ToString()?.Trim();
+                    if (string.IsNullOrWhiteSpace(raw)) return null;
+
+                    // 有时会返回全 F 的保留值，按你原来逻辑过滤
+                    if (string.Equals(raw, "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF", StringComparison.OrdinalIgnoreCase))
+                        return null;
+
+                    return raw;
                 }
-                return uuid;
-            });
-        }
-        private static string? GetCPUID()
-        {
-            var cmd = "wmic cpu get processorid";
-            return ExecuteCMD(cmd, output =>
+            }
+            catch
             {
-                var cpuid = GetTextAfterSpecialText(output, "ProcessorId");
-                return cpuid;
-            });
+                // 忽略异常并返回 null（你也可以记录日志）
+            }
+
+            return null;
+        }
+        public static string? GetCpuId()
+        {
+            try
+            {
+                using var mc = new ManagementClass("Win32_Processor");
+                foreach (var obj in mc.GetInstances())
+                {
+                    return obj["ProcessorId"]?.ToString();
+                }
+            }
+            catch { }
+            return null;
         }
 
-        private static string? GetBIOSSerialNumber()
+        public static string? GetBiosSerialNumber()
         {
-            var cmd = "wmic bios get serialnumber";
-            return ExecuteCMD(cmd, output =>
+            try
             {
-                var serialNumber = GetTextAfterSpecialText(output, "SerialNumber");
-                return serialNumber;
-            });
+                using var mc = new ManagementClass("Win32_BIOS");
+                foreach (var obj in mc.GetInstances())
+                {
+                    return obj["SerialNumber"]?.ToString();
+                }
+            }
+            catch { }
+            return null;
         }
 
-        private static string? GetDiskDriveSerialNumber()
+        public static string? GetDiskSerialNumber()
         {
-            var cmd = "wmic diskdrive get serialnumber";
-            return ExecuteCMD(cmd, output =>
+            try
             {
-                var serialNumber = GetTextAfterSpecialText(output, "SerialNumber");
-                return serialNumber;
-            });
+                using var mc = new ManagementClass("Win32_PhysicalMedia");
+                foreach (var obj in mc.GetInstances())
+                {
+                    var serial = obj["SerialNumber"]?.ToString()?.Trim();
+                    if (!string.IsNullOrEmpty(serial))
+                        return serial;
+                }
+            }
+            catch { }
+            return null;
         }
         private static string? GetTextAfterSpecialText(string fullText, string specialText)
         {

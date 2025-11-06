@@ -147,6 +147,8 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             gameBroadcastTimer.TimeElapsed += GameBroadcastTimer_TimeElapsed;
 
             WindowManager.AddAndInitializeControl(gameBroadcastTimer);
+
+            
         }
 
         public override void Refresh(bool isHost)
@@ -244,8 +246,8 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
         /// </summary>
         public void OnJoined()
         {
-            FileHashCalculator fhc = new FileHashCalculator();
-            fhc.CalculateHashes(gameModes);
+            //FileHashCalculator fhc = new FileHashCalculator();
+            //fhc.CalculateHashes();
 
             if (IsHost)
             {
@@ -259,7 +261,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
                     ProgramConstants.CNCNET_PROTOCOL_REVISION + ";" + localGame.ToLower()),
                     QueuedMessageType.SYSTEM_MESSAGE, 50));
 
-                gameFilesHash = fhc.GetCompleteHash();
+              //  gameFilesHash = fhc.GetCompleteHash();
 
                 gameBroadcastTimer.Enabled = true;
                 gameBroadcastTimer.Start();
@@ -267,7 +269,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             }
             else
             {
-                channel.SendCTCPMessage(FILE_HASH_CTCP_COMMAND + " " + fhc.GetCompleteHash(), QueuedMessageType.SYSTEM_MESSAGE, 10);
+              //  channel.SendCTCPMessage(FILE_HASH_CTCP_COMMAND + " " + fhc.GetCompleteHash(), QueuedMessageType.SYSTEM_MESSAGE, 10);
 
                 channel.SendCTCPMessage(TUNNEL_PING_CTCP_COMMAND + " " + tunnelHandler.CurrentTunnel.PingInMs, QueuedMessageType.SYSTEM_MESSAGE, 10);
 

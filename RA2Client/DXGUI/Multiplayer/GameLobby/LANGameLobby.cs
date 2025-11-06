@@ -133,6 +133,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             base.Initialize();
             PostInitialize();
             ReloadMod();
+            btnSend.Visible = false;
         }
 
         public void SetUp(bool isHost,
@@ -157,9 +158,9 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 this.client.GetStream().Write(buffer, 0, buffer.Length);
                 this.client.GetStream().Flush();
 
-                var fhc = new FileHashCalculator();
-                fhc.CalculateHashes(GameModeMaps.GameModes);
-                localFileHash = fhc.GetCompleteHash();
+                //var fhc = new FileHashCalculator();
+                //fhc.CalculateHashes();
+                //localFileHash = fhc.GetCompleteHash();
 
                 RefreshMapSelectionUI();
             }
@@ -178,9 +179,9 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         public void PostJoin()
         {
-            var fhc = new FileHashCalculator();
-            fhc.CalculateHashes(GameModeMaps.GameModes);
-            SendMessageToHost(FILE_HASH_COMMAND + " " + fhc.GetCompleteHash());
+            //var fhc = new FileHashCalculator();
+            //fhc.CalculateHashes();
+            //SendMessageToHost(FILE_HASH_COMMAND + " " + fhc.GetCompleteHash());
             ResetAutoReadyCheckbox();
         }
 

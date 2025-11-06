@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,21 +31,21 @@ namespace Ra2Client.Online
 
         public FileHashCalculator() => ParseConfigFile();
 
-        public void CalculateHashes(List<GameMode> gameModes)
+        public void CalculateHashes(string modPath = "",string otherFilePath = "")
         {
             fh = new FileHashes
             {
                 GameOptionsHash = Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GamePath, ProgramConstants.BASE_RESOURCE_PATH, "GameOptions.ini")),
                 ClientDXHash = Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "Binaries",  "Ra2Client.dll")),
-                GameExeHash = calculateGameExeHash ?
-                Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GamePath, ClientConfiguration.Instance.GetGameExecutableName())) : string.Empty,
+                //GameExeHash = calculateGameExeHash ?
+                //Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GamePath, ClientConfiguration.Instance.GetGameExecutableName())) : string.Empty,
                 LauncherExeHash = Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GamePath, ClientConfiguration.Instance.GameLauncherExecutableName)),
-                // MPMapsHash = Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.游戏目录, ClientConfiguration.Instance.GameModesIniPath)),
-                FHCConfigHash = Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.BASE_RESOURCE_PATH, CONFIGNAME)),
+                //MPMapsHash = Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.游戏目录, ClientConfiguration.Instance.GameModesIniPath)),
+              //  FHCConfigHash = Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.BASE_RESOURCE_PATH, CONFIGNAME)),
                 INIHashes = string.Empty
             };
 
-            Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + CONFIGNAME + ": " + fh.FHCConfigHash);
+          //  Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + CONFIGNAME + ": " + fh.FHCConfigHash);
             Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + "\\GameOptions.ini: " + fh.GameOptionsHash);
             Logger.Log("Hash for " + ProgramConstants.BASE_RESOURCE_PATH + "\\Binaries\\Ra2Client.dll: " + fh.ClientDXHash);
             // Logger.Log("Hash for " + ClientConfiguration.Instance.GameModesIniPath + ": " + fh.MPMapsHash);
@@ -65,10 +65,10 @@ namespace Ra2Client.Online
 
             DirectoryInfo[] iniPaths =
             {
-#if !YR
                SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Multi", "MapCode"),
-#endif
-               SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Multi", "GameOptions")
+               SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Multi", "GameOptions"),
+               SafePath.GetDirectory(modPath),
+               SafePath.GetDirectory(otherFilePath),
             };
 
             foreach (DirectoryInfo path in iniPaths)
@@ -106,8 +106,6 @@ namespace Ra2Client.Online
             str += fh.GameExeHash;
             str += fh.LauncherExeHash;
             str += fh.INIHashes;
-            // str += fh.MPMapsHash;
-            str += fh.FHCConfigHash;
 
             Logger.Log("Complete hash: " + Utilities.CalculateSHA1ForString(str));
 
@@ -139,7 +137,7 @@ namespace Ra2Client.Online
             string INIHashes,
             // string MPMapsHash,
             string GameExeHash,
-            string LauncherExeHash,
-            string FHCConfigHash);
+            string LauncherExeHash
+            );
     }
 }

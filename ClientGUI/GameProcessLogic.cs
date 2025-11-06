@@ -387,8 +387,8 @@ namespace ClientGUI
                 所有需要复制的文件.Add($"Resources/Voice/{UserINISettings.Instance.Voice.Value}");
 
 
-                if (newSection.KeyExists("GameID"))
-                    所有需要复制的文件.Add("Reunion Anti-Cheat.dll");
+                //if (newSection.KeyExists("GameID"))
+                //    所有需要复制的文件.Add("Reunion Anti-Cheat.dll");
                 var keyboardMD = Path.Combine(ProgramConstants.GamePath, "KeyboardMD.ini");
                 if (File.Exists(keyboardMD))
                     所有需要复制的文件.Add(keyboardMD);

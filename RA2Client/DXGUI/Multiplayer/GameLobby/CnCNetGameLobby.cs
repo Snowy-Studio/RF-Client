@@ -23,6 +23,7 @@ using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
+using DTAConfig.Entity;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {
@@ -100,6 +101,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 // new NoParamCommandHandler(CHEAT_DETECTED_MESSAGE, HandleCheatDetectedMessage),
                 new StringCommandHandler(GAME_NAME_CHANGED, HandleGameNameChangeMessage),
                 new StringCommandHandler(CHANGE_TUNNEL_SERVER_MESSAGE, HandleTunnelServerChangeMessage),
+
+                
             ];
 
             // CnCNetLobby.Download_Notice += HandleMapDownloadNotice;
@@ -120,6 +123,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             AddChatBoxCommand(new ChatBoxCommand("DOWNLOADMAP",
                 "Download_Notice a map from CNCNet's map server using a map ID and an optional filename.\nExample: \"/downloadmap MAPID [2] My Battle Map\"".L10N("UI:Main:DownloadMapCommandDescription"),
                 false, DownloadMapByIdCommand));
+
 
             
         }
@@ -419,6 +423,15 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             PostInitialize();
 
             btnSend.LeftClick += 发送地图给其他玩家;
+
+            cmbGame.SelectedIndexChanged += (_, _) =>
+            {
+
+                var mod = cmbGame.SelectedItem.Tag as Mod;
+                FileHashCalculator fhc = new FileHashCalculator();
+                fhc.CalculateHashes(mod.FilePath, GameModeMap.Map.OtherFile);
+                channel.SendCTCPMessage("FHSH" + " " + fhc.GetCompleteHash(), QueuedMessageType.SYSTEM_MESSAGE, 10);
+            };
         }
 
         private void BtnClosePass_LeftClick(object sender, EventArgs e)
@@ -503,10 +516,10 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         public void OnJoined()
         {
-            FileHashCalculator fhc = new FileHashCalculator();
-            fhc.CalculateHashes(GameModeMaps.GameModes);
+            //FileHashCalculator fhc = new FileHashCalculator();
+            //fhc.CalculateHashes();
 
-            gameFilesHash = fhc.GetCompleteHash();
+            //gameFilesHash = fhc.GetCompleteHash();
 
             if (IsHost)
             {
@@ -1278,6 +1291,18 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             sb.Append(Map?.Name ?? string.Empty);
 
             channel.SendCTCPMessage(sb.ToString(), QueuedMessageType.GAME_SETTINGS_MESSAGE, 11);
+
+            //游戏选项改变
+
+            //FileHashCalculator fhc = new FileHashCalculator();
+            //fhc.CalculateHashes();
+
+            //if (gameFilesHash != fhc.GetCompleteHash())
+            //{
+            //    Logger.Log("游戏数据不统一");
+            //    channel.SendCTCPMessage(CHEAT_DETECTED_MESSAGE, QueuedMessageType.INSTANT_MESSAGE, 0);
+            //    HandleCheatDetectedMessage(ProgramConstants.PLAYERNAME);
+            //}
         }
 
         /// <summary>
@@ -1591,15 +1616,15 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         {
             AddNotice("Starting game...".L10N("UI:Main:StartingGame"));
 
-            FileHashCalculator fhc = new FileHashCalculator();
-            fhc.CalculateHashes(GameModeMaps.GameModes);
+            //FileHashCalculator fhc = new FileHashCalculator();
+            //fhc.CalculateHashes();
 
-            if (gameFilesHash != fhc.GetCompleteHash())
-            {
-                Logger.Log("Game files modified during client session!");
-                channel.SendCTCPMessage(CHEAT_DETECTED_MESSAGE, QueuedMessageType.INSTANT_MESSAGE, 0);
-                // HandleCheatDetectedMessage(ProgramConstants.PLAYERNAME);
-            }
+            //if (gameFilesHash != fhc.GetCompleteHash())
+            //{
+            //    Logger.Log("Game files modified during client session!");
+            //    channel.SendCTCPMessage(CHEAT_DETECTED_MESSAGE, QueuedMessageType.INSTANT_MESSAGE, 0);
+            //   // HandleCheatDetectedMessage(ProgramConstants.PLAYERNAME);
+            //}
             
             channel.SendCTCPMessage("STRTD", QueuedMessageType.SYSTEM_MESSAGE, 20);
 
@@ -1762,13 +1787,16 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 pInfo.HashReceived = true;
             CopyPlayerDataToUI();
 
-            /* 暂不对比文件差异 */
 
-            //if (filesHash != gameFilesHash)
-            //{
-            //    channel.SendCTCPMessage("MM " + sender, QueuedMessageType.GAME_CHEATER_MESSAGE, 10);
-            //    CheaterNotification(ProgramConstants.PLAYERNAME, sender);
-            //}
+            var mod = cmbGame.SelectedItem.Tag as Mod;
+            FileHashCalculator fhc = new FileHashCalculator();
+            fhc.CalculateHashes(mod.FilePath, GameModeMap.Map.OtherFile);
+
+            if (filesHash != fhc.GetCompleteHash())
+            {
+                channel.SendCTCPMessage("MM " + sender, QueuedMessageType.GAME_CHEATER_MESSAGE, 10);
+                CheaterNotification(ProgramConstants.PLAYERNAME, sender);
+            }
         }
 
         private void CheaterNotification(string sender, string cheaterName)
