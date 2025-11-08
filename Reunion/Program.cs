@@ -36,6 +36,35 @@ namespace Reunion
 
         static void Main(string[] args)
         {
+            var os = Environment.OSVersion;
+            Version ver = os.Version;
+
+            // 不再允许Windows 10.0.10240/10586版本的系统运行(1507/1511, 因为它们不支持NET4.8 并且部分系统功能欠缺)
+            if ((ver.Major == 10 && ver.Minor == 0 && ver.Build == 10240) || (ver.Major == 10 && ver.Minor == 0 && ver.Build == 10856))
+            {
+                MessageBox.Show(
+                    "您的操作系统版本不兼容，无法运行此程序。\n请升级到 Windows 10 1607（版本 10.0.14393）或更高版本。",
+                    "不支持的操作系统",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                Environment.Exit(5);
+                return;
+            }
+
+            // TODOV2: 不再允许Windows 10.0.14393以下版本的系统运行(1607以下)
+            //if (ver.Major < 10 || (ver.Major == 10 && ver.Minor < 0) || (ver.Major == 10 && ver.Minor == 0 && ver.Build < 14393))
+            //{
+            //    MessageBox.Show(
+            //        "您的操作系统版本不兼容，无法运行此程序。\n请升级到 Windows 10 1607（版本 10.0.14393）或更高版本。",
+            //        "不支持的操作系统",
+            //        MessageBoxButtons.OK,
+            //        MessageBoxIcon.Error
+            //    );
+            //    Environment.Exit(5);
+            //    return;
+            //}
+
             Args = args;
 
             if (!CheckRequiredFile())

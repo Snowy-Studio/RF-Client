@@ -160,8 +160,8 @@ namespace ClientGUI
                     arguments = "-SPAWN " + extraCommandLine;
                 }
 
-            if (File.Exists(Path.Combine(ProgramConstants.游戏目录, "ares.dll")))
-                    启用连点器 = false;
+                if (File.Exists(Path.Combine(ProgramConstants.游戏目录, "ares.dll")))
+                        启用连点器 = false;
 
                 //FileInfo gameFileInfo = SafePath.GetFile(ProgramConstants.游戏目录, gameExecutableName);
                 //if (!File.Exists(gameFileInfo.FullName))
@@ -298,6 +298,50 @@ namespace ClientGUI
             iniFile.WriteIniFile();
         }
 
+        private static Version GetWindowsVersion()
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return new Version(0, 0);
+
+            try
+            {
+                var osvi = new OSVERSIONINFOEXW
+                {
+                    dwOSVersionInfoSize = (uint)Marshal.SizeOf(typeof(OSVERSIONINFOEXW))
+                };
+
+                RtlGetVersion(ref osvi);
+
+                return new Version((int)osvi.dwMajorVersion, (int)osvi.dwMinorVersion, (int)osvi.dwBuildNumber);
+            }
+            catch
+            {
+                return Environment.OSVersion.Version;
+            }
+        }
+
+        [DllImport("ntdll.dll", SetLastError = false)]
+        private static extern int RtlGetVersion(ref OSVERSIONINFOEXW lpVersionInformation);
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private struct OSVERSIONINFOEXW
+        {
+            public uint dwOSVersionInfoSize;
+            public uint dwMajorVersion;
+            public uint dwMinorVersion;
+            public uint dwBuildNumber;
+            public uint dwPlatformId;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+
+            public string szCSDVersion;
+            public ushort wServicePackMajor;
+            public ushort wServicePackMinor;
+            public short wSuiteMask;
+            public byte wProductType;
+            public byte wReserved;
+        }
+
         public static bool IsNtfs(string path)
         {
             var drive = new DriveInfo(Path.GetPathRoot(path));
@@ -321,7 +365,6 @@ namespace ClientGUI
                 guideWindow.Show();
                 return false;
             }
-            ;
 
             FileHelper.KillGameMdProcesses();
             string newGame = newSection.GetValue("Game", string.Empty);
@@ -362,9 +405,6 @@ namespace ClientGUI
                     //所有需要复制的文件.Add("Syringe.exe");
                 }
 
-                
-
-
                 所有需要复制的文件.Add(newGame);
 
                 if(newMission != newGame && newMission != string.Empty)
@@ -387,8 +427,16 @@ namespace ClientGUI
                 所有需要复制的文件.Add($"Resources/Voice/{UserINISettings.Instance.Voice.Value}");
 
 
-                //if (newSection.KeyExists("GameID"))
-                //    所有需要复制的文件.Add("Reunion Anti-Cheat.dll");
+                if (newSection.KeyExists("GameID"))
+                {
+                    var windowsVersion = GetWindowsVersion();
+                    var thresholdVersion = new Version(10, 0, 14393);
+
+                    if (windowsVersion >= thresholdVersion)
+                    {
+                        所有需要复制的文件.Add("Reunion Anti-Cheat.dll");
+                    }
+                }
                 var keyboardMD = Path.Combine(ProgramConstants.GamePath, "KeyboardMD.ini");
                 if (File.Exists(keyboardMD))
                     所有需要复制的文件.Add(keyboardMD);
@@ -662,8 +710,6 @@ namespace ClientGUI
                 ProgramConstants.清理缓存();
             }
             Task.Run(RenderImage.RenderImages);
-            
-                
         }
     }
 }
