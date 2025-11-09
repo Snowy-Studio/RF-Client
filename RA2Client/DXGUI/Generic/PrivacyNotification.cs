@@ -66,12 +66,12 @@ namespace Ra2Client.DXGUI.Generic
             lblExplanation = new XNALabel(WindowManager);
             lblExplanation.Name = nameof(lblExplanation);
             lblExplanation.ClientRectangle = new Rectangle(75, 80, 0, 0);
-            lblExplanation.Text = "重聚未来官网: www.yra2.com (备用地址: www.ra2yr.com)\r\n\r\n" +
-                                  "根据相关法律法规,您有权知道我们需要收集的信息,这包含您的设备标识符以及您的设备信息。\r\n\r\n" +
-                                  "此Mod完全免费,从下载到安装以及后续技术支持等不存在任何付费情况。\r\n\r\n" +
-                                  "如果您喜欢这个Mod,可以到官网的赞助界面请作者喝杯奶茶。\r\n\r\n" +
-                                  "请勿相信在任何第三方不明渠道购买和下载此Mod,谨防上当受骗！\r\n\r\n" +
-                                  "注意: 如果您在使用时遇到问题,请一定要确保是最新版本,已停止维护的旧版本出现问题概不负责！！！";
+            lblExplanation.Text = "重聚未来官网: www.yra2.com (温馨提示: 众口难调，如果你觉得哪里不好可以提，但请不要直接骂)\r\n\r\n" +
+                                  "根据相关法律法规，您有权知道我们需要收集的信息，这包含您的设备标识符以及您的设备信息。\r\n\r\n" +
+                                  "此Mod完全免费，从下载到安装以及后续技术支持都不存在任何付费情况。\r\n\r\n" +
+                                  "如果您喜欢这个Mod，可以到官网的赞助界面请作者喝杯奶茶。\r\n\r\n" +
+                                  "请勿相信在任何第三方不明渠道购买和下载此Mod，谨防上当受骗！\r\n\r\n" +
+                                  "注意: 如果您在使用时遇到问题，请一定要确保是最新版本，已停止维护的旧版本出现问题概不负责！！！";
             lblExplanation.TextColor = UISettings.ActiveSettings.SubtleTextColor;
             AddChild(lblExplanation);
 
