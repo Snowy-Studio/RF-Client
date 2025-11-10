@@ -63,13 +63,22 @@ namespace Ra2Client.Online
                     Utilities.CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GamePath, filePath)));
             }
 
-            DirectoryInfo[] iniPaths =
+            var iniPaths = new List<DirectoryInfo>
             {
-               SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Multi", "MapCode"),
-               SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Multi", "GameOptions"),
-               SafePath.GetDirectory(modPath),
-               SafePath.GetDirectory(otherFilePath),
+                SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Multi", "MapCode"),
+                SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Multi", "GameOptions")
             };
+
+            // 判断 modPath
+            if (!string.IsNullOrWhiteSpace(modPath))
+                iniPaths.Add(SafePath.GetDirectory(ProgramConstants.GamePath, modPath));
+
+            // 判断 otherFilePath
+            if (!string.IsNullOrWhiteSpace(otherFilePath))
+                iniPaths.Add(SafePath.GetDirectory(ProgramConstants.GamePath, otherFilePath));
+
+            // 如果你后续需要数组形式
+            DirectoryInfo[] iniPathArray = iniPaths.ToArray();
 
             foreach (DirectoryInfo path in iniPaths)
             {

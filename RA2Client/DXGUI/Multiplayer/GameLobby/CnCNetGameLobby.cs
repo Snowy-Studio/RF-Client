@@ -424,14 +424,14 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             btnSend.LeftClick += 发送地图给其他玩家;
 
-            cmbGame.SelectedIndexChanged += (_, _) =>
-            {
+            //cmbGame.SelectedIndexChanged += (_, _) =>
+            //{
 
-                var mod = cmbGame.SelectedItem.Tag as Mod;
-                FileHashCalculator fhc = new FileHashCalculator();
-                fhc.CalculateHashes(mod.FilePath, GameModeMap.Map.OtherFile);
-                channel.SendCTCPMessage("FHSH" + " " + fhc.GetCompleteHash(), QueuedMessageType.SYSTEM_MESSAGE, 10);
-            };
+            //    var mod = cmbGame.SelectedItem.Tag as Mod;
+            //    FileHashCalculator fhc = new FileHashCalculator();
+            //    fhc.CalculateHashes(mod.FilePath, GameModeMap.Map.OtherFile);
+            //    channel.SendCTCPMessage("FHSH" + " " + fhc.GetCompleteHash(), QueuedMessageType.SYSTEM_MESSAGE, 10);
+            //};
         }
 
         private void BtnClosePass_LeftClick(object sender, EventArgs e)
