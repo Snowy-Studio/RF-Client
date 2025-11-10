@@ -1,28 +1,15 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using ClientCore;
-using ClientCore.Entity;
-using ClientGUI;
-using DTAConfig;
 using Localization;
 using Localization.Tools;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
-using SharpDX.Direct2D1;
-using SharpDX.Direct3D9;
-using static System.Collections.Specialized.BitVector32;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-//using SharpDX.Direct3D9;
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace Ra2Client.Domain.Multiplayer
 {

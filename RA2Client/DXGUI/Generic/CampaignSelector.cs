@@ -3,31 +3,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Reflection;
 using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.Settings;
 using ClientGUI;
-using DTAConfig;
-using DTAConfig.Settings;
 using DTAConfig.Entity;
 using DTAConfig.OptionPanels;
-using Ra2Client.Domain;
-using Ra2Client.Online;
-using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Localization;
 using Localization.Tools;
 using Microsoft.Xna.Framework;
+using Ra2Client.Domain;
+using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using Mission = DTAConfig.Entity.Mission;
-using Ra2Client.Domain.Multiplayer;
-
 
 namespace Ra2Client.DXGUI.Generic
 {

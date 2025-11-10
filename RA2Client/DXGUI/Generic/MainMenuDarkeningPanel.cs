@@ -1,8 +1,7 @@
 using System;
-using ClientCore;
 using ClientGUI;
-using Ra2Client.Domain;
 using Microsoft.Xna.Framework;
+using Ra2Client.Domain;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 

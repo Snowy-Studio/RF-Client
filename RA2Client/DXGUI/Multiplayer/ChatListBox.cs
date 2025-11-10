@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using ClientCore;
 using ClientCore.Extensions;
-using Ra2Client.Online;
 using Microsoft.Xna.Framework;
+using Ra2Client.Online;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 

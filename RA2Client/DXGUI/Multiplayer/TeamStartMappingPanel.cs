@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using ClientGUI;
-using Ra2Client.Domain.Multiplayer;
 using Microsoft.Xna.Framework;
+using Ra2Client.Domain.Multiplayer;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 

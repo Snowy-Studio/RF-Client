@@ -1,5 +1,3 @@
-// Version 1.5
-
 using System;
 using System.Globalization;
 using System.IO;

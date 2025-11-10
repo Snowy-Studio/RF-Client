@@ -2,7 +2,6 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 
 namespace Rampastring.XNAUI.PlatformSpecific;
@@ -29,13 +28,11 @@ internal class WindowsGameWindowManager : IGameWindowManager
     }
 
 
-
     private Form gameForm;
 
     private bool closingPrevented = false;
 
     public event EventHandler GameWindowClosing;
-
 
     public event EventHandler ClientSizeChanged;
 

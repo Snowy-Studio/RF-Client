@@ -1,14 +1,12 @@
 using System;
-using System.Runtime.InteropServices;
 using ClientCore;
 using ClientCore.Settings;
 using ClientGUI;
-using Ra2Client.Domain;
 using Localization;
 using Microsoft.Xna.Framework;
+using Ra2Client.Domain;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using Rampastring.Tools;
 
 namespace Ra2Client.DXGUI.Generic
 {

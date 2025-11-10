@@ -13,7 +13,6 @@ using Localization;
 using Localization.Tools;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
-using SharpDX.XAudio2;
 using IniFile = Rampastring.Tools.IniFile;
 
 namespace ClientGUI

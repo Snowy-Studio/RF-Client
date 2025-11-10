@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using ClientGUI;
+using Localization;
 using Ra2Client.Domain;
 using Ra2Client.Domain.Multiplayer.CnCNet;
-using Localization;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 

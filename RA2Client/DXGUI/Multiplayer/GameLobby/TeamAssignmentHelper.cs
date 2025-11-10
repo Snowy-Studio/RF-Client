@@ -1,9 +1,7 @@
-﻿using Ra2Client.Domain.Multiplayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Ra2Client.Domain.Multiplayer;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {

@@ -2,15 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClientGUI;
+using DTAConfig.Entity;
+using Localization;
 using Ra2Client.Domain.Multiplayer;
 using Ra2Client.DXGUI.Generic;
-using Localization;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using DTAConfig.Entity;
-using Ra2Client.Domain;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {

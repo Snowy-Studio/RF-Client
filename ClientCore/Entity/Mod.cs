@@ -1,9 +1,8 @@
-
-using ClientCore;
-using Rampastring.Tools;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ClientCore;
+using Rampastring.Tools;
 
 namespace DTAConfig.Entity;
 

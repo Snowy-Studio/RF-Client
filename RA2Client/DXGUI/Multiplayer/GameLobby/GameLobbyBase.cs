@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,29 +7,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClientCore;
-using ClientCore.Entity;
 using ClientCore.Enums;
 using ClientCore.Statistics;
 using ClientGUI;
-using DTAConfig;
 using DTAConfig.OptionPanels;
 using DTAConfig.Entity;
-using Ra2Client.Domain;
-using Ra2Client.Domain.Multiplayer;
-using Ra2Client.DXGUI.Generic;
-using Ra2Client.DXGUI.Multiplayer.CnCNet;
-using Ra2Client.Online.EventArguments;
 using Localization;
 using Localization.Tools;
-using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Ra2Client.Domain;
+using Ra2Client.Domain.Multiplayer;
+using Ra2Client.DXGUI.Multiplayer.CnCNet;
+using Ra2Client.Online.EventArguments;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using SixLabors.ImageSharp.Processing;
-using SharpDX.Direct3D9;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {

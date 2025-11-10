@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClientGUI;
-using Ra2Client.Domain.Multiplayer;
 using Localization;
 using Microsoft.Xna.Framework;
+using Ra2Client.Domain.Multiplayer;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 

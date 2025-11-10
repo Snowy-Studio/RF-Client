@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using Localization;
 using Rampastring.Tools;
-using Rampastring.XNAUI;
 
 namespace ClientCore
 {

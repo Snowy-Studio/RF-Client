@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ClientCore;
-using Ra2Client.Domain.Multiplayer;
 using Rampastring.Tools;
 using Utilities = Rampastring.Tools.Utilities;
 

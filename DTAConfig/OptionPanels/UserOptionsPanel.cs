@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Forms;
-using System.Xml.Linq;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Entity;
@@ -18,7 +14,6 @@ using Localization.Tools;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using SharpDX.MediaFoundation;
 using Component = DTAConfig.Entity.Component;
 
 namespace DTAConfig.OptionPanels

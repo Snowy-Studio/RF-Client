@@ -5,14 +5,14 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using ClientCore;
+using Localization;
+using Microsoft.Xna.Framework;
 using Ra2Client.Domain;
 using Ra2Client.Domain.LAN;
 using Ra2Client.Domain.Multiplayer;
 using Ra2Client.Domain.Multiplayer.LAN;
 using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Ra2Client.Online;
-using Localization;
-using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 

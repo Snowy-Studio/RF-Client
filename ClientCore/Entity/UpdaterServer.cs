@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace ClientCore.Entity
 {
     public readonly record struct UpdaterServer(
+#nullable enable
         string? id,
+#nullable restore
         string name,
         int type,
         string location,

@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using ClientCore;
-using DTAConfig.Entity;
 using OpenMcdf;
 using Rampastring.Tools;
 

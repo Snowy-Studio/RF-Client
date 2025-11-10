@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
-using Localization;
 using ClientCore;
 using ClientGUI;
+using Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
-using Localization.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 
@@ -591,9 +590,7 @@ namespace DTAConfig.OptionPanels
 
             //string[] resolution = ddIngameResolution.SelectedItem.Text.Split('x');
 
-
             //int[] ingameRes = [int.Parse(resolution[0]), int.Parse(resolution[1])];
-            
             
             int[] ingameRes = new int[2];
             if (chkCustomIngameResolution.Checked)

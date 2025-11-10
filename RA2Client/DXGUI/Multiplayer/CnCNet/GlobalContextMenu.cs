@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Linq;
 using ClientCore;
 using ClientCore.Extensions;
 using ClientGUI;
-using Ra2Client.Online;
-using Ra2Client.Online.EventArguments;
 using Localization;
 using Microsoft.Xna.Framework;
+using Ra2Client.Online;
+using Ra2Client.Online.EventArguments;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using TextCopy;

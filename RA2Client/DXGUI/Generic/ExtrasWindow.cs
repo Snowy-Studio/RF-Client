@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using ClientCore;
 using ClientGUI;
-using Ra2Client.Domain;
 using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;

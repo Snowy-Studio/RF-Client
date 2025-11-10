@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -15,10 +14,8 @@ using ClientGUI;
 using DTAConfig.OptionPanels;
 using DTAConfig.Entity;
 using Localization.Tools;
-using Ra2Client.Domain.Multiplayer;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
-using SharpDX.Direct3D9;
 
 namespace Ra2Client
 {

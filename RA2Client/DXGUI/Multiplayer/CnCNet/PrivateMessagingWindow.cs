@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,17 +7,16 @@ using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Enums;
 using ClientGUI;
-using Ra2Client.Online;
-using Ra2Client.Online.EventArguments;
 using Localization;
 using Microsoft.Xna.Framework.Graphics;
+using Ra2Client.Online;
+using Ra2Client.Online.EventArguments;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using SixLabors.ImageSharp;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-
 
 namespace Ra2Client.DXGUI.Multiplayer.CnCNet
 {

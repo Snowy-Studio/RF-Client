@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using ClientCore;
 using ClientCore.CnCNet5;
-using Ra2Client.Online.EventArguments;
 using Localization;
 using Microsoft.Xna.Framework;
+using Ra2Client.Online.EventArguments;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 

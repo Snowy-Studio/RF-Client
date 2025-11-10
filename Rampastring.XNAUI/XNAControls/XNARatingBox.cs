@@ -1,11 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
-using SharpDX.Direct2D1.Effects;
 
 namespace Rampastring.XNAUI.XNAControls;
 

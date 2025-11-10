@@ -9,9 +9,9 @@
  */
 #endregion
 
-using Localization.Tools;
 using System;
 using System.Collections.Generic;
+using Localization.Tools;
 
 namespace OpenRA.Primitives
 {

@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ClientCore;
+using Localization;
 using Ra2Client.DXGUI;
 using Ra2Client.Online.EventArguments;
-using Localization;
 
 namespace Ra2Client.Online
 {

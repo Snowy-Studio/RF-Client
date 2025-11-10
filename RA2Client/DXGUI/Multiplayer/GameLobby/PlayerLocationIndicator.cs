@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClientCore;
-using Ra2Client.Domain.Multiplayer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Ra2Client.Domain.Multiplayer;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using PlayerInfo = Ra2Client.Domain.Multiplayer.PlayerInfo;

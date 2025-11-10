@@ -14,9 +14,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Localization.Tools;
-using Microsoft.VisualBasic.Logging;
 using OpenRA.FileSystem;
 using OpenRA.Mods.Cnc.FileFormats;
 using OpenRA.Primitives;
@@ -104,26 +102,26 @@ namespace OpenRA.Mods.Cnc.FileSystem
 			{
 				if (index.TryGetValue(filename, out PackageEntry entry))
 				{
-					// È·±£Á÷Î´±»ÊÍ·Å
+					// ç¡®ä¿æµæœªè¢«é‡Šæ”¾
 					if (s == null || !s.CanRead)
 						throw new ObjectDisposedException("Stream has been closed.");
 
-					// ¶¨Î»µ½Êı¾İÇøµÄÆ«ÒÆÎ»ÖÃ
+					// å®šä½åˆ°æ•°æ®åŒºçš„åç§»ä½ç½®
 					long actualOffset = dataStart + entry.Offset;
 					s.Seek(actualOffset, SeekOrigin.Begin);
 
-					// ¶ÁÈ¡ÎÄ¼şÄÚÈİ
+					// è¯»å–æ–‡ä»¶å†…å®¹
 					byte[] content = new byte[entry.Length];
 					int bytesRead = s.Read(content, 0, content.Length);
 
-					// ¼ì²éÊÇ·ñ¶ÁÈ¡ÍêÕû
+					// æ£€æŸ¥æ˜¯å¦è¯»å–å®Œæ•´
 					if (bytesRead != entry.Length)
 						throw new InvalidOperationException("Failed to read the entire file content.");
 
 					return content;
 				}
 
-				// ÎÄ¼ş²»´æÔÚÓÚË÷ÒıÖĞ
+				// æ–‡ä»¶ä¸å­˜åœ¨äºç´¢å¼•ä¸­
 				return null;
 			}
 

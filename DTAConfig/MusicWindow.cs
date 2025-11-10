@@ -6,12 +6,12 @@ using ClientGUI;
 using DTAConfig.Entity;
 using Localization.Tools;
 using Microsoft.Xna.Framework;
-using NAudio.Wave;
 using NAudio.Flac;
+using NAudio.Vorbis;
+using NAudio.Wave;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using Rampastring.Tools;
-using NAudio.Vorbis;
 
 namespace DTAConfig
 {
