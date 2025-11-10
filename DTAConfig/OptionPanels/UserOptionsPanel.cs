@@ -18,10 +18,8 @@ using Localization.Tools;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using Component = DTAConfig.Entity.Component;
 using SharpDX.MediaFoundation;
-
-
+using Component = DTAConfig.Entity.Component;
 
 namespace DTAConfig.OptionPanels
 {
