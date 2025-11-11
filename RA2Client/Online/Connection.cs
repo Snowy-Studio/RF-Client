@@ -142,7 +142,11 @@ namespace Ra2Client.Online
         public void ConnectAsync()
         {
             if (_isConnected)
-                throw new InvalidOperationException("The client is already connected!".L10N("UI:Main:ClientAlreadyConnected"));
+            {
+                Logger.Log("Disconnecting from the server...".L10N("UI:Main:DisconnectingServer"));
+                Disconnect();
+                Thread.Sleep(500);
+            }
 
             if (_attemptingConnection)
                 return; // Maybe we should throw in this case as well?
@@ -156,6 +160,35 @@ namespace Ra2Client.Online
 
             Thread connection = new Thread(ConnectToServer);
             connection.Start();
+        }
+
+        public void Reconnect()
+        {
+            disconnect = true;
+            try
+            {
+                if (sslStream != null)
+                {
+                    sslStream.Close();
+                    sslStream.Dispose();
+                    sslStream = null;
+                }
+                if (tcpClient != null)
+                {
+                    tcpClient.Close();
+                    tcpClient = null;
+                }
+                serverStream = null;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Error during connection cleanup: " + ex.Message);
+            }
+
+            _isConnected = false;
+            _attemptingConnection = false;
+
+            ConnectAsync();
         }
 
         /// <summary>

@@ -480,6 +480,17 @@ namespace Ra2Client.Online
         }
 
         /// <summary>
+        /// Reconnects to CnCNet.
+        /// </summary>
+        public void Reconnect()
+        {
+            if (connection != null)
+            {
+                connection.Reconnect();
+            }
+        }
+
+        /// <summary>
         /// Called when the connection has been aborted intentionally.
         /// </summary>
         public void OnDisconnected()
