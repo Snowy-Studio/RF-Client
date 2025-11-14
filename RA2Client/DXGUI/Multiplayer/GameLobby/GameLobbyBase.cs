@@ -2478,6 +2478,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 {
                     mapIni.SetValue(superWeaponBuilding, "TechLevel", "11");
                     mapIni.SetValue(superWeaponBuilding, "AIBuildThis", "no");
+                    mapIni.SetValue(superWeaponBuilding, "SuperWeapon", "none");
                 }
             }
             #endregion
