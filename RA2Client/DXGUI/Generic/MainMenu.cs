@@ -3,44 +3,35 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
+using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using Localization;
-using Localization.Tools;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using Newtonsoft.Json.Linq;
-using Rampastring.Tools;
-using Rampastring.XNAUI;
-using Rampastring.XNAUI.Input;
-using Rampastring.XNAUI.XNAControls;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Settings;
 using ClientGUI;
+using DTAConfig;
+using DTAConfig.Entity;
+using DTAConfig.OptionPanels;
+using Localization;
+using Localization.Tools;
+using Microsoft.Win32;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using Ra2Client.Domain;
-using Ra2Client.Domain.Multiplayer;
 using Ra2Client.Domain.Multiplayer.CnCNet;
 using Ra2Client.DXGUI.Multiplayer;
 using Ra2Client.DXGUI.Multiplayer.CnCNet;
 using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Ra2Client.Online;
-using DTAConfig;
-using DTAConfig.Entity;
-using DTAConfig.OptionPanels;
-using Microsoft.Win32;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Extensions.FileSystemGlobbing;
-using OpenRA.Mods.Cnc.FileSystem;
-
+using Rampastring.Tools;
+using Rampastring.XNAUI;
+using Rampastring.XNAUI.XNAControls;
 using Logger = Rampastring.Tools.Logger;
-using System.Security.Principal;
 
 namespace Ra2Client.DXGUI.Generic
 {
@@ -863,6 +854,8 @@ namespace Ra2Client.DXGUI.Generic
             {
                 var ini = new IniFile(ProgramConstants.GamePath + "Resources/FA2SP_HDM_Edition/FinalAlert.ini", Encoding.GetEncoding("GBK"));
                 ini.SetStringValue("TS", "Exe", Path.Combine(ProgramConstants.游戏目录, "ra2md.mix").Replace('/', '\\')); //地编路径必须是\，这里写两个是因为有一个是转义符
+                ini.SetStringValue("FinalSun", "Language", "English");
+                ini.SetStringValue("FinalSun", "FileSearchLikeTS", "yes");
                 ini.WriteIniFile();
                 Logger.Log("写入地编游戏路径");
             }

@@ -1,31 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
 using ClientCore;
-using ClientCore.Entity;
-using ClientCore.Settings;
 using ClientGUI;
 using DTAConfig.Entity;
+using Localization;
+using Localization.Tools;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using ToolTip = ClientGUI.ToolTip;
-using Localization;
-using Localization.Tools;
-using SharpDX.Direct2D1;
-using TsfSharp;
 
 namespace DTAConfig.OptionPanels;
 

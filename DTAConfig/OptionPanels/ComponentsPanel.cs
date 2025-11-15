@@ -1,32 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using ClientCore;
-using ClientCore.Entity;
 using ClientCore.Settings;
 using ClientGUI;
 using DTAConfig.Entity;
-using HtmlAgilityPack;
 using IniParser;
 using IniParser.Model;
 using Localization;
-using Localization.SevenZip;
 using Localization.Tools;
-using Microsoft.VisualBasic.Devices;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DTAConfig.OptionPanels
 {
@@ -692,7 +683,7 @@ namespace DTAConfig.OptionPanels
                 ini.AddSection(sectionName);
             ini.SetValue(sectionName, "Description", component.name)
                 .SetValue(sectionName, "Author", component.author)
-        //        .SetValue(sectionName, "Mission", sectionName)
+                // .SetValue(sectionName, "Mission", sectionName)
                 .SetValue(sectionName, "GameModes", "创意工坊,常规作战");
             
             ini.WriteIniFile();

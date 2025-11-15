@@ -1,6 +1,5 @@
 using ClientCore;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Ra2Client.Domain
 {

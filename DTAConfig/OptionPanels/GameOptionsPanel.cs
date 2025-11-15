@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
@@ -12,10 +10,9 @@ using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 
-
 namespace DTAConfig.OptionPanels
 {
-   
+
     public class GameOptionsPanel : XNAOptionsPanel
     {
         private const int MAX_SCROLL_RATE = 6;

@@ -1,26 +1,18 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Input;
-using Rampastring.Tools;
-using Rampastring.XNAUI;
 using ClientCore;
-using ClientCore.CnCNet5;
 using ClientCore.Settings;
 using ClientGUI;
-using Ra2Client.Domain.Multiplayer;
-using Ra2Client.DXGUI.Multiplayer.CnCNet;
-using Ra2Client.Online;
-using DTAConfig.Entity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using NAudio.Wave;
-using Sdcb.FFmpeg.Utils;
+using Ra2Client.Domain.Multiplayer;
+using Ra2Client.Online;
+using Rampastring.Tools;
+using Rampastring.XNAUI;
 
 namespace Ra2Client.DXGUI.Generic
 {

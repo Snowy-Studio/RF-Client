@@ -9,10 +9,10 @@ using ClientCore.Entity;
 using ClientCore.Settings;
 using ClientGUI;
 using DTAConfig.Entity;
+using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using Localization;
 
 namespace DTAConfig.OptionPanels
 {
@@ -219,6 +219,7 @@ namespace DTAConfig.OptionPanels
             index++;
 
             #endregion
+
             if(!判断答题结束())
                 // 更新下一个页面信息
                 更新题目(questionBanks[index]);

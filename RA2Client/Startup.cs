@@ -11,15 +11,13 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using ClientCore;
-using ClientCore.INIProcessing;
 using ClientCore.Settings;
 using ClientGUI;
-using DTAConfig.OptionPanels;
+using Microsoft.Win32;
+using Microsoft.Xna.Framework.Graphics;
 using Ra2Client.Domain;
 using Ra2Client.DXGUI;
 using Ra2Client.Online;
-using Microsoft.Win32;
-using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 
 

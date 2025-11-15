@@ -11,14 +11,11 @@ using DTAConfig;
 using DTAConfig.Settings;
 using DTAConfig.OptionPanels;
 using Localization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Rampastring.Tools;
-using Rampastring.XNAUI;
-using Rampastring.XNAUI.XNAControls;
 using Ra2Client.Domain;
 using Ra2Client.DXGUI.Generic;
 using Ra2Client.Domain.Multiplayer;
@@ -27,7 +24,9 @@ using Ra2Client.DXGUI.Multiplayer;
 using Ra2Client.DXGUI.Multiplayer.CnCNet;
 using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Ra2Client.Online;
-
+using Rampastring.Tools;
+using Rampastring.XNAUI;
+using Rampastring.XNAUI.XNAControls;
 
 namespace Ra2Client.DXGUI
 {

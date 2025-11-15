@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
-using System.Reflection.Metadata;
 using ClientCore;
-using ClientCore.Extensions;
 using ClientGUI;
 using Localization;
 using Microsoft.Xna.Framework;
@@ -10,7 +8,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-
 
 namespace DTAConfig.OptionPanels
 {

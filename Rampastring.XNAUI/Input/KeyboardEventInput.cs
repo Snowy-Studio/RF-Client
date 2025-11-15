@@ -6,7 +6,6 @@ using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.Xna.Framework;
 
-
 namespace Rampastring.XNAUI.Input
 {
     /// <summary>

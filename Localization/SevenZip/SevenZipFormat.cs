@@ -1,7 +1,7 @@
 namespace Localization.SevenZip
 {
     /// <summary>
-    /// 
+    /// Enumeration of supported archive formats in 7-zip.
     /// </summary>
     public enum SevenZipFormat
     {

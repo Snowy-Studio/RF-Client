@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using ClientCore;
-using Ra2Client.Online;
 using Microsoft.Xna.Framework;
+using Ra2Client.Online;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 

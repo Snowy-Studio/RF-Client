@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using ClientCore;
 using ClientGUI;
 using DTAConfig.Settings;
 using Microsoft.Xna.Framework;
-using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using IniFile = Rampastring.Tools.IniFile;

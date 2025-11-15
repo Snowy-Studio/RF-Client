@@ -1,5 +1,3 @@
-﻿using System;
-using System.Runtime.ConstrainedExecution;
 using Microsoft.Win32.SafeHandles;
 
 namespace Localization.SevenZip

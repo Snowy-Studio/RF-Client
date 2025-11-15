@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 using System.Linq;
 using ClientGUI;
-using Ra2Client.Domain.Multiplayer;
-using Ra2Client.Online.EventArguments;
 using Localization;
 using Microsoft.Xna.Framework;
+using Ra2Client.Domain.Multiplayer;
+using Ra2Client.Online.EventArguments;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-
 
 namespace Ra2Client.DXGUI.Multiplayer.CnCNet
 {

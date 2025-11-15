@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rampastring.Tools;
-
 namespace RandomMapGenerator
 {
     public class 随机地图生成

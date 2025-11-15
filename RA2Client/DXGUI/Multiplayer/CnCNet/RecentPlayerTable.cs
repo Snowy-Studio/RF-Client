@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using Ra2Client.Online;
 using Localization;
+using Ra2Client.Online;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 

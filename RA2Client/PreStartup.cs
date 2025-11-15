@@ -11,7 +11,6 @@ using System.Runtime.Versioning;
 using System.Windows.Forms;
 using ClientCore;
 using ClientCore.Settings;
-using ClientGUI;
 using DTAConfig.Entity;
 using Localization;
 using Ra2Client.Domain;

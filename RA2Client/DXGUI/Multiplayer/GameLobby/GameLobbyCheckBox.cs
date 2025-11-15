@@ -4,8 +4,6 @@ using System.Linq;
 using ClientGUI;
 using Ra2Client.Domain.Multiplayer;
 using Ra2Client.DXGUI.Generic;
-
-using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;

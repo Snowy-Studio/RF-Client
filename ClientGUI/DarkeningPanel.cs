@@ -1,7 +1,5 @@
-﻿using System;
-using System.Runtime.Intrinsics.Arm;
+using System;
 using Microsoft.Xna.Framework;
-using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 

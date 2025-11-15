@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using ClientCore.Entity;
-using ClientCore.Enums;
 using DTAConfig.Entity;
 using Rampastring.Tools;
 

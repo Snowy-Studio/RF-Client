@@ -1,12 +1,9 @@
-﻿
-using OpenRA.Mods.Cnc.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
-
+using OpenRA.Mods.Cnc.FileSystem;
 
 namespace Localization.Tools
 {

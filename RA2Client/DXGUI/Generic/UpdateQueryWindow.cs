@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System;
 using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.Settings;
 using ClientGUI;
 using Localization;
 using Microsoft.Xna.Framework;
-using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 

@@ -1,7 +1,7 @@
-﻿using Ra2Client.Domain.Multiplayer;
+using ClientCore;
 using Localization;
 using Microsoft.Xna.Framework;
-using ClientCore;
+using Ra2Client.Domain.Multiplayer;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 

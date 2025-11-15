@@ -1,5 +1,3 @@
-﻿
-
 namespace ClientCore.Entity
 {
     public record class User

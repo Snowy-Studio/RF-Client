@@ -10,6 +10,9 @@ using ClientCore.CnCNet5;
 using ClientCore.Entity;
 using ClientCore.Settings;
 using ClientGUI;
+using DTAConfig.Entity;
+using Localization;
+using Microsoft.Xna.Framework;
 using Ra2Client.Domain;
 using Ra2Client.Domain.Multiplayer;
 using Ra2Client.Domain.Multiplayer.CnCNet;
@@ -18,12 +21,9 @@ using Ra2Client.DXGUI.Multiplayer.CnCNet;
 using Ra2Client.DXGUI.Multiplayer.GameLobby.CommandHandlers;
 using Ra2Client.Online;
 using Ra2Client.Online.EventArguments;
-using Localization;
-using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using DTAConfig.Entity;
 
 namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 {

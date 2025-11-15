@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using ClientCore;
 using ClientCore.CnCNet5;
-using Ra2Client.Online.EventArguments;
 using Localization;
 using Microsoft.Xna.Framework;
+using Ra2Client.Online.EventArguments;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 
@@ -477,6 +477,17 @@ namespace Ra2Client.Online
             disconnect = false;
             MainChannel.AddMessage(new ChatMessage("Connecting to CnCNet...".L10N("UI:Main:ConnectingToCncNet")));
             connection.ConnectAsync();
+        }
+
+        /// <summary>
+        /// Reconnects to CnCNet.
+        /// </summary>
+        public void Reconnect()
+        {
+            if (connection != null)
+            {
+                connection.Reconnect();
+            }
         }
 
         /// <summary>

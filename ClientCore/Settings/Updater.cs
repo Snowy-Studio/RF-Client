@@ -1,8 +1,3 @@
-namespace ClientCore.Settings;
-
-using ClientCore.Entity;
-using Localization.Tools;
-using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,6 +14,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ClientCore.Entity;
+using Localization.Tools;
+using Rampastring.Tools;
+
+namespace ClientCore.Settings;
 
 public static class Updater
 {
