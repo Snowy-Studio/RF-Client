@@ -195,7 +195,7 @@ namespace DTAConfig.OptionPanels
             var btnModManager = new XNAClientButton(WindowManager);
             btnModManager.Name = nameof(btnModManager);
             btnModManager.ClientRectangle = new Rectangle(lblPlayerName.X, lblNotice.Bottom + 36, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
-            btnModManager.Text = "Mod Manager".L10N("UI:DTAConfig:ModManager");
+            btnModManager.Text = "Mod Manager (Experimental)".L10N("UI:DTAConfig:ModManager");
 
             btnModManager.LeftClick += (_, _) =>
             {

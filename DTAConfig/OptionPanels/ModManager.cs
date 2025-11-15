@@ -46,7 +46,7 @@ public class ModManager : XNAWindow
 
         var lblTittle = new XNALabel(WindowManager)
         {
-            Text = "Mod Manager".L10N("UI:DTAConfig:ModManager"),
+            Text = "Mod Manager (Experimental)".L10N("UI:DTAConfig:ModManager"),
             FontIndex = 0,
             ClientRectangle = new Rectangle(Width / 2 - 40, 5, 0, 0),
             TextColor = Color.White
@@ -58,7 +58,7 @@ public class ModManager : XNAWindow
         {
             ClientRectangle = new Rectangle(25, 30, 200, 40)
         };
-        DDModAI.AddItem(["Mod".L10N("UI:DTAConfig:Mod"), "Mission Pack".L10N("UI:DTAConfig:MissionPack")]);
+        DDModAI.AddItem(["Mod (Experimental support)".L10N("UI:DTAConfig:Mod"), "Mission Pack".L10N("UI:DTAConfig:MissionPack")]);
         AddChild(DDModAI);
 
         _modMenu = new XNAContextMenu(WindowManager);
