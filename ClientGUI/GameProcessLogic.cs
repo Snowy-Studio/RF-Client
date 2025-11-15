@@ -661,7 +661,7 @@ namespace ClientGUI
             }
             catch (Exception ex)
             {
-                return $"符号链接失败，原因：{ex.Message}";
+                return $"符号链接失败，原因：{ex.Message}\n\n你应该关掉杀毒软件并以管理员身份运行客户端";
             }
 
             return string.Empty;
