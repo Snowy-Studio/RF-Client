@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -24,7 +24,7 @@ public class ComponentVo
 
     public long downCount { get; set; }
 
-    public string uploadTime { get; set; }
+    public string updateTime { get; set; }
 
     public string uploadUser { get; set; }
     public string uploadUserName { get; set; }

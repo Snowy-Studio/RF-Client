@@ -264,6 +264,54 @@ namespace Ra2Client
                     response.Close(); // 一定要关闭响应
                 }
             }
+            else if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/downloadComponent")
+            {
+                #region 下载Component
+                try
+                {
+                    using var reader = new StreamReader(request.InputStream, request.ContentEncoding);
+                    string requestBody = await reader.ReadToEndAsync();
+
+                    var cmpVo = JsonSerializer.Deserialize<ComponentVo>(requestBody);
+
+
+                    _ = Task.Run(async () =>
+                    {
+                        var messageBox = new XNAMessage(wm);
+                        messageBox.caption = "写入扩展组件";
+                        messageBox.description = $"正在写入扩展组件 {cmpVo.name},请稍等";
+                        messageBox.Show();
+                        await 写入组件(cmpVo, wm);
+                        messageBox.Disable();
+                        messageBox.Detach();
+                        messageBox.Dispose();
+                        XNAMessageBox.Show(wm, "完成", "写入完成，请重启客户端生效。");
+                    });
+
+
+                    var result = new
+                    {
+                        code = "200",
+                    };
+                    response.StatusCode = 200;
+                    string jsonResult = JsonSerializer.Serialize(result);
+                    byte[] buffer = Encoding.UTF8.GetBytes(jsonResult);
+                    response.ContentType = "application/json";
+                    response.ContentLength64 = buffer.Length;
+                    await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    #endregion
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex.ToString());
+                    Console.WriteLine(ex.ToString());
+                }
+                finally
+                {
+                    response.ContentType = "application/json";
+                    response.Close(); // 一定要关闭响应
+                }
+            }
             else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/mapExists")
             {
                 try
@@ -352,6 +400,39 @@ namespace Ra2Client
                 if (mod != null)
                 {
                     if (mod.UpdateTime == request.QueryString["updateTime"])
+                    {
+                        status = 1; // 已安装
+                    }
+                    else
+                    {
+                        status = 2; // 需要更新
+                    }
+                }
+
+                var result = new
+                {
+                    code = "200",
+                    status,
+                };
+
+                string jsonResult = JsonSerializer.Serialize(result);
+                byte[] buffer = Encoding.UTF8.GetBytes(jsonResult);
+                response.ContentType = "application/json";
+                response.ContentLength64 = buffer.Length;
+                await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                response.StatusCode = 200;
+            }
+            else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/componentExists")
+            {
+                var cmpID = request.QueryString["id"];
+                int status = 0; // 未下载
+
+                var ini = new IniFile(Path.Combine(ProgramConstants.GamePath, "Resources", "component"));
+
+                if (ini.SectionExists(cmpID))
+                {
+
+                    if (ini.GetValue(cmpID, "updateTime", "null") == request.QueryString["updateTime"])
                     {
                         status = 1; // 已安装
                     }
@@ -524,6 +605,7 @@ namespace Ra2Client
                     Console.WriteLine($"❌ 下载任务包失败: {downloadUrl}");
                     return;
                 }
+
                 if (missionPackVo.file.StartsWith("u"))
                     // 解压文件
                     SevenZip.ExtractWith7Zip(tmpFile, extractDir, needDel:true);
@@ -614,6 +696,45 @@ namespace Ra2Client
                     Directory.Delete(Path.Combine(ProgramConstants.GamePath, "tmp", "Mod"), true);
 
                 UserINISettings.Instance.重新加载地图和任务包?.Invoke(null, null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ 写入模组时发生异常: {ex}");
+            }
+        }
+
+        private static async Task 写入组件(ComponentVo cmpVo, WindowManager wm)
+        {
+            try
+            {
+                var fileName = Path.GetFileName(cmpVo.file);
+                string tmpFile = Path.Combine(ProgramConstants.GamePath, "tmp", fileName);
+                string extractDir = Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp");
+
+                string downloadUrl;
+                if (cmpVo.file.StartsWith("u"))
+                    downloadUrl = Path.Combine(NetWorkINISettings.Address, cmpVo.file);
+                else
+                    downloadUrl = cmpVo.file;
+
+                // 等待下载完成
+                bool success = await NetWorkINISettings.DownloadFileAsync(downloadUrl, tmpFile);
+
+                if (!success)
+                {
+                    Console.WriteLine($"❌ 下载Mod失败: {downloadUrl}");
+                    return;
+                }
+
+                SevenZip.ExtractWith7Zip(tmpFile, "./", needDel: true);
+
+                var ini = new IniFile(Path.Combine(ProgramConstants.GamePath, "Resources", "component"));
+                ini.SetValue(cmpVo.id,"updateTime",cmpVo.updateTime);
+                ini.WriteIniFile();
+
+                if (Directory.Exists(Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp")))
+                    Directory.Delete(Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp"), true);
+
             }
             catch (Exception ex)
             {
