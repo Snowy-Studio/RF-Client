@@ -621,7 +621,7 @@ namespace Ra2Client
 
                
                 if(missionPackVo.file.StartsWith("u"))
-                    // 导入Mod
+                    // 导入任务包
                     ModManager.GetInstance(wm).导入任务包(
                         true,
                         true,

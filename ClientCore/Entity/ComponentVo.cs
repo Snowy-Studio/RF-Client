@@ -15,22 +15,13 @@ public class ComponentVo
     public string file { get; set; }            // 组件压缩包
 
     public int type { get; set; }            // 类型
-    public string typeName { get; set; }
 
-    public long size { get; set; }              // 文件大小
+    public string size { get; set; }              // 文件大小
 
-    public string hash { get; set; }            // 哈希值
-
-    public long downCount { get; set; }
 
     public string updateTime { get; set; }
 
-    public string uploadUser { get; set; }
     public string uploadUserName { get; set; }
-
-    public List<string> apply { get; set; }
-
-    public string tags { get; set; }
 
     public string description { get; set; }
 
