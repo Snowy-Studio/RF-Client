@@ -65,10 +65,10 @@ namespace DTAConfig
             tabControl.AddTab("Audio".L10N("UI:DTAConfig:TabAudio"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Game".L10N("UI:DTAConfig:TabGame"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("CnCNet".L10N("UI:DTAConfig:TabCnCNet"), UIDesignConstants.BUTTON_WIDTH_92);
-            //tabControl.AddTab("Skin".L10N("UI:DTAConfig:Skin"), UIDesignConstants.BUTTON_WIDTH_92);
+            //tabControl.AddTab("Skin".L10N("UI:DTAConfig:TabSkin"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Updater".L10N("UI:DTAConfig:TabUpdater"), UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("创意工坊", UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("创作者", UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("Workshop (Web)".L10N("UI:DTAConfig:TabWorkshop"), UIDesignConstants.BUTTON_WIDTH_121);
+            //tabControl.AddTab("Creator".L10N("UI:DTAConfig:TabCreator"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             btnCancel = new XNAClientButton(WindowManager);
@@ -109,8 +109,8 @@ namespace DTAConfig
                 new CnCNetOptionsPanel(WindowManager, UserINISettings.Instance, gameCollection),    //3 "CnCNet"页面
                 // new LocalSkinPanel(WindowManager, UserINISettings.Instance),                        //4 "皮肤"页面
                 updaterOptionsPanel,                                                                //5 "更新器"页面
-                componentsPanel,                                                                    //6 "工坊"页面
-                //new UserOptionsPanel(WindowManager, UserINISettings.Instance)                       //7 "创作"页面
+                //componentsPanel,                                                                    //6 "创意工坊"页面
+                //new UserOptionsPanel(WindowManager, UserINISettings.Instance)                       //7 "创作者"页面
             ];
 
             // 找到拦截的方法再启用
@@ -177,7 +177,7 @@ namespace DTAConfig
 
         public void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(tabControl.SelectedTab == 6)
+            if(tabControl.SelectedTab == 5)
                 { FunExtensions.OpenUrl($"https://creator.yra2.com/workshop/map/list?token={UserINISettings.Instance.Token}");
 
                 return;

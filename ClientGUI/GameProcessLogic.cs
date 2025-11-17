@@ -623,7 +623,7 @@ namespace ClientGUI
                     if (File.Exists(targetPath))
                         File.Delete(targetPath);
 
-                    // ⚡ 白名单判断只用文件名
+                    // 白名单判断只用文件名
                     string fileName = Path.GetFileName(kv.Key);
                     if (白名单.Any(w => string.Equals(w, fileName, StringComparison.OrdinalIgnoreCase)))
                     {
@@ -661,7 +661,7 @@ namespace ClientGUI
             }
             catch (Exception ex)
             {
-                return $"符号链接失败，原因：{ex.Message}";
+                return $"符号链接失败，原因：{ex.Message}\n\n请尝试关闭杀毒软件并以管理员身份运行(Symlink需要管理员权限), 若仍未解决请到交流群询问管理员";
             }
 
             return string.Empty;
