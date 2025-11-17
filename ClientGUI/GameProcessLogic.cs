@@ -419,7 +419,7 @@ namespace ClientGUI
                     所有需要复制的文件.Add(otherFile);
                 }
 
-                所有需要复制的文件.Add("LiteExt.dll");
+               // 所有需要复制的文件.Add("LiteExt.dll");
                 所有需要复制的文件.Add("qres.dat");
                 所有需要复制的文件.Add("qres32.dll");
                 

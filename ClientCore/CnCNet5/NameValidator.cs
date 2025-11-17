@@ -35,27 +35,22 @@ namespace ClientCore.CnCNet5
             if (name.EndsWith('_'))
                 return "The player name cannot end with an underline ( _ ).".L10N("UI:ClientCore:NameEndOfUnderline");
 
-            // 检查字符有效性
+            // === 修改：禁止中文，所以删除了所有 CJK 判断 ===
             foreach (char c in name)
             {
-                // 检查是否是允许的ASCII字符
+                // ASCII 允许的字符
                 if (AllowedAsciiCharacters.Contains(c))
                     continue;
 
                 // 英文标点符号
-                if ((c >= 0x21 && c <= 0x2F) || (c >= 0x3A && c <= 0x40) || (c >= 0x5B && c <= 0x60) || (c >= 0x7B && c <= 0x7E))
-                    continue;
-
-                // CJK 基本区、扩展A区、兼容区汉字
-                if ((c >= '\u4E00' && c <= '\u9FFF') || (c >= '\u3400' && c <= '\u4DBF') || (c >= '\uF900' && c <= '\uFAFF'))
-                    continue;
-
-                // 中文标点符号
-                if ((c >= '\u3000' && c <= '\u303F') || (c >= '\uFF00' && c <= '\uFFEF'))
+                if ((c >= 0x21 && c <= 0x2F) ||
+                    (c >= 0x3A && c <= 0x40) ||
+                    (c >= 0x5B && c <= 0x60) ||
+                    (c >= 0x7B && c <= 0x7E))
                     continue;
 
                 return "Your player name has invalid characters in it.".L10N("UI:ClientCore:NameInvalidChar1") + Environment.NewLine +
-                       "Allowed characters are A-Z, numbers, and Chinese characters (CJK Unified Ideographs, Compatibility Ideographs, Extension A)".L10N("UI:ClientCore:NameInvalidChar2");
+                       "Allowed characters are A-Z, numbers, and ASCII punctuation.".L10N("UI:ClientCore:NameInvalidChar2");
             }
 
             if (name.Length > ClientConfiguration.Instance.MaxNameLength)
