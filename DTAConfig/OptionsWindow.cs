@@ -178,7 +178,7 @@ namespace DTAConfig
         public void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(tabControl.SelectedTab == 5)
-                { FunExtensions.OpenUrl($"https://creator.yra2.com/workshop/map/list?token={UserINISettings.Instance.Token}");
+                { FunExtensions.OpenUrl($"https://creator.yra2.com/workshop/map/list?token={UserINISettings.Instance.Token}&port={UserINISettings.Instance.startPort}");
 
                 return;
             }
