@@ -7,10 +7,10 @@
 		<Description>RA2Client Library</Description>
 		<Company>Snowy Studio</Company>
 		<Product>RA2Client</Product>
-		<Copyright>Copyright © Snowy Studio 2022-2025</Copyright> 
+		<Copyright>Copyright © Snowy Studio 2022-2032</Copyright> 
 		<Trademark>RA2Client</Trademark>
-		<Version>1.5.1.59</Version>
-		<FileVersion>1.5.1.59</FileVersion>
+		<Version>1.5.1.60</Version>
+		<FileVersion>1.5.1.60</FileVersion>
 		<AssemblyName>RA2Client</AssemblyName>
 		<RootNamespace>RA2Client</RootNamespace>
 		<Nullable>disable</Nullable>

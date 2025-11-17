@@ -7,9 +7,9 @@
     <Description>Rampastring XNA/MonoGame UI Library</Description>
     <Company>Rampastring</Company>
     <Product>Rampastring.XNAUI</Product>
-    <Copyright>Copyright © Rami 'Rampastring' Pasanen 2016-2024</Copyright>
+    <Copyright>Copyright © Rami 'Rampastring' Pasanen 2016-2025</Copyright>
     <Trademark></Trademark>
-	  <AssemblyName>Rampastring.XNAUI</AssemblyName>
+	<AssemblyName>Rampastring.XNAUI</AssemblyName>
     <RootNamespace>Rampastring.XNAUI</RootNamespace>
     <Nullable>disable</Nullable>
     <ComVisibale>false</ComVisibale>

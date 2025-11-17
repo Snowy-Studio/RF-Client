@@ -844,8 +844,6 @@ public class ModManager : XNAWindow
                     if (Directory.GetFiles(path,"*.csf").Length == 0)
                         d = CSF.获取目录下的CSF字典("Mod&AI\\Mod\\YR");
 
-
-
                     foreach (var country in ini.GetSectionValues("Countries").SkipLast(4))
                     {
                         var UIName = ini.GetValue(country, "UIName", $"Name:{country}");
