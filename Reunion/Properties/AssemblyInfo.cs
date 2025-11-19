@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Reunion Client Launcher 𝑪𝒊𝒂𝒍𝒍𝒐～(∠・ω< )⌒★")]
-[assembly: AssemblyCopyright("Copyright © Snowy Studio 2022-2025")]
+[assembly: AssemblyCopyright("Copyright © Snowy Studio 2022-2032")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

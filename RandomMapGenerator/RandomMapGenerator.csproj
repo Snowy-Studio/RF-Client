@@ -10,6 +10,7 @@
 		<Title>RandomMapGenerator</Title>
 		<Company>Handama</Company>
 		<Product>RandomMapGenerator</Product>
+		<Copyright>Copyright © handama 2022-2024</Copyright>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -19,7 +19,7 @@ namespace Reunion
         private const string LauncherFile = "Reunion.exe";
 
         private const string LicenseFileHash = "dc447a64136642636d7aa32e50c76e2465801c5f";
-        private const string ReadmeFileHash = "1dbb412e60371c4b5aff6a8609df1d1b0446e4517b46ec4a4b99a23b132d9f86";
+        private const string ReadmeFileHash = "5842befa6a352063f82592ef71dfcc4816394307a5c98576975bc0e8c1ab009c";
         private const string FreeFileHash = "a9ee8d06b1c4cb7b4bdf18394d0f5bbc";
         private const string AntiCheatFileHash = "77d7dcd1448a96696cb1ba494f1c9e0d920a32dcbe91546da9363e06c6778ee6892ad41c23c4e527088f608956f6c91b1481bad4d4365c70b8f23ac310fabb62";
         private const string LauncherFileHash = "a4a561c91e8f615c97b7aa4273c218a88675c8ab174ed4cd91b21ace008192a12645a2908f5936126378e8d905ae229c";

@@ -7,9 +7,6 @@ namespace ClientCore.CnCNet5
 {
     public static class NameValidator
     {
-        private static readonly Encoding GBKEncoding = Encoding.GetEncoding("GBK");
-        private static readonly char[] AllowedAsciiCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_[]|\\{}^`".ToCharArray();
-
         /// <summary>
         /// Checks if the player's nickname is valid for CnCNet.
         /// </summary>
@@ -35,22 +32,16 @@ namespace ClientCore.CnCNet5
             if (name.EndsWith('_'))
                 return "The player name cannot end with an underline ( _ ).".L10N("UI:ClientCore:NameEndOfUnderline");
 
-            // === 修改：禁止中文，所以删除了所有 CJK 判断 ===
-            foreach (char c in name)
+            char[] allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_[]|\\{}^`".ToCharArray();
+            char[] nicknameChars = name.ToCharArray();
+
+            foreach (char nickChar in nicknameChars)
             {
-                // ASCII 允许的字符
-                if (AllowedAsciiCharacters.Contains(c))
-                    continue;
-
-                // 英文标点符号
-                if ((c >= 0x21 && c <= 0x2F) ||
-                    (c >= 0x3A && c <= 0x40) ||
-                    (c >= 0x5B && c <= 0x60) ||
-                    (c >= 0x7B && c <= 0x7E))
-                    continue;
-
-                return "Your player name has invalid characters in it.".L10N("UI:ClientCore:NameInvalidChar1") + Environment.NewLine +
-                       "Allowed characters are A-Z, numbers, and ASCII punctuation.".L10N("UI:ClientCore:NameInvalidChar2");
+                if (!allowedCharacters.Contains(nickChar))
+                {
+                    return "Your player name has invalid characters in it.".L10N("Client:ClientCore:NameInvalidChar1") + Environment.NewLine +
+                    "Allowed characters are A to Z, any numbers, and ASCII characters.".L10N("Client:ClientCore:NameInvalidChar2");
+                }
             }
 
             if (name.Length > ClientConfiguration.Instance.MaxNameLength)
