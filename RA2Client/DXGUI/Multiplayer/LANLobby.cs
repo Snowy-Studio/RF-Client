@@ -351,6 +351,8 @@ namespace Ra2Client.DXGUI.Multiplayer
             Visible = true;
             Enabled = true;
 
+            lbChatMessages.AddMessage(new ChatMessage(Color.Yellow, "The LAN multiplayer feature has been discontinued in V1 due to some unknown issues. Please use the CnCNet lobby temporarily. It will be reopened in V2.".L10N("UI:Main:LANLobbyDeprecated")));
+
             Logger.Log("Creating LAN socket.");
 
             try
