@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using ClientCore;
+using ClientCore.Entity;
 using ClientGUI;
 using DTAConfig.Entity;
 using Localization;
@@ -14,6 +8,13 @@ using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using ToolTip = ClientGUI.ToolTip;
 
 namespace DTAConfig.OptionPanels;
@@ -506,7 +507,7 @@ public class ModManager : XNAWindow
         }
         else
         {
-            missionPack.FilePath = $"Maps\\CP\\{id}";
+            missionPack.FilePath = $"Maps\\CP\\{missionPack.ID}";
             整合任务包文件(startPath, missionPath, missionPack);
         }
 
