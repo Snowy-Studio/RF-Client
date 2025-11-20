@@ -79,7 +79,7 @@ namespace Ra2Client.Domain.Multiplayer
             RenderImage.需要渲染的地图列表.Clear();
             Logger.Log("开始加载地图...");
 
-            WindowManager.progress.Report("正在转移根目录地图");
+            //WindowManager.progress.Report("正在转移根目录地图");
 
             var gameModeIni = new IniFile(ClientConfiguration.Instance.GameModesIniPath, GameMode.ANNOTATION);
 
@@ -325,7 +325,7 @@ namespace Ra2Client.Domain.Multiplayer
                     {
                         try
                         {
-                            LoadMultiMaps2(mpMapsIni, file,"自定义");
+                            LoadMultiMaps2(mpMapsIni, Path.GetFileName(file),"自定义");
                             Interlocked.Increment(ref 加载地图数量);
 
 

@@ -257,6 +257,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             string safeName = $"{timestamp}_{new string(fileMame.Select(c => invalidChars.Contains(c) ? replaceUnsafeCharactersWith : c).ToArray())}";
 
             var baseUrl = $"{ProgramConstants.CUR_SERVER_URL}/Client/Custom_Map/{sha}.map";
+            if (d == string.Empty) d = "custom";
             string strLocPath = Path.Combine(ProgramConstants.GamePath, "Maps", "Multi", d, safeName);
             string dir = Path.GetDirectoryName(strLocPath);
             if (!Directory.Exists(dir))
@@ -1804,7 +1805,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             if (sender != hostName)
                 return;
 
-            AddNotice(string.Format("Player {0} has different files compared to the game host. Either {0} or the game host could be cheating.".L10N("UI:Main:DifferentFileCheating"), cheaterName), Color.Red);
+         //   AddNotice(string.Format("Player {0} has different files compared to the game host. Either {0} or the game host could be cheating.".L10N("UI:Main:DifferentFileCheating"), cheaterName), Color.Red);
         }
 
         protected override void BroadcastDiceRoll(int dieSides, int[] results)

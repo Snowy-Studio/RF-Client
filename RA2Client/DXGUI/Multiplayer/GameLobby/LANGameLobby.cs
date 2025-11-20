@@ -132,7 +132,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             base.Initialize();
             PostInitialize();
             ReloadMod();
-            btnSend.Visible = false;
+            btnSend.Disable();
         }
 
         public void SetUp(bool isHost,
