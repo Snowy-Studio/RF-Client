@@ -133,7 +133,7 @@ namespace ClientCore
             MapSortState = new IntSetting(iniFile, MULTIPLAYER, "MapSortState", (int)SortDirection.None);
 
             CheckForUpdates = new BoolSetting(iniFile, OPTIONS, "CheckforUpdates", true);
-            Beta = new IntSetting(iniFile, OPTIONS, "Beta", 0);
+            Update = new IntSetting(iniFile, OPTIONS, "channel", 0);
 
             PrivacyPolicyAccepted = new BoolSetting(iniFile, OPTIONS, "PrivacyPolicyAccepted", false);
 
@@ -290,7 +290,7 @@ namespace ClientCore
         /********/
 
         public BoolSetting CheckForUpdates { get; private set; }
-        public IntSetting Beta { get; private set; }
+        public IntSetting Update { get; private set; }
         public BoolSetting PrivacyPolicyAccepted { get; private set; }
         public BoolSetting IsFirstRun { get; private set; }
         public BoolSetting ChkExtensionIsFirst { get; private set; }

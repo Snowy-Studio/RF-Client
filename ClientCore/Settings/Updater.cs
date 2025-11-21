@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using ClientCore.Entity;
 using Localization.Tools;
 using Rampastring.Tools;
+using ProductInfoHeaderValue = System.Net.Http.Headers.ProductInfoHeaderValue;
 
 namespace ClientCore.Settings;
 
@@ -344,12 +345,12 @@ public static class Updater
         httpClient.DefaultRequestHeaders.UserAgent.Clear();
 
         if (GameVersion != "N/A")
-            httpClient.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue(LocalGame, GameVersion));
+            httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(LocalGame, GameVersion));
 
         if (UpdaterVersion != "N/A")
-            httpClient.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue(nameof(Updater), UpdaterVersion));
+            httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(nameof(Updater), UpdaterVersion));
 
-        httpClient.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("Client", Assembly.GetEntryAssembly().GetName().Version.ToString()));
+        httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Client", Assembly.GetEntryAssembly().GetName().Version.ToString()));
     }
 
     /// <summary>
@@ -430,7 +431,7 @@ public static class Updater
                 UpdateUserAgent(SharedHttpClient);
 
                 // 根据更新服务器顺序依次查找合适的服务器信息
-                var version = NetWorkINISettings.Get<ClientCore.Entity.Updater>($"updater/getNewLatestInfoByBaseVersion?type={UserINISettings.Instance.Beta.Value}&baseVersion={GameVersion}").GetAwaiter().GetResult().Item1 ?? throw new("Update server integrity error while checking for updates.");
+                var version = NetWorkINISettings.Get<ClientCore.Entity.Updater>($"updater/getNewLatestInfoByBaseVersion?type={UserINISettings.Instance.Update.Value}&baseVersion={GameVersion}").GetAwaiter().GetResult().Item1 ?? throw new("Update server integrity error while checking for updates.");
                 serverVerCfg = new VersionFileConfig()
                 {
                     Version = version.version,
@@ -736,7 +737,7 @@ public static class Updater
             }
 
             // 获取并排序服务器列表
-            var sortedServers = GetSortedServersByPriority(UserINISettings.Instance.Beta.Value);
+            var sortedServers = GetSortedServersByPriority(UserINISettings.Instance.Update.Value);
             if (sortedServers.Count == 0)
                 throw new("没有可用的更新服务器.");
 
@@ -748,7 +749,7 @@ public static class Updater
             {
                 int serverRetry = 0;
                 Logger.Log($"更新：尝试服务器 {server.url} (延迟优先级)");
-                currentUpdaterServerIndex = UpdaterServers.FindAll(s=>s.type == UserINISettings.Instance.Beta.Value).FindIndex(s => s.url == server.url);
+                currentUpdaterServerIndex = UpdaterServers.FindAll(s=>s.type == UserINISettings.Instance.Update.Value).FindIndex(s => s.url == server.url);
 
                 while (serverRetry < 3)
                 {
@@ -885,7 +886,7 @@ public static class Updater
         try
         {
             int currentUpdaterServerId = currentUpdaterServerIndex;
-            var serversCondi = UpdaterServers.Where(f => f.type.Equals(UserINISettings.Instance.Beta.Value)).ToList();
+            var serversCondi = UpdaterServers.Where(f => f.type.Equals(UserINISettings.Instance.Update.Value)).ToList();
 
             if (currentUpdaterServerId < 0 || currentUpdaterServerId >= serversCondi.Count)
             {
