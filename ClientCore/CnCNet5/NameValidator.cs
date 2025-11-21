@@ -39,8 +39,8 @@ namespace ClientCore.CnCNet5
             {
                 if (!allowedCharacters.Contains(nickChar))
                 {
-                    return "Your player name has invalid characters in it.".L10N("Client:ClientCore:NameInvalidChar1") + Environment.NewLine +
-                    "Allowed characters are A to Z, any numbers, and ASCII characters.".L10N("Client:ClientCore:NameInvalidChar2");
+                    return "Your player name has invalid characters in it.".L10N("UI:ClientCore:NameInvalidChar1") + Environment.NewLine +
+                    "Allowed characters are A to Z, any numbers, and ASCII characters.".L10N("UI:ClientCore:NameInvalidChar2");
                 }
             }
 
