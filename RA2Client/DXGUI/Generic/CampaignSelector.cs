@@ -639,16 +639,32 @@ namespace Ra2Client.DXGUI.Generic
         private void 显示任务包TxT文件列表(string mpPath)
         {
 
+            // 定义黑名单（存文件名，不带路径）
+            var blacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+{
+    "creditsmd",
+    "subtitlemd",
+
+};
+
             _lbxInforBox.Clear();
-            if(Directory.Exists(mpPath))
-            foreach (var txt in Directory.GetFiles(mpPath, "*.txt"))
+
+            if (Directory.Exists(mpPath))
             {
+                foreach (var txt in Directory.GetFiles(mpPath, "*.txt"))
+                {
+                    var name = Path.GetFileNameWithoutExtension(txt);
+
+                    // 在黑名单里 → 跳过
+                    if (blacklist.Contains(name))
+                        continue;
+
                     _lbxInforBox.AddItem(new XNAListBoxItem()
                     {
-                        Text = Path.GetFileNameWithoutExtension(txt),
-                        Tag = Path.Combine(ProgramConstants.GamePath,txt)
+                        Text = name,
+                        Tag = Path.Combine(ProgramConstants.GamePath, txt)
                     });
-
+                }
             }
         }
 
@@ -1444,9 +1460,7 @@ namespace Ra2Client.DXGUI.Generic
 
             settings.SetValue("Mission", newMission);
 
-            //if(_chkExtension.Checked)
-            //    settings.SetValue("Ra2Mode", mod.md != "md");
-            //else//这里不知为何一定得写False，即使是用原版玩，用True会弹窗
+            
                 settings.SetValue("Ra2Mode", false);
             settings.SetValue("chkSatellite", CheckBoxes?.Find(chk => chk.Name == "chkSatellite")?.Checked ?? false);
             settings.SetValue("Scenario", mission.Scenario);
@@ -1463,6 +1477,10 @@ namespace Ra2Client.DXGUI.Generic
 
             UserINISettings.Instance.Difficulty.Value = _trbDifficultySelector.Value;
 
+
+            var ini = new IniFile("RA2MD.INI");
+            ini.SetValue("Options", "Difficulty", (mission.PlayerAlwaysOnNormalDifficulty ? "1" : _trbDifficultySelector.Value.ToString()));
+            ini.WriteIniFile();
             #endregion
 
             SaveSettings();

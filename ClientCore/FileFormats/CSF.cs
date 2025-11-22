@@ -335,7 +335,7 @@ namespace Localization.Tools
         {
             var combinedDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            var miscsfs = MixLoader.MixFile.GetDirCSFs(path); //读目录下的MIX里的CSF
+            var miscsfs = MixLoader.MixFile.GetDirFiles(path,".csf"); //读目录下的MIX里的CSF
             foreach (var csf in miscsfs)
             {
                 var csfDictionary = new CSF().GetCsfDictionary(csf);

@@ -5,6 +5,7 @@ using DTAConfig.Entity;
 using Localization;
 using Localization.Tools;
 using Microsoft.Xna.Framework;
+using OpenRA.Mods.Cnc.FileSystem;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -571,18 +572,42 @@ public class ModManager : XNAWindow
         if (!battleINI.SectionExists("Battles"))
             battleINI.AddSection("Battles");
 
-        //先确定可用的ini
-        var mapSelINIPath = "Resources//mapselmd.ini";
-        if (File.Exists(Path.Combine(tagerPath, $"mapsel{md}.ini")))
-            mapSelINIPath = Path.Combine(tagerPath, $"mapsel{md}.ini");
+        /// <summary>
+        /// 按优先级加载 INI：
+        /// 1. 任务目录
+        /// 2. MIX 容器
+        /// 3. 默认 Resources
+        /// </summary>
+        IniFile LoadIni(string taskPath, string iniName, string defaultPath)
+        {
+            // 1. 任务目录优先
+            if (File.Exists(Path.Combine(taskPath,iniName)))
+                return new IniFile(Path.Combine(taskPath, iniName));
 
-        var missionINIPath = "Resources//missionmd.ini";
-        if (File.Exists(Path.Combine(tagerPath, $"mission{md}.ini")))
-            missionINIPath = Path.Combine(tagerPath, $"mission{md}.ini");
+            // 2. MIX 中是否有
+            var mixFiles = MixLoader.MixFile.GetDirFiles(taskPath, iniName);
+            if (mixFiles.Count > 0)
+                return new IniFile(mixFiles[0]);
+
+            // 3. 默认文件
+            return new IniFile(defaultPath);
+        }
+
+
+        //先确定可用的ini
+        var mapSelINI = LoadIni(
+    tagerPath,
+    $"mapsel{md}.ini",
+    "Resources/mapselmd.ini"
+);
+
+        var missionINI = LoadIni(
+            tagerPath,
+            $"mission{md}.ini",
+            "Resources/missionmd.ini"
+        );
 
         var csf = CSF.获取目录下的CSF字典(tagerPath);
-        var missionINI = new IniFile(missionINIPath);
-        var mapSelINI = new IniFile(mapSelINIPath);
 
         if (maps.Count == 0) //如果没有地图
         {
@@ -604,7 +629,7 @@ public class ModManager : XNAWindow
                 var map = mapSelINI.GetValue(sectionName, "Scenario", string.Empty);
                 if (map == string.Empty) continue;
 
-                if (mapSelINIPath == "Resources//mapselmd.ini" && missionINIPath == "Resources//missionmd.ini")
+                if (mapSelINI.FileName == "Resources//mapselmd.ini" && mapSelINI.FileName == "Resources//missionmd.ini")
                     if ((map.ToLower().EndsWith("md.map") && !missionPack.YR) || !map.ToLower().EndsWith("md.map") && missionPack.YR) continue;
 
                 maps.Add(map);
@@ -630,13 +655,17 @@ public class ModManager : XNAWindow
 
             var csfName = missionINI.GetValue(mapName, "UIName", string.Empty);
             var 任务名称 = csf?.GetValueOrDefault(csfName)?.ConvertValuesToSimplified() ?? $"第{count}关";
+            var 存档名称 = csf?.GetValueOrDefault($"{csfName}Sav")?.ConvertValuesToSimplified() ?? 任务名称;
             var 任务地点 = csf?.GetValueOrDefault(missionINI.GetValue(mapName, "LSLoadMessage", string.Empty))?.ConvertValuesToSimplified() ?? "";
             var 任务简报 = csf?.GetValueOrDefault(missionINI.GetValue(mapName, "Briefing", string.Empty))?.ConvertValuesToSimplified() ?? "";
             var 任务目标 = csf?.GetValueOrDefault(missionINI.GetValue(mapName, "LSLoadBriefing", string.Empty))?.ConvertValuesToSimplified() ?? "";
 
             if (默认战役名称.ContainsKey(csfName) && (默认战役名称[csfName] == 任务名称 || $"第{count}关" == 任务名称))
             {
-                if (任务地点 != string.Empty)
+                if (存档名称 != 任务名称)
+                    任务名称 = 存档名称;
+
+                else if (任务地点 != string.Empty)
                     任务名称 = 任务地点.Split('-')[0].TrimEnd();
             }
             if (任务简报.Trim().Contains(任务目标.Trim()))
@@ -2030,10 +2059,10 @@ public class EditCSFWindows : XNAWindow
         _tbSearch.TextChanged += (_, _) => { Reload(); };
 
         _mcListBoxCsfInfo = new XNAMultiColumnListBox(windowManager);
-        _mcListBoxCsfInfo.ClientRectangle = new Rectangle(12, _tbSearch.Bottom + 12, 320, 250);
+        _mcListBoxCsfInfo.ClientRectangle = new Rectangle(12, _tbSearch.Bottom + 12, 600, 250);
 
-        _mcListBoxCsfInfo.AddColumn("键", 120);
-        _mcListBoxCsfInfo.AddColumn("值", 200);
+        _mcListBoxCsfInfo.AddColumn("键", 250);
+        _mcListBoxCsfInfo.AddColumn("值", 350);
 
         _mcListBoxCsfInfo.SelectedIndexChanged += McListBoxCsfInfoSelectedIndexChanged;
         _mcListBoxCsfInfo.RightClick += McListBoxCsfInfoRightClick;

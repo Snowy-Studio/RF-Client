@@ -79,6 +79,12 @@ public class IniFile : IIniFile
         ParseIniFile(stream, null, applyBaseIni);
     }
 
+    public IniFile(byte[] bytes, bool applyBaseIni = true)
+    {
+        using var stream = new MemoryStream(bytes);
+        ParseIniFile(stream, null, applyBaseIni);
+    }
+
     /// <summary>
     /// Creates a new INI file instance and parses it.
     /// </summary>

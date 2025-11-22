@@ -70,15 +70,17 @@ namespace OpenRA.Mods.Cnc.FileSystem
                 
             }
 
-			public static List<byte[]> GetDirCSFs(string folderPath)
+			public static List<byte[]> GetDirFiles(string folderPath, string type)
 			{
                 var csfs = new List<byte[]>();
                 foreach (var file in Directory.GetFiles(folderPath, "*.mix").OrderBy(f => f))
-                    csfs.AddRange(GetCSFs(file));
+                    csfs.AddRange(GetFiles(file,type));
                 return csfs;
             }
 
-			public static List<byte[]> GetCSFs(string filename)
+
+
+			public static List<byte[]> GetFiles(string filename,string type)
 			{
 				var csfs = new List<byte[]>();
 				try
@@ -86,7 +88,7 @@ namespace OpenRA.Mods.Cnc.FileSystem
 					var mix = new MixFile(filename);
 					foreach (var entry in mix.Index.OrderBy(e => e.Key))
 					{
-						if (entry.Key.EndsWith(".csf", StringComparison.InvariantCultureIgnoreCase))
+						if (entry.Key.EndsWith(type, StringComparison.InvariantCultureIgnoreCase))
 						{
 							csfs.Add(mix.GetFileContent(entry.Key));
 						}
