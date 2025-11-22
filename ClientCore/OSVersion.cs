@@ -30,6 +30,7 @@ public enum OSVersion
     Windows11_24H2_Beta,
     Windows11_25H2,
     Windows11_25H2_Dev,
+    Windows11_26H1_Canary,
     Windows_Dev,
     UNIX
 }

@@ -1,3 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using ClientCore;
 using ClientCore.Entity;
 using ClientGUI;
@@ -9,13 +16,6 @@ using OpenRA.Mods.Cnc.FileSystem;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using ToolTip = ClientGUI.ToolTip;
 
 namespace DTAConfig.OptionPanels;

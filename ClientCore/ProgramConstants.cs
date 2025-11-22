@@ -24,7 +24,7 @@ namespace ClientCore
 
         public static readonly List<int> VersionX = [10240, 10586, 14393, 15063, 16299, 17134, 17763, 18362, 18363, 19041, 19042, 19043, 19044, 19045, 20348];
 
-        public static readonly List<int> VersionValley = [22000, 22621, 22631, 26100, 26120, 26200, 26220];
+        public static readonly List<int> VersionValley = [22000, 22621, 22631, 26100, 26120, 26200, 26220, 28000];
 
         
 

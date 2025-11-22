@@ -19,8 +19,8 @@ namespace DTAConfig.OptionPanels
         private XNAListBox lbServerList;
         private XNAClientCheckBox chkAutoCheck;
         private XNAClientButton btnForceUpdate;
-        private XNALabel lblBeta;
-        private XNADropDown ddBeta;
+        private XNALabel lblChannel;
+        private XNADropDown ddChannel;
 
         private System.Threading.Timer latencyRefreshTimer;
 
@@ -58,21 +58,21 @@ namespace DTAConfig.OptionPanels
             btnForceUpdate.Text = "Force Update".L10N("UI:DTAConfig:ForceUpdate");
             btnForceUpdate.LeftClick += BtnForceUpdate_LeftClick;
 
-            lblBeta = new XNALabel(WindowManager);
-            lblBeta.Name = "lblBeta";
-            lblBeta.ClientRectangle = new Rectangle(chkAutoCheck.X, btnForceUpdate.Bottom + 24, 60, 20);
-            lblBeta.Text = "Update Channel".L10N("UI:DTAConfig:UpdateChannel");
+            lblChannel = new XNALabel(WindowManager);
+            lblChannel.Name = "lblChannel";
+            lblChannel.ClientRectangle = new Rectangle(chkAutoCheck.X, btnForceUpdate.Bottom + 24, 60, 20);
+            lblChannel.Text = "Update Channel".L10N("UI:DTAConfig:UpdateChannel");
 
-            ddBeta = new XNADropDown(WindowManager);
-            ddBeta.Name = "ddBeta";
-            ddBeta.ClientRectangle = new Rectangle(lblBeta.X + 80, lblBeta.Y, 100, 30);
-            ddBeta.AddItem("Stable".L10N("UI:DTAConfig:UpdateChannelStable"));
-            ddBeta.AddItem("Insider".L10N("UI:DTAConfig:UpdateChannelInsider"));
-            ddBeta.SelectedIndexChanged += DdBeta_SelectedIndexChanged;
+            ddChannel = new XNADropDown(WindowManager);
+            ddChannel.Name = "ddChannel";
+            ddChannel.ClientRectangle = new Rectangle(lblChannel.X + 80, lblChannel.Y, 100, 30);
+            ddChannel.AddItem("Stable".L10N("UI:DTAConfig:UpdateChannelStable"));
+            ddChannel.AddItem("Insider".L10N("UI:DTAConfig:UpdateChannelInsider"));
+            ddChannel.SelectedIndexChanged += DdChannel_SelectedIndexChanged;
 
             lbServerList = new XNAListBox(WindowManager);
             lbServerList.Name = "lbServerList";
-            lbServerList.ClientRectangle = new Rectangle(12, ddBeta.Bottom + 24, Width - 24, 150);
+            lbServerList.ClientRectangle = new Rectangle(12, ddChannel.Bottom + 24, Width - 24, 150);
             lbServerList.LineHeight = 20;
             lbServerList.DefaultItemColor = Color.White;
 
@@ -80,12 +80,12 @@ namespace DTAConfig.OptionPanels
             AddChild(lblBestServer);
             AddChild(chkAutoCheck);
             AddChild(btnForceUpdate);
-            AddChild(lblBeta);
-            AddChild(ddBeta);
+            AddChild(lblChannel);
+            AddChild(ddChannel);
             AddChild(lbServerList);
         }
 
-        private void DdBeta_SelectedIndexChanged(object sender, EventArgs e)
+        private void DdChannel_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateServerList();
         }
@@ -96,7 +96,7 @@ namespace DTAConfig.OptionPanels
 
             if (Updater.UpdaterServers != null && Updater.UpdaterServers.Count > 0)
             {
-                var servers = Updater.UpdaterServers.Where(f => f.type.Equals(ddBeta.SelectedIndex)).ToList();
+                var servers = Updater.UpdaterServers.Where(f => f.type.Equals(ddChannel.SelectedIndex)).ToList();
                 foreach (var server in servers)
                 {
                     lbServerList.AddItem($"{server.name}{(!string.IsNullOrEmpty(server.location) ? $" ({server.location})" : string.Empty)} - 延迟: N/A ms");
@@ -113,7 +113,7 @@ namespace DTAConfig.OptionPanels
                 if (Updater.UpdaterServers == null)
                     return;
 
-                var servers = Updater.UpdaterServers.Where(f => f.type.Equals(ddBeta.SelectedIndex)).ToList();
+                var servers = Updater.UpdaterServers.Where(f => f.type.Equals(ddChannel.SelectedIndex)).ToList();
                 var serverLatencies = new Dictionary<ClientCore.Entity.UpdaterServer, long>();
                 List<string> updatedItems = new List<string>();
 
@@ -203,8 +203,8 @@ namespace DTAConfig.OptionPanels
 
             if (Updater.UpdaterServers != null && Updater.UpdaterServers.Count > 0)
             {
-                if (IniSettings.Beta != -1)
-                    ddBeta.SelectedIndex = IniSettings.Beta.Value;
+                if (IniSettings.Update != -1)
+                    ddChannel.SelectedIndex = IniSettings.Update.Value;
 
                 chkAutoCheck.Checked = IniSettings.CheckForUpdates;
 
@@ -226,10 +226,10 @@ namespace DTAConfig.OptionPanels
 
             IniSettings.CheckForUpdates.Value = chkAutoCheck.Checked;
 
-            if (IniSettings.Beta.Value != ddBeta.SelectedIndex)
+            if (IniSettings.Update.Value != ddChannel.SelectedIndex)
             {
                 restartRequired = true;
-                IniSettings.Beta.Value = ddBeta.SelectedIndex;
+                IniSettings.Update.Value = ddChannel.SelectedIndex;
             }
 
             NetWorkINISettings.Instance?.SetServerList();

@@ -508,6 +508,10 @@ namespace ClientCore
                     {
                         return OSVersion.Windows11_25H2_Dev;
                     }
+                    else if (version.Build == 28000)
+                    {
+                        return OSVersion.Windows11_26H1_Canary;
+                    }
                     else
                     {
                         return OSVersion.Windows_Dev;

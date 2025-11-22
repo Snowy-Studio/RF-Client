@@ -93,7 +93,7 @@ namespace Ra2Client.DXGUI.Generic
         {
             Task.Run(async () =>
             {
-                var beta = UserINISettings.Instance.Beta.Value == 1 ? "beta_log" : "log";
+                var beta = UserINISettings.Instance.Update.Value == 1 ? "beta_log" : "log";
                 changelogUrl = (await NetWorkINISettings.Get<string>($"dict/getValue?section=updater&key={beta}")).Item1 ?? "www.yra2.com";
             });
         }
