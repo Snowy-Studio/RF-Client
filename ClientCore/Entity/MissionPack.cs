@@ -122,6 +122,7 @@ public class MissionPack : InfoBaseClass
             .SetValue(ID, "MissionPack", ID)
             .SetValue(ID, "BuildOffAlly", true)
             .SetValue(ID, "UpdateTime", UpdateTime)
+            .SetValue(ID, "Difficulty",Difficulty)
             ;
 
         if (Sides != null)

@@ -22,6 +22,8 @@ namespace ClientCore.Entity
 
         public int? year { get; set; }
 
+        public int difficulty { get; set; }
+
         public int gameType { get; set; }
 
         public string? link { get; set; }

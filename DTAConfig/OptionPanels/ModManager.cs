@@ -507,7 +507,8 @@ public class ModManager : XNAWindow
             LongDescription = mp?.LongDescription ?? Path.GetFileName(missionPath),
             Mod = isYR ? "YR" : "RA2",
             DefaultMod = isYR ? "YR+" : "RA2+",
-            UpdateTime = mp?.UpdateTime ?? ""
+            UpdateTime = mp?.UpdateTime ?? "",
+            Difficulty = mp?.Difficulty
         };
         missionPack.DefaultMod = missionPack.Mod;
         var m = new Mod()
@@ -727,7 +728,9 @@ public class ModManager : XNAWindow
                      .SetValue(sectionName, "Description", 任务名称)
                      .SetValue(sectionName, "LongDescription", LongDescription.Replace("\n", "@"))
                      .SetValue(sectionName, "MissionPack", missionPack.ID)
-                     .SetValue(sectionName, "SideName", 阵营);
+                     .SetValue(sectionName, "SideName", 阵营)
+                     ;
+                      
             count++;
         }
         battleINI.WriteIniFile();

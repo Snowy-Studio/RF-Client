@@ -609,6 +609,14 @@ namespace Ra2Client
                 else
                     SevenZip.ExtractWith7Zip(tmpFile, "./", needDel: true);
 
+                var difficultyText = missionPackVo.difficulty switch
+                {
+                    1 => "简单",
+                    2 => "中等",
+                    3 => "困难",
+                    _ => "未知"  // 0 或其他值
+                };
+
                 var missionPack = new MissionPack()
                 {
                      ID = missionPackVo.id,
@@ -617,6 +625,7 @@ namespace Ra2Client
                     UpdateTime = missionPackVo.updateTime,
                     Author = missionPackVo.author,
                     Other = false,
+                    Difficulty = difficultyText
                 };
 
                
