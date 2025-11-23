@@ -1,3 +1,4 @@
+using ClientCore;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -110,7 +111,7 @@ namespace ClientGUI
                 {
                     if (IsInBuildBarArea()) // 只在建造栏区域触发
                     {
-                        AutoClick(4);
+                        AutoClick(UserINISettings.Instance.连点数量 - 1);
                     }
                 }
 

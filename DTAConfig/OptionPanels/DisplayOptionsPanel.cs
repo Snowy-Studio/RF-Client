@@ -488,6 +488,7 @@ namespace DTAConfig.OptionPanels
             LoadRenderer();
             ddDetailLevel.SelectedIndex = UserINISettings.Instance.DetailLevel;
 
+            
             //string currentRes = UserINISettings.Instance.IngameScreenWidth.Value +
             //    "x" + UserINISettings.Instance.IngameScreenHeight.Value;
 

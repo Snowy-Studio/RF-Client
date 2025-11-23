@@ -281,9 +281,28 @@ public class ModManager : XNAWindow
 
     private void EditCsf()
     {
-        var csfPath = Path.Combine(((InfoBaseClass)ListBoxModAi.SelectedItem.Tag).FilePath, "ra2md.csf");
+        var basePath = ((InfoBaseClass)ListBoxModAi.SelectedItem.Tag).FilePath;
+
+        // 1️⃣ 先优先查 Mod 目录
+        string csfPath = Path.Combine(basePath, "ra2md.csf");
         if (!File.Exists(csfPath))
+            csfPath = Path.Combine(basePath, "ra2.csf");
+
+        // 2️⃣ 再查游戏目录
+        if (!File.Exists(csfPath))
+        {
             csfPath = Path.Combine(ProgramConstants.GamePath, "ra2md.csf");
+            if (!File.Exists(csfPath))
+                csfPath = Path.Combine(ProgramConstants.GamePath, "ra2.csf");
+        }
+
+        // 如果仍不存在，可以再提示
+        if (!File.Exists(csfPath))
+        {
+           // ShowMessageBox("未找到 ra2md.csf 或 ra2.csf");
+            return;
+        }
+
         var csf = new CSF(csfPath);
         var editCSFWindows = new EditCSFWindows(WindowManager, _tooltip, csf);
         editCSFWindows.Show();
@@ -562,6 +581,25 @@ public class ModManager : XNAWindow
         { "Name:ALL07md", "军事行动：脑死" },
     };
 
+    private static readonly Dictionary<string, string> 默认存档名称 = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+       
+        { "Name:Sov01mdSav", "苏军 01 - 时空转移" },
+        { "Name:Sov02mdSav", "苏军 02 - 似曾相识" },
+        { "Name:Sov03mdSav", "苏军 03 - 洗脑行动" },
+        { "Name:Sov04mdSav", "苏军 04 - 北非谍影" },
+        { "Name:Sov05mdSav", "苏军 05 - 脱离地心引力" },
+        { "Name:Sov06mdSav", "苏军 06 - 飞向月球" },
+        { "Name:Sov07mdSav", "苏军 07 - 首脑游戏" },
+        { "Name:ALL01mdSav", "盟军 01 - 光阴似箭" },
+        { "Name:ALL02mdSav", "盟军 02 - 好莱坞，梦一场" },
+        { "Name:ALL03mdSav", "盟军 03 - 集中攻击" },
+        { "Name:ALL04mdSav", "盟军 04 - 古墓奇击" },
+        { "Name:ALL05mdSav", "盟军 05 - 纽澳复制战" },
+        { "Name:ALL06mdSav", "盟军 06 - 万圣节" },
+        { "Name:ALL07mdSav", "盟军 07 - 脑死" },
+    };
+
     private static void 写入任务INI(MissionPack missionPack, string startPath)
     {
         var tagerPath = Path.Combine(startPath, missionPack.FilePath);
@@ -662,12 +700,24 @@ public class ModManager : XNAWindow
 
             if (默认战役名称.ContainsKey(csfName) && (默认战役名称[csfName] == 任务名称 || $"第{count}关" == 任务名称))
             {
-                if (存档名称 != 任务名称)
-                    任务名称 = 存档名称;
+               
 
+                string defaultValue = null;
+                if (默认存档名称 != null && 默认存档名称.TryGetValue($"{csfName}Sav", out var tmp))
+                    defaultValue = tmp;
+
+                if (!string.Equals(存档名称, 任务名称)
+                    && !string.Equals(存档名称, defaultValue))
+                {
+                    任务名称 = 存档名称;
+                }
                 else if (任务地点 != string.Empty)
                     任务名称 = 任务地点.Split('-')[0].TrimEnd();
+
+                
+
             }
+
             if (任务简报.Trim().Contains(任务目标.Trim()))
                 任务简报 = string.Empty;
 

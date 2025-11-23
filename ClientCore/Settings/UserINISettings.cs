@@ -81,6 +81,7 @@ namespace ClientCore
             Game = new StringSetting(iniFile, OPTIONS, "Game", "SkirmishLobby");
             YRPath = new StringSetting(iniFile, OPTIONS, "YRPath", "YR");
             IMEEnabled = new BoolSetting(iniFile, OPTIONS, "IMEEnabled", true);
+            连点数量 = new IntSetting(iniFile, OPTIONS, "clickCount", 5);
             Renderer = new StringSetting(iniFile, COMPATIBILITY, "Renderer", string.Empty);
 
             WindowedMode = new BoolSetting(iniFile, VIDEO, WINDOWED_MODE_KEY, false);
@@ -194,6 +195,8 @@ namespace ClientCore
         public IntSetting IngameScreenWidth { get; private set; }
 
         public int startPort;
+        public IntSetting 连点数量 { get; private set; }
+
         public IntSetting IngameScreenHeight { get; private set; }
         public StringSetting ClientTheme { get; private set; }
 

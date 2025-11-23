@@ -34,6 +34,7 @@ namespace DTAConfig.OptionPanels
         private XNAClientCheckBox chkMultinuclear;
         private XNAClientCheckBox chkForceEnableGameOptions;
         private XNAClientCheckBox chk连点器;
+        private XNATextBox tb连点数量;
 
         private XNAControl topBar;
 
@@ -129,7 +130,7 @@ namespace DTAConfig.OptionPanels
             chkRenderPreviewImage.Name = nameof(chkRenderPreviewImage);
             chkRenderPreviewImage.ClientRectangle = new Rectangle(chkMultinuclear.X, chkShowHiddenObjects.Y, 150, 20);
             chkRenderPreviewImage.Text = "Render holographic preview in the background when importing a new map".L10N("UI:DTAConfig:RenderHolographicPreview");
-             
+
             chkTooltips = new SettingCheckBox(WindowManager, true, UserINISettings.OPTIONS, "ToolTips");
             chkTooltips.Name = nameof(chkTooltips);
             chkTooltips.Text = "Tooltips".L10N("UI:DTAConfig:Tooltips");
@@ -151,7 +152,7 @@ namespace DTAConfig.OptionPanels
 
             var lblStartCommand = new XNALabel(WindowManager);
             lblStartCommand.Name = nameof(lblStartCommand);
-            lblStartCommand.ClientRectangle = new Rectangle(chkMultinuclear.X , lblPlayerName.Y, 0, 0);
+            lblStartCommand.ClientRectangle = new Rectangle(chkMultinuclear.X, lblPlayerName.Y, 0, 0);
             lblStartCommand.Text = "Start the command:".L10N("UI:DTAConfig:StartCommand");
 
             tbStartCommand = new XNATextBox(WindowManager);
@@ -168,6 +169,22 @@ namespace DTAConfig.OptionPanels
             };
 
             AddChild(chk连点器);
+
+            var lbl连点数量 = new XNALabel(WindowManager)
+            {
+                
+                ClientRectangle = new Rectangle(chk连点器.Right + 30, chk连点器.Y, 0, 0),
+                Text = "连点数量：",
+                TextColor=Color.White,
+            };
+            AddChild(lbl连点数量);
+
+            tb连点数量 = new XNATextBox(WindowManager)
+            {
+                Name = nameof(tb连点数量),
+                ClientRectangle = new Rectangle(chk连点器.Right + 120, chk连点器.Y, 60, 20),
+            };
+            AddChild(tb连点数量);
 
             tbPlayerName = new XNATextBox(WindowManager);
             tbPlayerName.Name = nameof(tbPlayerName);
@@ -330,6 +347,7 @@ namespace DTAConfig.OptionPanels
             tbPlayerName.Text = UserINISettings.Instance.PlayerName;
             chkForceEnableGameOptions.Checked = UserINISettings.Instance.ForceEnableGameOptions.Value;
             chk连点器.Checked = UserINISettings.Instance.启用连点器.Value;
+            tb连点数量.Text = UserINISettings.Instance.连点数量.Value.ToString();
         }
 
         //public bool HasChinese(string str)
@@ -347,6 +365,14 @@ namespace DTAConfig.OptionPanels
             //    messageBox.Show();
             //    return false;
             //}
+
+            if (!int.TryParse(tb连点数量.Text, out int value) || value <= 0 || value > 100)
+            {
+                XNAMessageBox.Show(WindowManager, "错误","连点数量必须是 1~100 的正整数！");
+                return false;
+            }
+
+            IniSettings.连点数量.Value = int.Parse(tb连点数量.Text);
 
             Multinuclear(chkMultinuclear.Checked);
 
