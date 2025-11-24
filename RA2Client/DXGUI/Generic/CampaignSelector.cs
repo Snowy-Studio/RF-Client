@@ -24,7 +24,7 @@ namespace Ra2Client.DXGUI.Generic
 {
     public class CampaignSelector(WindowManager windowManager, DiscordHandler discordHandler) : INItializableXNAWindow(windowManager)
     {
-        private XNAClientCheckBox chkTerrain; // 地形扩展选项       ——dfyh
+        private XNAClientCheckBox chkTerrain; // 地形扩展选项——dfyh
 
         private const int DefaultWidth = 650;
         private const int DefaultHeight = 600;
@@ -641,11 +641,10 @@ namespace Ra2Client.DXGUI.Generic
 
             // 定义黑名单（存文件名，不带路径）
             var blacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-{
-    "creditsmd",
-    "subtitlemd",
-
-};
+            {
+                "creditsmd",
+                "subtitlemd",
+            };
 
             _lbxInforBox.Clear();
 
@@ -1459,9 +1458,8 @@ namespace Ra2Client.DXGUI.Generic
             settings.SetValue("Game", newGame);
 
             settings.SetValue("Mission", newMission);
-
             
-                settings.SetValue("Ra2Mode", false);
+            settings.SetValue("Ra2Mode", false);
             settings.SetValue("chkSatellite", CheckBoxes?.Find(chk => chk.Name == "chkSatellite")?.Checked ?? false);
             settings.SetValue("Scenario", mission.Scenario);
             settings.SetValue("CampaignID", mission.Index);
@@ -1485,7 +1483,7 @@ namespace Ra2Client.DXGUI.Generic
 
             SaveSettings();
 
-        //    ((MainMenuDarkeningPanel)Parent).Hide();
+            //((MainMenuDarkeningPanel)Parent).Hide();
 
             string difficultyName = DifficultyNames[_trbDifficultySelector.Value];
 

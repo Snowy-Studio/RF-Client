@@ -283,12 +283,12 @@ public class ModManager : XNAWindow
     {
         var basePath = ((InfoBaseClass)ListBoxModAi.SelectedItem.Tag).FilePath;
 
-        // 1️⃣ 先优先查 Mod 目录
+        // 优先检查 Mod 目录
         string csfPath = Path.Combine(basePath, "ra2md.csf");
         if (!File.Exists(csfPath))
             csfPath = Path.Combine(basePath, "ra2.csf");
 
-        // 2️⃣ 再查游戏目录
+        // 再检查游戏目录
         if (!File.Exists(csfPath))
         {
             csfPath = Path.Combine(ProgramConstants.GamePath, "ra2md.csf");
@@ -635,10 +635,10 @@ public class ModManager : XNAWindow
 
         //先确定可用的ini
         var mapSelINI = LoadIni(
-    tagerPath,
-    $"mapsel{md}.ini",
-    "Resources/mapselmd.ini"
-);
+            tagerPath,
+            $"mapsel{md}.ini",
+            "Resources/mapselmd.ini"
+        );
 
         var missionINI = LoadIni(
             tagerPath,
