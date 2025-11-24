@@ -525,60 +525,154 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         private void BtnLoadMaps_LeftClick(object sender, EventArgs e)
         {
             using OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Map files (*.yrm;*.mpr;*.map)|*.yrm;*.mpr;*.map";
+            openFileDialog.Filter =
+                "全部支持|*.yrm;*.mpr;*.map;*.7z;*.rar;*.zip|地图文件 (*.yrm;*.mpr;*.map)|*.yrm;*.mpr;*.map|压缩包 (*.7z;*.rar;*.zip)|*.7z;*.rar;*.zip";
             openFileDialog.Multiselect = true;
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            List<string> mapFiles = new();
+            List<string> archiveFiles = new();
+
+            foreach (var file in openFileDialog.FileNames)
             {
-                导入地图(openFileDialog.FileNames);
+                string ext = Path.GetExtension(file).ToLower();
+                switch (ext)
+                {
+                    case ".yrm":
+                    case ".mpr":
+                    case ".map":
+                        mapFiles.Add(file);
+                        break;
+                    case ".7z":
+                    case ".rar":
+                    case ".zip":
+                        archiveFiles.Add(file);
+                        break;
+                    default:
+                        MessageBox.Show($"不支持的文件格式：{file}");
+                        break;
+                }
+            }
+
+            if (mapFiles.Count > 0)
+                导入地图文件集合(mapFiles);
+
+            if (archiveFiles.Count > 0)
+                处理压缩包(archiveFiles);
+
+            刷新地图列表();
+        }
+
+        private void 处理压缩包(List<string> files)
+        {
+            foreach (var file in files)
+            {
+                // 用时间戳作为根目录，保证唯一
+                string extractRoot = Path.Combine("tmp", DateTime.Now.ToString("yyMMddHHmmssfff"));
+                Directory.CreateDirectory(extractRoot);
+
+                // SevenZip 解压并递归处理内部压缩包
+                SevenZip.解压并递归处理(file, extractRoot);
+
+                // 解压完成后扫描所有地图文件
+                var maps = Directory.EnumerateFiles(extractRoot, "*.*", SearchOption.AllDirectories)
+                                    .Where(f => new[] { ".yrm", ".mpr", ".map" }.Contains(Path.GetExtension(f).ToLower()))
+                                    .ToList();
+
+                if (maps.Count > 0)
+                {
+                    // 递归调用：每个 extractRoot 作为单独集合导入
+                    导入地图文件集合(maps, extractRoot);
+                }
             }
         }
 
-        private void 导入地图(string[] files)
+        private void 导入地图文件集合(List<string> mapFiles, string srcRoot = null)
         {
-            var targetFolder = Path.Combine(ProgramConstants.GamePath, "Maps\\Multi", Path.GetFileName(Path.GetDirectoryName(files[0])));
+            if (mapFiles == null || mapFiles.Count == 0) return;
 
-            if (!Directory.Exists(targetFolder)) Directory.CreateDirectory(targetFolder);
+            string mapRootTarget = Path.Combine(ProgramConstants.GamePath, "Maps", "Multi");
+            string[] otherExts = { ".mix", ".ini", ".csf" };
 
-            var count = 0;
-            foreach (string file in files)
+            var dirGroups = mapFiles
+                .Where(f => File.Exists(f) && FunExtensions.是否为多人图(f))
+                .GroupBy(f => Path.GetDirectoryName(f));
+
+            foreach (var group in dirGroups)
             {
-                string extension = Path.GetExtension(file).ToLower();
-                
-                if (FunExtensions.是否为多人图(file))
+                // 使用时间戳目录名，每次都唯一
+                string folderName = DateTime.Now.ToString("yyMMddHHmmssfff");
+                string targetDir = Path.Combine(mapRootTarget, folderName);
+                Directory.CreateDirectory(targetDir);
+
+                string extraDir = Path.Combine(targetDir, "_files");
+                Directory.CreateDirectory(extraDir);
+
+                // 复制地图文件
+                foreach (var mapFile in group)
                 {
-                    string fileName = Path.GetFileName(file);
-                    string destinationPath = Path.Combine(targetFolder, fileName);
+                    string mapDest = Path.Combine(targetDir, Path.GetFileName(mapFile));
+                    mapDest = GetUniquePath(mapDest);
+                    File.Copy(mapFile, mapDest);
+                }
 
-                    if(Utilities.CalculateSHA1ForFile(file) == Utilities.CalculateSHA1ForFile(destinationPath)) continue;
+                // 复制附属文件，只处理 srcRoot 下的附属文件
+                string dirToScan = srcRoot ?? group.Key ?? "";
+                if (!string.IsNullOrEmpty(dirToScan) && Directory.Exists(dirToScan))
+                {
+                    var extras = Directory.GetFiles(dirToScan, "*.*", SearchOption.TopDirectoryOnly)
+                                          .Where(f => otherExts.Contains(Path.GetExtension(f).ToLower()))
+                                          .ToList();
 
-                    int copyIndex = 2;
-                    while (File.Exists(destinationPath))
+                    foreach (var file in extras)
                     {
-                        string newFileName = $"{Path.GetFileNameWithoutExtension(fileName)}({copyIndex}){extension}";
-                        destinationPath = Path.Combine(targetFolder, newFileName);
-                        copyIndex++;
+                        string dest = Path.Combine(extraDir, Path.GetFileName(file));
+                        dest = GetUniquePath(dest);
+                        File.Copy(file, dest);
                     }
 
-                    try
-                    {    
-                        File.Copy(file, destinationPath, true);
-                        count++;
-                    }
-                    catch (Exception ex)
+                    // 如果有附属文件，生成 MPMaps ini
+                    if (extras.Any())
                     {
-                        Logger.Log($"复制失败: {file}, 错误: {ex.Message}");
+                        string iniFileName = $"MPMaps{folderName}.ini";
+                        string iniFilePath = Path.Combine(mapRootTarget, iniFileName);
+                        var ini = new IniFile(iniFilePath);
+
+                        foreach (var mapFile in group)
+                        {
+                            string mapName = Path.GetFileNameWithoutExtension(mapFile);
+                            string section = Path.Combine("Maps", "Multi", folderName, mapName).Replace("\\", "/");
+                            string missionValue = Path.Combine("Maps", "Multi", folderName, "_files").Replace("\\", "/");
+                            ini.SetValue(section, "OtherFile", missionValue);
+                        }
+
+                        ini.WriteIniFile();
                     }
                 }
-                
             }
-            if (count > 0)
-            {
-                XNAMessageBox.Show(WindowManager, "Info".L10N("UI:Main:Info"), $"成功导入了{count}张地图,复制到了{targetFolder}");
-                刷新地图列表();
-            }
-            else
-                XNAMessageBox.Show(WindowManager, "Info".L10N("UI:Main:Info"), "No eligible maps found or multiplayer maps in Map Gallery:\nmap, yrm, mpr format.".L10N("UI:Main:NoEligibleMap"));
         }
+
+        private string GetUniquePath(string path)
+        {
+            if (!File.Exists(path)) return path;
+
+            string dir = Path.GetDirectoryName(path) ?? "";
+            string name = Path.GetFileNameWithoutExtension(path);
+            string ext = Path.GetExtension(path);
+
+            int idx = 2;
+            string newPath;
+            do
+            {
+                newPath = Path.Combine(dir, $"{name}({idx}){ext}");
+                idx++;
+            } while (File.Exists(newPath));
+
+            return newPath;
+        }
+
 
         private void 打开地图位置()
         {
@@ -726,7 +820,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             }
             else
             {
-                chkTerrain.Checked = false;
+               // chkTerrain.Checked = false;
                 chkTerrain.AllowChecking = true;
             }
 

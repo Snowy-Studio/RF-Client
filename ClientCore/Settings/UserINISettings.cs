@@ -180,6 +180,8 @@ namespace ClientCore
 
             第一次下载扩展 = new BoolSetting(iniFile, OPTIONS, "FirstDownload", true);
 
+            第一次点击扩展 = new BoolSetting(iniFile, OPTIONS, "FirstClick", true);
+
         }
 
         public IniFile SettingsIni { get; private set; }
@@ -354,6 +356,8 @@ namespace ClientCore
         public Action<string,string> 重新显示地图 { get; set; }
 
         public BoolSetting 第一次下载扩展 { get; set; }
+
+        public BoolSetting 第一次点击扩展 { get; set; }
 
         public bool IsGameFollowed(string gameName)
         {

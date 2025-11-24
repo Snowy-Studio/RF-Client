@@ -194,6 +194,36 @@ public class SevenZip
         }
     }
 
+    /// <summary>
+    /// 解压文件，如果内部还有压缩包则继续递归处理
+    /// </summary>
+    /// <param name="archive">压缩包路径</param>
+    /// <param name="extractTo">解压目录</param>
+    public static void 解压并递归处理(string archive, string extractTo)
+    {
+        Directory.CreateDirectory(extractTo);
+
+        // 调用你的 7z 解压逻辑
+        SevenZip.ExtractWith7Zip(archive, extractTo);
+
+        // 找到解压出来的内容，再继续检查
+        foreach (var file in Directory.GetFiles(extractTo, "*.*", SearchOption.AllDirectories))
+        {
+            string ext = Path.GetExtension(file).ToLower();
+
+            // 如果里面还有压缩包，则继续递归
+            if (ext is ".zip" or ".7z" or ".rar")
+            {
+                string newExtractPath = Path.Combine(
+                    extractTo,
+                    Path.GetFileNameWithoutExtension(file)
+                );
+
+                解压并递归处理(file, newExtractPath);
+            }
+        }
+    }
+
     public static void CompressWith7Zip(string sourcePath, string archivePath, ProgressCallback progressCallback = null)
     {
         try

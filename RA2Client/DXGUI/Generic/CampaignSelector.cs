@@ -377,6 +377,7 @@ namespace Ra2Client.DXGUI.Generic
 
             chkAres = FindChild<GameLobbyCheckBox>("chkAres");
             chkAres.CheckedChanged += ChkAres_CheckedChanged;
+            chkAres.LeftClick += ChkAres_LeftClick;
             chkPhobos = FindChild<GameLobbyCheckBox>("chkPhobos");
             chkPhobos.CheckedChanged += ChkPhobos_CheckedChanged;
 
@@ -460,8 +461,20 @@ namespace Ra2Client.DXGUI.Generic
             ChkPhobos_CheckedChanged(null, null);
         }
 
+        private void ChkAres_LeftClick(object sender, EventArgs e)
+        {
+            if (UserINISettings.Instance.第一次点击扩展)
+            {
+                XNAMessageBox.Show(WindowManager, "警告", "如果你不知道这是什么，建议不要开启，可能会影响战役正常流程\n开启后会提供更多功能，但稳定性不保证。");
+                UserINISettings.Instance.第一次点击扩展.Value = false;
+                UserINISettings.Instance.SaveSettings();
+            }
+        }
+
         private void ChkAres_CheckedChanged(object sender, EventArgs e)
         {
+          
+
             CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk => chk.Visible = chkAres.Checked);
             DropDowns.FindAll(dd => dd.Ares == true).ForEach(dd => dd.Visible = chkAres.Checked);
         }

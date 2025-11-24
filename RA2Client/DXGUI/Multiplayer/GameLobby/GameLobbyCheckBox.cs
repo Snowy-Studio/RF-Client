@@ -160,6 +160,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     return;
                 case "Phobos":
                     Phobos = Conversions.BooleanFromString(value, false);
+                    if (Phobos == true)
+                        Ares = true;
                     return;
                 case "DisallowedSideIndex":
                 case "DisallowedSideIndices":
