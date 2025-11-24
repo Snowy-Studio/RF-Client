@@ -369,6 +369,7 @@ namespace ClientGUI
             string newGame = newSection.GetValue("Game", string.Empty);
             string newMission = newSection.GetValue("Mission", string.Empty);
             bool Ares = newSection.GetValue("chkAres", false);
+            bool Phobos = newSection.GetValue("chkPhobos", false);
             var otherFile = newSection.GetValue("OtherFile", string.Empty);
 
             try
@@ -401,6 +402,11 @@ namespace ClientGUI
                 if (Ares)
                 {
                     所有需要复制的文件.Add("Ares");
+                    //所有需要复制的文件.Add("Syringe.exe");
+                }
+                if (Phobos)
+                {
+                    所有需要复制的文件.Add("Phobos");
                     //所有需要复制的文件.Add("Syringe.exe");
                 }
 

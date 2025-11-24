@@ -455,7 +455,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             chkAres = FindChild<GameLobbyCheckBox>(nameof(chkAres));
             chkAres.CheckedChanged += ChkAres_CheckedChanged;
 
-
+            chkRA2 = FindChild<GameLobbyCheckBox>(nameof(chkRA2));
             //RenderImage.CancelRendering += RenderImage.CancelRendering;
 
             RemoveChild(MapPreviewBox);
@@ -463,7 +463,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             AddChild(MapPreviewBox);
             InitializeGameOptionPresetUI();
 
-            CmbGame_SelectedChanged(cmbGame, null);
+            //CmbGame_SelectedChanged(cmbGame, null);
         }
 
         private void 重新渲染此地图()
@@ -673,31 +673,41 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             //    }
             //}
 
+            if (mod.Ra2ModePath == string.Empty)
+            {
+                chkRA2.Checked = false;
+                chkRA2.AllowChecking = false;
+            }
+            else
+            {
+                chkRA2.AllowChecking = true;
+            }
+
             if (File.Exists(Path.Combine(mod.FilePath, "ares.dll")))
             {
                 chkAres.AllowChecking = false;
                 chkAres.Checked = true;
             }
-            else if(mod.FileName != Path.Combine(ProgramConstants.GamePath, "Mod&AI\\Mod&AI.ini"))
+            else if (mod.FileName != Path.Combine(ProgramConstants.GamePath, "Mod&AI\\Mod&AI.ini"))
             {
                 chkAres.Checked = false;
                 chkAres.AllowChecking = false;
             }
-            else if(Map?.Ares == 1)
+            else if (Map?.Ares == 1)
             {
                 chkAres.AllowChecking = false;
                 chkAres.Checked = true;
                 cmbGame.SelectedIndex = 0;
                 cmbGame.AllowDropDown = false;
             }
-            else if(Map?.Ares == 2)
+            else if (Map?.Ares == 2)
             {
                 chkAres.AllowChecking = false;
                 chkAres.Checked = false;
                 cmbGame.SelectedIndex = 0;
                 cmbGame.AllowDropDown = false;
 
-            } 
+            }
             else
             {
                 cmbGame.AllowDropDown = true;
@@ -1028,7 +1038,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
                 //ddGameModeMapFilter.SelectedIndex = ddGameModeMapFilter.Items.FindIndex(d => d.Text == "常规作战");
 
-                var path = Path.Combine(ProgramConstants.GamePath, r + ".map");
+                var path = r + ".map";
 
                 //for (int i = 0; i < lbGameModeMapList.ItemCount; i++)
                 //    if (lbGameModeMapList.GetItem(1, i).Text.Contains(r))
@@ -1412,6 +1422,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         }
 
         private CancellationTokenSource _cts;
+        private GameLobbyCheckBox chkRA2;
+
         private void LbGameModeMapList_SelectedIndexChanged(object sender, EventArgs e)
         {
             _cts?.Cancel();
@@ -1834,6 +1846,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         /// </summary>
         protected void CheckDisallowedSides()
         {
+            if (ddPlayerSides == null) return;
             var disallowedSideArray = GetDisallowedSides();
             int defaultSide = 0;
             int allowedSideCount = disallowedSideArray.Count(b => !b);
@@ -2148,6 +2161,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             settings.SetValue("UIMapName", Map.Name);
             settings.SetValue("PlayerCount", Players.Count);
             settings.SetValue("chkAres", chkAres.Checked);
+            settings.SetValue("chkRA2", chkRA2.Checked);
             settings.SetValue("OtherFile",Map.OtherFile);
             int myIndex = Players.FindIndex(c => c.Name == ProgramConstants.PLAYERNAME);
             settings.SetValue("Side", houseInfos[myIndex].InternalSideIndex);
@@ -2458,6 +2472,11 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             if (Name == "SkirmishLobby")
                 IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
+
+            if (chkRA2.Checked && mod.Ra2ModePath != string.Empty)
+            {
+                IniFile.ConsolidateIniFiles(mapIni, new IniFile(mod.Ra2ModePath));
+            }
 
             #region 限制AI建造超级武器
             var chkAILimit = CheckBoxes.Find(chk => chk.Name == "chkAILimit");

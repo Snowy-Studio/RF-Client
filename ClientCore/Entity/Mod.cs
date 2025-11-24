@@ -144,7 +144,7 @@ public class Mod : InfoBaseClass
                 mod.CpVisible = iniFile.GetValue(modID, "CpVisible", true);
                 mod.UpdateTime = iniFile.GetValue(modID, "UpdateTime", string.Empty);
                 mod.SettingsFile = iniFile.GetValue(modID, "SettingsFile", "RA2MD.ini");
-
+                mod.Ra2ModePath = iniFile.GetValue(modID, "Ra2ModePath", string.Empty);
                 mod.Colors = iniFile.GetValue<string>(modID, "Colors", null);
 
                 HashSet<string> modSet = [];
@@ -179,6 +179,8 @@ public class Mod : InfoBaseClass
     /// </summary>
     /// 
     public string Colors { get; set; }
+
+    public string Ra2ModePath { get; set; }
 
     public string UpdateTime { get; set; } = "";
 

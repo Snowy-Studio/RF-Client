@@ -585,13 +585,13 @@ public class ModManager : XNAWindow
     private static readonly Dictionary<string, string> 默认存档名称 = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
        
-        { "Name:Sov01mdSav", "苏军 01 - 时空转移" },
-        { "Name:Sov02mdSav", "苏军 02 - 似曾相识" },
-        { "Name:Sov03mdSav", "苏军 03 - 洗脑行动" },
-        { "Name:Sov04mdSav", "苏军 04 - 北非谍影" },
-        { "Name:Sov05mdSav", "苏军 05 - 脱离地心引力" },
-        { "Name:Sov06mdSav", "苏军 06 - 飞向月球" },
-        { "Name:Sov07mdSav", "苏军 07 - 首脑游戏" },
+        { "Name:Sov01mdSav", "苏联 01 - 时空转移" },
+        { "Name:Sov02mdSav", "苏联 02 - 似曾相识" },
+        { "Name:Sov03mdSav", "苏联 03 - 洗脑行动" },
+        { "Name:Sov04mdSav", "苏联 04 - 北非谍影" },
+        { "Name:Sov05mdSav", "苏联 05 - 脱离地心引力" },
+        { "Name:Sov06mdSav", "苏联 06 - 飞向月球" },
+        { "Name:Sov07mdSav", "苏联 07 - 首脑游戏" },
         { "Name:ALL01mdSav", "盟军 01 - 光阴似箭" },
         { "Name:ALL02mdSav", "盟军 02 - 好莱坞，梦一场" },
         { "Name:ALL03mdSav", "盟军 03 - 集中攻击" },

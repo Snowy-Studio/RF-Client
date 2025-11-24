@@ -43,6 +43,7 @@ namespace DTAConfig.OptionPanels
         private XNAClientCheckBox chkRenderPreviewImage;
         private XNAClientCheckBox chkSimplifiedCSF;
         private HotkeyConfigurationWindow hotkeyConfigWindow;
+        private XNALabel lbl连点数量;
 
         public event Action MyEvent;
 
@@ -170,7 +171,7 @@ namespace DTAConfig.OptionPanels
 
             AddChild(chk连点器);
 
-            var lbl连点数量 = new XNALabel(WindowManager)
+            lbl连点数量 = new XNALabel(WindowManager)
             {
                 
                 ClientRectangle = new Rectangle(chk连点器.Right + 30, chk连点器.Y, 0, 0),
@@ -347,6 +348,7 @@ namespace DTAConfig.OptionPanels
             tbPlayerName.Text = UserINISettings.Instance.PlayerName;
             chkForceEnableGameOptions.Checked = UserINISettings.Instance.ForceEnableGameOptions.Value;
             chk连点器.Checked = UserINISettings.Instance.启用连点器.Value;
+            tb连点数量.Visible = lbl连点数量.Visible = chk连点器.Checked;
             tb连点数量.Text = UserINISettings.Instance.连点数量.Value.ToString();
         }
 

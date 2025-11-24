@@ -67,7 +67,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         public bool Ares;
 
-
+        public bool Phobos;
 
         private bool reversed;
 
@@ -157,6 +157,9 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     return;
                 case "Ares":
                     Ares = Conversions.BooleanFromString(value, false);
+                    return;
+                case "Phobos":
+                    Phobos = Conversions.BooleanFromString(value, false);
                     return;
                 case "DisallowedSideIndex":
                 case "DisallowedSideIndices":

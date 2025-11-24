@@ -375,6 +375,10 @@ namespace Ra2Client.DXGUI.Generic
 
             //ReadDrop();
 
+            chkAres = FindChild<GameLobbyCheckBox>("chkAres");
+            chkAres.CheckedChanged += ChkAres_CheckedChanged;
+            chkPhobos = FindChild<GameLobbyCheckBox>("chkPhobos");
+            chkPhobos.CheckedChanged += ChkPhobos_CheckedChanged;
 
             _lblGame = new XNALabel(WindowManager)
             {
@@ -451,6 +455,21 @@ namespace Ra2Client.DXGUI.Generic
 
             chkTerrain.Visible = false;
             chkTerrain.Checked = false;
+
+            ChkAres_CheckedChanged(null,null);
+            ChkPhobos_CheckedChanged(null, null);
+        }
+
+        private void ChkAres_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk => chk.Visible = chkAres.Checked);
+            DropDowns.FindAll(dd => dd.Ares == true).ForEach(dd => dd.Visible = chkAres.Checked);
+        }
+
+        private void ChkPhobos_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBoxes.FindAll(chk => chk.Phobos == true).ForEach(chk => chk.Visible = chkPhobos.Checked);
+            DropDowns.FindAll(dd => dd.Phobos == true).ForEach(dd => dd.Visible = chkPhobos.Checked);
         }
 
         private void 打开地图位置()
@@ -629,6 +648,7 @@ namespace Ra2Client.DXGUI.Generic
 
             if (_lbxCampaignList.SelectedIndex == -1 || _lbxCampaignList.SelectedIndex >= _screenMissions.Count) return;
 
+            var mod = ((Mod)_cmbGame.SelectedItem.Tag);
 
             base.OnSelectedChanged();
 
@@ -636,24 +656,26 @@ namespace Ra2Client.DXGUI.Generic
 
         // IniFile infoini = null;
 
-        private void 显示任务包TxT文件列表(string mpPath)
+        private void 显示任务包TxT和Html文件列表(string mpPath)
         {
-
             // 定义黑名单（存文件名，不带路径）
             var blacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-{
-    "creditsmd",
-    "subtitlemd",
-
-};
+    {
+        "creditsmd",
+        "subtitlemd",
+    };
 
             _lbxInforBox.Clear();
 
             if (Directory.Exists(mpPath))
             {
-                foreach (var txt in Directory.GetFiles(mpPath, "*.txt"))
+                // 获取 txt 和 html 文件
+                var files = Directory.GetFiles(mpPath, "*.txt")
+                            .Concat(Directory.GetFiles(mpPath, "*.html"));
+
+                foreach (var file in files)
                 {
-                    var name = Path.GetFileNameWithoutExtension(txt);
+                    var name = Path.GetFileNameWithoutExtension(file);
 
                     // 在黑名单里 → 跳过
                     if (blacklist.Contains(name))
@@ -662,7 +684,7 @@ namespace Ra2Client.DXGUI.Generic
                     _lbxInforBox.AddItem(new XNAListBoxItem()
                     {
                         Text = name,
-                        Tag = Path.Combine(ProgramConstants.GamePath, txt)
+                        Tag = Path.Combine(ProgramConstants.GamePath, file)
                     });
                 }
             }
@@ -674,7 +696,7 @@ namespace Ra2Client.DXGUI.Generic
         ///// <param name="modChange"> 是否忽视缓存 </param>
         //private void GetMissionInfo(bool modChange)
         //{
-            
+
         //    if (_lbxCampaignList.SelectedIndex == -1 || _lbxCampaignList.SelectedIndex >= _screenMissions.Count) return;
 
         //    _lbxInforBox.Clear();
@@ -995,6 +1017,8 @@ namespace Ra2Client.DXGUI.Generic
         private System.Windows.Forms.Timer timer;
         private int 延迟时间 = 300;
         private DateTime lastActionTime = DateTime.MinValue;
+        private GameLobbyCheckBox chkAres;
+        private GameLobbyCheckBox chkPhobos;
         private XNALabel _lblGame;
         private XNALabel lblModify;
 
@@ -1065,7 +1089,7 @@ namespace Ra2Client.DXGUI.Generic
                 else
                 {
                     _cmbGame.SelectedIndex = _cmbGame.Items.FindIndex(item => ((Mod)(item.Tag)).ID == mission.DefaultMod);
-                    显示任务包TxT文件列表(mission.MPack.FilePath);
+                    显示任务包TxT和Html文件列表(mission.MPack.FilePath);
                 }
 
                 上次选择的任务包ID = mission?.MPack?.ID ?? string.Empty;
@@ -1461,8 +1485,11 @@ namespace Ra2Client.DXGUI.Generic
             settings.SetValue("Mission", newMission);
 
             
+
                 settings.SetValue("Ra2Mode", false);
             settings.SetValue("chkSatellite", CheckBoxes?.Find(chk => chk.Name == "chkSatellite")?.Checked ?? false);
+            settings.SetValue("chkAres", chkAres.Checked && _gameOptionsPanel.Visible);
+            settings.SetValue("chkPhobos", chkPhobos.Checked && _gameOptionsPanel.Visible);
             settings.SetValue("Scenario", mission.Scenario);
             settings.SetValue("CampaignID", mission.Index);
             settings.SetValue("IsSinglePlayer", true);
@@ -1477,10 +1504,11 @@ namespace Ra2Client.DXGUI.Generic
 
             UserINISettings.Instance.Difficulty.Value = _trbDifficultySelector.Value;
 
+            UserINISettings.Instance.SaveSettings();
 
-            var ini = new IniFile("RA2MD.INI");
-            ini.SetValue("Options", "Difficulty", (mission.PlayerAlwaysOnNormalDifficulty ? "1" : _trbDifficultySelector.Value.ToString()));
-            ini.WriteIniFile();
+            //var ini = new IniFile("RA2MD.INI");
+            //ini.SetValue("Options", "Difficulty", (mission.PlayerAlwaysOnNormalDifficulty ? "1" : _trbDifficultySelector.Value.ToString()));
+            //ini.WriteIniFile();
             #endregion
 
             SaveSettings();

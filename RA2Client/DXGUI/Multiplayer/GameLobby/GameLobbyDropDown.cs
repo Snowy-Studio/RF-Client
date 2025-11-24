@@ -49,6 +49,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         public bool Ares;
 
+        public bool Phobos;
+
         public override void Initialize()
         {
             // Find the game lobby that this control belongs to and register ourselves as a game option.
@@ -132,6 +134,9 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
                 case "Ares":
                     Ares = Conversions.BooleanFromString(value, false);
+                    return;
+                case "Phobos":
+                    Phobos = Conversions.BooleanFromString(value, false);
                     return;
                 case "Expandable":
                     expandable = Conversions.BooleanFromString(value, false);
