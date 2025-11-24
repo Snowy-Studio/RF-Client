@@ -19,11 +19,6 @@ namespace DTAConfig.OptionPanels
         private int TileSize = 21; // 方块大小
         private double _TileSize = 21;
 
-        // 默认的行数、列数和地雷数量
-        private int DefaultRows = 25;
-        private int DefaultColumns = 38;
-        private int DefaultMineCount = 96;
-
         private int MinRows = 16; // 行数下限
         private int MaxRows = 25; // 行数上限
         private int MinColumns = 16; // 列数下限
@@ -31,11 +26,9 @@ namespace DTAConfig.OptionPanels
         private int MinMineCount = 10; // 地雷下限
         private int MaxMineCount = 192; // 地雷上限
 
-
         private int FlagNum = 0; //可用旗帜数 逆推剩余雷数用 可以为负数 旗帜数量可以大于地雷数
 
         private new int Alpha = 5; //透明度
-
 
         private XNATrackbar trb_input1;
         private XNATrackbar trb_input2;
@@ -44,35 +37,31 @@ namespace DTAConfig.OptionPanels
 
         private XNALabel lblAlpha; //透明度文字
 
-
         private XNALabel lblinput1; //透明度文字
 
         private XNALabel lblinput2; //透明度文字
 
         private XNALabel lblinput3; //透明度文字
 
+        // 默认的行数、列数和地雷数量
         public static int Rows = 25; // 行数
         public static int Columns = 38; // 列数
         private int MineCount = 96; // 地雷数量
 
-        //private XNALabel lblTime; //计时
+        // private XNALabel lblTime; //计时
         // private XNALabel lblRemaining; //剩余块数
 
         private Texture2D[] numberTextures = new Texture2D[17];//格子纹理
-
 
         private Texture2D[] digitTextures = new Texture2D[11]; //计时器纹理
 
         private Texture2D[] buttonTextures = new Texture2D[8]; //笑脸 哭脸
 
-
-
-
-        //private Texture2D[] counterTextures = new Texture2D[11]; //计数器纹理 未来与计时器合并
+        // private Texture2D[] counterTextures = new Texture2D[11]; //计数器纹理 未来与计时器合并
 
         // private Texture2D tileTexture;
 
-        //private SoundEffect clickSound;
+        // private SoundEffect clickSound;
 
         // private SoundEffect explosionSound;
 
@@ -82,25 +71,22 @@ namespace DTAConfig.OptionPanels
 
         private EnhancedSoundEffect rightclickSound;
 
-
-
         private int digitWidth = 10; // Width of each digit in pixels
         private int digitHeight = 15; // Height of each digit in pixels
         private int digitSpacing = 0; // Spacing between digits
 
-
         private XNAClientButton _btnresult;  //笑脸
 
-        //Texture2D BackgroundTexture1;
+        // Texture2D BackgroundTexture1;
 
         private bool _leftButtonWasPressed = false;
         private bool _rightButtonWasPressed = false;
+
         //鼠标防止连击 按下后加一个标记
         private bool _timerRunning;//计时器
         private TimeSpan _elapsedTime;//计时器
 
         private bool sureWindows = false;//重开确认对话框
-
 
         private XNAClientButton _btnok; //确定
         private XNAClientButton _btnok2; //确定透明度
@@ -120,17 +106,13 @@ namespace DTAConfig.OptionPanels
         private bool _victory;//判定胜利
         private int _uncoveredCount;
 
-
         private int Alphahs = 128;
-
-
 
         //private readonly string[] trbAlphaTrackNames = Enumerable.Range(0, 10).Select(i => i.ToString()).ToArray();
 
         // 输入框1 - 行数
         // 输入框2 - 列数
         // 输入框3 - 地雷数
-
 
         //private readonly string[] trbinput1Names = Enumerable.Range(0, 26).Select(i => i.ToString()).ToArray();
 
@@ -326,7 +308,7 @@ namespace DTAConfig.OptionPanels
             btnQuit = new XNAClientButton(WindowManager);
             btnQuit.Name = nameof(btnQuit);
             btnQuit.ClientRectangle = new Rectangle(705, 618, UIDesignConstants.BUTTON_WIDTH_75, UIDesignConstants.BUTTON_HEIGHT);
-            btnQuit.Text = "Jump to the edit user window".L10N("UI:Main:JumpEditUserWindow");
+            btnQuit.Text = "Exit".L10N("UI:Main:Exit");
             btnQuit.LeftClick += btnQuit_LeftClick;
             AddChild(btnQuit);
 
@@ -1091,6 +1073,12 @@ namespace DTAConfig.OptionPanels
 
         private void DrawMineCounter(int count, Vector2 position)
         {
+            // 如果计数为负数，则显示为 0
+            if (count < 0)
+            {
+                count = 0;
+            }
+
             string countString = count.ToString("D3"); // Display count as three digits (e.g., "001", "012", "123")
 
             int currentX = (int)position.X;
@@ -1104,6 +1092,5 @@ namespace DTAConfig.OptionPanels
                 currentX += digitWidth + digitSpacing - 2;
             }
         }
-
     }
 }
