@@ -126,6 +126,7 @@ namespace Ra2Client.DXGUI.Generic
             var newGame = sg.Game;
             var newMission = sg.Mission;
             var ares = sg.Ares;
+            var phobos = sg.Phobos;
             var tx = sg.Tx;
             var buildOffAlly = sg.BuildOffAlly;
 
@@ -144,7 +145,7 @@ namespace Ra2Client.DXGUI.Generic
 
             settings.SetValue("Mission", newMission);
             settings.SetValue("chkAres", ares);
-
+            settings.SetValue("chkPhobos", phobos);
             settings.SetValue("OtherFile", newMission);
             settings.SetValue("BuildOffAlly", buildOffAlly);
 
@@ -273,10 +274,11 @@ namespace Ra2Client.DXGUI.Generic
                     var 战役ID = saveIni.GetValue(sectionName, "CampaignID", -1);
                     var tx = saveIni.GetValue(sectionName, "chkTerrain", false);
                     var ares = saveIni.GetValue(sectionName, "chkAres", false);
+                    var phobos = saveIni.GetValue(sectionName, "chkPhobos", false);
                     var buildOffAlly = saveIni.GetValue(sectionName, "BuildOffAlly", false);
 
 
-                    ParseSaveGame(file.FullName, game, mission, 透明迷雾, 战役ID, ares,tx, buildOffAlly);
+                    ParseSaveGame(file.FullName, game, mission, 透明迷雾, 战役ID, ares, phobos, tx, buildOffAlly);
                 }
             }
 
@@ -293,10 +295,10 @@ namespace Ra2Client.DXGUI.Generic
             }
         }
 
-        private void ParseSaveGame(string fileName, string game, string mission, bool 透明迷雾, int 战役ID,bool ares,bool tx,bool buildOffAlly)
+        private void ParseSaveGame(string fileName, string game, string mission, bool 透明迷雾, int 战役ID,bool ares,bool phobos,bool tx,bool buildOffAlly)
         {
             string shortName = Path.GetFileName(fileName);
-            SavedGame sg = new SavedGame(shortName, game, mission, ares,tx, buildOffAlly);
+            SavedGame sg = new SavedGame(shortName, game, mission, ares,phobos,tx, buildOffAlly);
             sg.FilePath = fileName;
             sg.透明迷雾 = 透明迷雾;
             sg.战役ID = 战役ID;

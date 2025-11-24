@@ -395,9 +395,10 @@ namespace ClientGUI
                 }
                 所有需要复制的文件.Add("zh");
                 所有需要复制的文件.Add("cncnet5.dll");
+                所有需要复制的文件.Add($"Resources/Voice/{UserINISettings.Instance.Voice.Value}");
 
                 // if(!Ares && !File.Exists(Path.Combine(newGame,"ares.dll")))
-                    所有需要复制的文件.Add("gamemd-spawn.exe");
+                所有需要复制的文件.Add("gamemd-spawn.exe");
 
                 if (Ares)
                 {
@@ -429,7 +430,7 @@ namespace ClientGUI
                 所有需要复制的文件.Add("qres.dat");
                 所有需要复制的文件.Add("qres32.dll");
                 
-                所有需要复制的文件.Add($"Resources/Voice/{UserINISettings.Instance.Voice.Value}");
+                
 
 
                 if (newSection.KeyExists("GameID"))

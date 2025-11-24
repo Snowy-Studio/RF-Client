@@ -1495,8 +1495,8 @@ namespace Ra2Client.DXGUI.Generic
 
             //写入新游戏
             settings.SetValue("Game", newGame);
+            settings.SetValue("Mission", newMission);
 
-            
             settings.SetValue("Ra2Mode", false);
                 settings.SetValue("Ra2Mode", false);
             settings.SetValue("chkSatellite", CheckBoxes?.Find(chk => chk.Name == "chkSatellite")?.Checked ?? false);
