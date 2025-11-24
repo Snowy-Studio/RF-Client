@@ -127,8 +127,8 @@ public class MissionPack : InfoBaseClass
 
         if (Sides != null)
             iniFile.SetValue(ID, "Sides", Sides);
-        if (Sides != null)
-            iniFile.SetValue(ID, "Difficulty", Difficulty);
+        //if (Sides != null)
+        //    iniFile.SetValue(ID, "Difficulty", Difficulty);
 
         iniFile.WriteIniFile();
 
@@ -192,7 +192,7 @@ public class MissionPack : InfoBaseClass
     /// <summary>
     /// 难度
     /// </summary>
-    public string Difficulty { get; set; }
+    public string Difficulty { get; set; } = "中等";
     /// <summary>
     /// 支持的游戏
     /// </summary>

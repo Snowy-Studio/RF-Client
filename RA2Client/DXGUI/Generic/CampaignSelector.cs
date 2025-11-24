@@ -664,7 +664,7 @@ namespace Ra2Client.DXGUI.Generic
                 "creditsmd",
                 "subtitlemd",
             };
-};
+
 
             _lbxInforBox.Clear();
 

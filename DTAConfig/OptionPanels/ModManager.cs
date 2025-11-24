@@ -508,7 +508,7 @@ public class ModManager : XNAWindow
             Mod = isYR ? "YR" : "RA2",
             DefaultMod = isYR ? "YR+" : "RA2+",
             UpdateTime = mp?.UpdateTime ?? "",
-            Difficulty = mp?.Difficulty
+            Difficulty = mp?.Difficulty ?? "中等",
         };
         missionPack.DefaultMod = missionPack.Mod;
         var m = new Mod()
