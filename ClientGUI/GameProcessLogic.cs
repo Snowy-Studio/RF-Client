@@ -354,7 +354,7 @@ namespace ClientGUI
             mod = Mod.Mods.Find(m => m.FilePath == newSection.GetValue("Game", string.Empty));
             if (mod == null)
             {
-                XNAMessageBox.Show(windowManager, "错误", $"模组文件已丢失：{newSection.GetValue("Game", string.Empty)}");
+                XNAMessageBox.Show(windowManager, "无法启动游戏", $"模组文件已丢失：{newSection.GetValue("Game", string.Empty)}");
                 return false;
             }
 
@@ -367,7 +367,29 @@ namespace ClientGUI
 
             FileHelper.KillGameMdProcesses();
             string newGame = newSection.GetValue("Game", string.Empty);
+
+            if (!string.IsNullOrWhiteSpace(newGame))
+            {
+                // 如果目录不存在，直接返回
+                if (!Directory.Exists(newGame))
+                {
+                    XNAMessageBox.Show(windowManager, "无法启动游戏", $"模组文件已丢失：{newGame}");
+                    return false;
+                }
+            }
+
             string newMission = newSection.GetValue("Mission", string.Empty);
+
+            if (!string.IsNullOrWhiteSpace(newMission))
+            {
+                // 如果目录不存在，直接返回
+                if (!Directory.Exists(newMission))
+                {
+                    XNAMessageBox.Show(windowManager, "无法启动游戏", $"任务文件已丢失：{newMission}");
+                    return false;
+                }
+            }
+
             bool Ares = newSection.GetValue("chkAres", false);
             bool Phobos = newSection.GetValue("chkPhobos", false);
             var otherFile = newSection.GetValue("OtherFile", string.Empty);
