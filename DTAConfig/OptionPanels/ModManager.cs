@@ -604,7 +604,15 @@ public class ModManager : XNAWindow
     private static void 写入任务INI(MissionPack missionPack, string startPath)
     {
         var tagerPath = Path.Combine(startPath, missionPack.FilePath);
-        var maps = Directory.GetFiles(tagerPath, "*.map").ToList();
+        var list1 = Directory.GetFiles(tagerPath, "*.map");
+        var list2 = MixLoader.MixFile.GetDirFileNames(tagerPath, ".map");
+
+        // 合并 + 不分大小写去重
+        var maps = list1
+            .Concat(list2)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
         var md = missionPack.YR ? "md" : string.Empty;
 
         var battleINI = new IniFile(Path.Combine(startPath, $"Maps\\CP\\battle{missionPack.ID}.ini"), MissionPack.ANNOTATION);

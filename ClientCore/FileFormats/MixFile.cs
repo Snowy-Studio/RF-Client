@@ -78,9 +78,33 @@ namespace OpenRA.Mods.Cnc.FileSystem
                 return csfs;
             }
 
+            public static List<string> GetDirFileNames(string folderPath, string type)
+            {
+                var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase); // HashSet 自动去重，不区分大小写
+                foreach (var mixFile in Directory.GetFiles(folderPath, "*.mix"))
+                {
+                    try
+                    {
+                        var mix = new MixFile(mixFile);
+                        foreach (var entry in mix.Index)
+                        {
+                            if (entry.Key.EndsWith(type, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                result.Add(entry.Key); // HashSet 自动去重
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // 忽略出错的 mix 文件
+                    }
+                }
+
+                return result.OrderBy(f => f).ToList(); // 排序返回
+            }
 
 
-			public static List<byte[]> GetFiles(string filename,string type)
+            public static List<byte[]> GetFiles(string filename,string type)
 			{
 				var csfs = new List<byte[]>();
 				try
