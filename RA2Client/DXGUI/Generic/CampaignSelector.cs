@@ -465,7 +465,7 @@ namespace Ra2Client.DXGUI.Generic
         {
             if (UserINISettings.Instance.第一次点击扩展)
             {
-                XNAMessageBox.Show(WindowManager, "警告", "如果你不知道这是什么，建议不要开启，可能会影响战役正常流程\n开启后会提供更多功能，但稳定性不保证。");
+                XNAMessageBox.Show(WindowManager, "警告", "如果你不知道这是什么，建议不要开启，可能会影响战役正常流程\n开启后会提供更多功能，但稳定性不保证。\n 如果战役出现异常请关闭后重玩，仍然异常请与我们联系，谢谢配合。");
                 UserINISettings.Instance.第一次点击扩展.Value = false;
                 UserINISettings.Instance.SaveSettings();
             }
@@ -475,14 +475,30 @@ namespace Ra2Client.DXGUI.Generic
         {
           
 
-            CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk => chk.Visible = chkAres.Checked);
-            DropDowns.FindAll(dd => dd.Ares == true).ForEach(dd => dd.Visible = chkAres.Checked);
+            CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk =>{
+                chk.AllowChecking = chkAres.Checked;
+                if (!chk.AllowChecking) 
+                    chk.Checked = chk.defaultValue;
+            });
+            DropDowns.FindAll(dd => dd.Ares == true).ForEach(dd =>
+            {
+                dd.AllowDropDown = chkAres.Checked;
+                if (!dd.AllowDropDown) dd.SelectedIndex = dd.defaultIndex;
+            });
         }
 
         private void ChkPhobos_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBoxes.FindAll(chk => chk.Phobos == true).ForEach(chk => chk.Visible = chkPhobos.Checked);
-            DropDowns.FindAll(dd => dd.Phobos == true).ForEach(dd => dd.Visible = chkPhobos.Checked);
+            CheckBoxes.FindAll(chk => chk.Phobos == true).ForEach(chk => {
+                chk.AllowChecking = chkPhobos.Checked;
+                if (!chk.AllowChecking)
+                    chk.Checked = chk.defaultValue;
+            });
+            DropDowns.FindAll(dd => dd.Phobos == true).ForEach(dd =>
+            {
+                dd.AllowDropDown = chkPhobos.Checked;
+                if (!dd.AllowDropDown) dd.SelectedIndex = dd.defaultIndex;
+            });
         }
 
         private void 打开地图位置()
