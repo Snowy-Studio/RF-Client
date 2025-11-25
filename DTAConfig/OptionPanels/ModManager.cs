@@ -1122,7 +1122,7 @@ public class ModManager : XNAWindow
         Mod.ReLoad();
         MissionPack.ReLoad();
         // listBoxModAI.Clear();
-        DDModAI_SelectedIndexChanged(DDModAI, null);
+        //DDModAI_SelectedIndexChanged(DDModAI, null);
 
         LoadModInfo();
         ListBoxModAi.SelectedIndexChanged += ListBoxModAISelectedIndexChanged;
