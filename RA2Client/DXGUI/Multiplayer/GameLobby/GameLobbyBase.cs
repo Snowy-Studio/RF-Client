@@ -676,8 +676,26 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         private void 打开地图位置()
         {
-            var path = Path.Combine(ProgramConstants.GamePath, Map.BaseFilePath.Replace(@"/",@"\"));
-            System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{path}\"");
+            // 地图完整路径
+            string path = Path.Combine(
+                ProgramConstants.GamePath,
+                Map.BaseFilePath.Replace("/", "\\")
+            );
+
+            // 获取所在目录
+            string folder = Path.GetDirectoryName(path);
+
+            if (File.Exists(path))
+            {
+                // 文件存在 → 选中该文件
+                System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{path}\"");
+            }
+            else if (Directory.Exists(folder)) 
+            {
+                // 文件不存在 → 打开目录
+                System.Diagnostics.Process.Start("explorer.exe", $"\"{folder}\"");
+            }
+                else { return; }
         }
 
         private void 删除重复地图()

@@ -488,10 +488,36 @@ namespace Ra2Client.DXGUI.Generic
         private void 打开地图位置()
         {
             var m = _screenMissions[_lbxCampaignList.SelectedIndex];
-            var path = Path.Combine(ProgramConstants.GamePath,m.Path, m.Scenario).Replace(@"/", @"\");
 
-            System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{path}\"");
+            // 完整文件路径
+            string path = Path.Combine(
+                ProgramConstants.GamePath,
+                m.Path,
+                m.Scenario
+            ).Replace("/", "\\");
+
+            // 所在目录
+            string folder = Path.GetDirectoryName(path);
+
+            // 目录都没有 → 直接提示
+            if (!Directory.Exists(folder))
+            {
+                //MessageBox.Show("地图所在目录不存在！");
+                return;
+            }
+
+            if (File.Exists(path))
+            {
+                // 文件存在 → 选中文件
+                System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{path}\"");
+            }
+            else
+            {
+                // 文件不存在 → 只打开目录
+                System.Diagnostics.Process.Start("explorer.exe", $"\"{folder}\"");
+            }
         }
+
 
         private void 重新渲染此地图()
         {

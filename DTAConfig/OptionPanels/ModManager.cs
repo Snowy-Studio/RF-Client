@@ -1118,11 +1118,14 @@ public class ModManager : XNAWindow
 
     private void ReLoad()
     {
+        ListBoxModAi.SelectedIndexChanged -= ListBoxModAISelectedIndexChanged;
         Mod.ReLoad();
         MissionPack.ReLoad();
         // listBoxModAI.Clear();
         DDModAI_SelectedIndexChanged(DDModAI, null);
+
         LoadModInfo();
+        ListBoxModAi.SelectedIndexChanged += ListBoxModAISelectedIndexChanged;
     }
 
     private void BtnDel_LeftClick(object sender, EventArgs e)
