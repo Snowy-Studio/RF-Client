@@ -580,7 +580,7 @@ namespace Ra2Client
             mapIni.WriteIniFile();
         }
 
-        private static async Task 写入任务包(MissionPackVo missionPackVo, WindowManager wm)
+        public static async Task 写入任务包(MissionPackVo missionPackVo, WindowManager wm)
         {
             try
             {

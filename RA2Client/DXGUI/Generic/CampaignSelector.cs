@@ -381,20 +381,23 @@ namespace Ra2Client.DXGUI.Generic
             chkPhobos = FindChild<GameLobbyCheckBox>("chkPhobos");
             chkPhobos.CheckedChanged += ChkPhobos_CheckedChanged;
 
-            _lblGame = new XNALabel(WindowManager)
-            {
-                Text = "Use mod:".L10N("UI:Main:UseMod"),
-                ClientRectangle = new Rectangle(_tbMissionDescriptionList.X + _tbMissionDescriptionList.Width + 10, _tbMissionDescriptionList.Y, 0,0)
-            };
+            
 
             lblModify = new XNALabel(WindowManager);
             lblModify.Name = nameof(lblModify);
             lblModify.Text = "Note: Changes may not take effect, and some may disrupt the flow of the mission".L10N("UI:Main:TurnOnCheat");
-            lblModify.ClientRectangle = new Rectangle(_lblGame.X, _tbMissionDescriptionList.Y + 40, 0, 0);
+            lblModify.ClientRectangle = new Rectangle(_tbMissionDescriptionList.X + _tbMissionDescriptionList.Width + 10, _tbMissionDescriptionList.Y, 0, 0);
+            lblModify.TextColor = Color.AliceBlue;
             AddChild(lblModify);
 
+            _lblGame = new XNALabel(WindowManager)
+            {
+                Text = "Use mod:".L10N("UI:Main:UseMod"),
+                ClientRectangle = new Rectangle(lblModify.X, _tbMissionDescriptionList.Y + 40, 0, 0),
+            };
+
             _cmbGame = new GameLobbyDropDown(WindowManager) {
-                ClientRectangle = new Rectangle(_lblGame.Right + 75, _tbMissionDescriptionList.Y, 250, 23)
+                ClientRectangle = new Rectangle(_lblGame.Right + 80, _lblGame.Y - 2, 250, 23)
             };
             // lbCampaignList.SelectedIndex = 1;
             //    LbxCampaignListSelectedIndexChanged(lbCampaignList, new EventArgs());
@@ -404,7 +407,7 @@ namespace Ra2Client.DXGUI.Generic
             AddChild(_cmbGame);
 
             _cmbGame.RightClick += (_, _) => _modMenu.Open(GetCursorPoint());
-            _gameOptionsPanel = FindChild<XNAPanel>("GameOptionsPanel");
+            _gameOptionsPanel = FindChild<XNAPanel>("GameOptionsINIPanel");
             _gameOptionsPanel.Visible = false;
             _mapPreviewBox = FindChild<XNAButton>("mapPreviewBox");
             MapPreviewBoxPosition = _mapPreviewBox.ClientRectangle;
@@ -1179,7 +1182,7 @@ namespace Ra2Client.DXGUI.Generic
                     // 如果地图文件存在
                     _gameOptionsPanel.Visible = File.Exists(Path.Combine(ProgramConstants.GamePath, mission.Path, mission.Scenario));
 
-                    lblModify.Visible = _gameOptionsPanel.Visible;
+                   // lblModify.Visible = _gameOptionsPanel.Visible;
                     
 
                     //重新加载Mod选择器

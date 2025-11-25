@@ -1,14 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Settings;
@@ -31,6 +20,17 @@ using Ra2Client.Online;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security.Principal;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using Logger = Rampastring.Tools.Logger;
 
 namespace Ra2Client.DXGUI.Generic
@@ -400,7 +400,7 @@ namespace Ra2Client.DXGUI.Generic
         /// <summary>
         /// Initializes the main menu's controls.
         /// </summary>
-        public override void Initialize()
+        public override void  Initialize()
         {
             
 
@@ -653,6 +653,93 @@ namespace Ra2Client.DXGUI.Generic
             //var csf = new CSF("Run\\ra2md.csf").GetCsfDictionary();
             //Logger.Log("");
 
+
+
+         //   aAsync();
+        }
+
+        public async Task aAsync()
+        {
+            int pageNum = 1;
+            int pageSize = 50; // 每页多少条自己设
+            bool hasMore = true;
+
+
+
+            while (hasMore)
+            {
+                // 构造请求参数
+                var req = new PageRequest
+                {
+                    pageNum = pageNum,
+                    pageSize = pageSize,
+                    search = "",
+                    sortField = "",
+                    sortOrder = "",
+                    filters = new Dictionary<string, List<string>>()
+                };
+
+                // 序列化成 query 或者 body，看你后端要求
+                // 假设用 GET 并把参数拼成 url 查询字符串
+                string url = $"mission_pack/getMissionPackByPage?pageNum={req.pageNum}&pageSize={req.pageSize}";
+
+                var (pageData, error) = NetWorkINISettings.Get<PageResponse<ClientCore.Entity.MissionPackVo>>(url).Result;
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    Console.WriteLine($"请求失败：{error}");
+                    return;
+                }
+
+                if (pageData == null || pageData.records == null || pageData.records.Count == 0)
+                {
+                    Console.WriteLine("没有更多数据，结束");
+                    break;
+                }
+
+                Console.WriteLine($"开始处理第 {pageNum} 页数据，共 {pageData.records.Count} 条");
+
+                // ===============================
+                // 在此处理每一页的数据
+                // ===============================
+                foreach (var m in pageData.records)
+                {
+                    if (MissionPack.MissionPacks.Find(mi => mi.ID == m.id) == null)
+                    {
+                        Console.WriteLine($"正在写入{m.name}");
+                        await LocalHttpServer.写入任务包(m, WindowManager);
+                    }
+                }
+
+                // 如果这一页不足 pageSize，说明已经最后一页
+                hasMore = pageData.records.Count >= pageSize;
+
+                // 下一页
+                pageNum++;
+            }
+
+     //       UserINISettings.Instance.重新加载地图和任务包?.Invoke(null, null);
+            Console.WriteLine("分页加载完毕！");
+        }
+
+        public class PageResponse<T>
+        {
+            public List<T> records { get; set; }
+            public int total { get; set; }
+            public int size { get; set; }
+            public int current { get; set; }
+            public int pages { get; set; }
+        }
+        public class PageRequest
+        {
+            public string search { get; set; } = "";
+            public int pageNum { get; set; }
+            public int pageSize { get; set; }
+            public int randomInt { get; set; } = 0;
+            public string sortField { get; set; } = "";
+            public string sortOrder { get; set; } = "";
+            public Dictionary<string, List<string>> filters { get; set; }
+                = new Dictionary<string, List<string>>();
         }
 
 
