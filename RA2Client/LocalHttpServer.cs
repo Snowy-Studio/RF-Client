@@ -628,6 +628,7 @@ namespace Ra2Client
                     Difficulty = difficultyText,
                    Ares = missionPackVo.ares,
                    Phobos = missionPackVo.phobos,
+                   TX = missionPackVo.tx
                 };
 
                

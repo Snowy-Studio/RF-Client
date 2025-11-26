@@ -510,7 +510,8 @@ public class ModManager : XNAWindow
             UpdateTime = mp?.UpdateTime ?? "",
             Difficulty = mp?.Difficulty ?? "中等",
             Ares = mp?.Ares ?? 0,
-            Phobos = mp?.Phobos ?? 0
+            Phobos = mp?.Phobos ?? 0,
+            TX = mp?.TX ?? 0,
         };
         missionPack.DefaultMod = missionPack.Mod;
         var m = new Mod()

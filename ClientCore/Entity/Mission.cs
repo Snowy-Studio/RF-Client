@@ -26,6 +26,7 @@ namespace DTAConfig.Entity
             GUIName = iniFile.GetValue(sectionName, "Description", MPack != null ? MPack.Name : "Undefined Path");
             Ares = iniFile.GetValue(sectionName, "Ares", MPack != null ? MPack.Ares : 0);
             Phobos = iniFile.GetValue(sectionName, "Phobos", MPack != null ? MPack.Phobos : 0);
+            TX = iniFile.GetValue(sectionName, "TX", MPack != null ? MPack.TX : 0);
             IconPath = iniFile.GetValue(sectionName, "SideName", MPack != null ? MPack.Sides: string.Empty);
             GUIDescription = iniFile.GetValue(sectionName, "LongDescription", MPack!=null?MPack.LongDescription: GUIName).L10N("UI:MissionText:" + sectionName);
             FinalMovie = iniFile.GetValue(sectionName, nameof(FinalMovie), "none");
@@ -104,6 +105,7 @@ namespace DTAConfig.Entity
 
         public int Phobos { get; }
 
+        public int TX { get; }
         /// <summary>
         /// 任务图标
         /// </summary>

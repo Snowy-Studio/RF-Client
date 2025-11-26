@@ -26,6 +26,8 @@ namespace ClientCore.Entity
 
         public int phobos { get; set; }
 
+        public int tx { get; set; }
+
         public int difficulty { get; set; }
 
         public int gameType { get; set; }
