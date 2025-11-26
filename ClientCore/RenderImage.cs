@@ -59,7 +59,7 @@ namespace ClientCore
             process.StartInfo.CreateNoWindow = true;
             WindowManager.progress.Report($"正在渲染预览图{mapName}...");
 
-        //    Console.WriteLine(strCmdText);
+            //Console.WriteLine(strCmdText);
 
             process.Start();
             process.WaitForExit();
@@ -82,9 +82,6 @@ namespace ClientCore
             Interlocked.Increment(ref RenderCount);
             RenderCompleted?.Invoke(null, EventArgs.Empty);
 
-
-
-
             return true;
         }
         private static List<string> 上次渲染配置 = [];
@@ -92,7 +89,9 @@ namespace ClientCore
         public static void RenderImages()
         {
             return;
-            if (需要渲染的地图列表.Count == 0) return;
+
+            if (需要渲染的地图列表.Count == 0)
+                return;
 
             IsCancelled = false; // 先清除取消标志
             RenderCount = 0;
@@ -139,7 +138,7 @@ namespace ClientCore
                         }
                         catch (Exception ex)
                         {
-                          //  Console.WriteLine($"渲染异常: {ex.Message}");
+                          //Console.WriteLine($"渲染异常: {ex.Message}");
                         }
                     }
                     IsCancelled = true;
@@ -236,11 +235,11 @@ namespace ClientCore
                 }
                 catch (Exception ex)
                 {
-                 //   Console.WriteLine($"创建符号链接失败: {linkPath} -> {kv.Value}, 错误: {ex.Message}");
+                    // Console.WriteLine($"创建符号链接失败: {linkPath} -> {kv.Value}, 错误: {ex.Message}");
                 }
             }
 
-         //   Console.WriteLine($"渲染配置设置完成，共 {fileMap.Count} 个文件。");
+            // Console.WriteLine($"渲染配置设置完成，共 {fileMap.Count} 个文件。");
         }
 
         public static bool IsCancelled = false;

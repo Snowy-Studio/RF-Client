@@ -381,11 +381,9 @@ namespace Ra2Client.DXGUI.Generic
             chkPhobos = FindChild<GameLobbyCheckBox>("chkPhobos");
             chkPhobos.CheckedChanged += ChkPhobos_CheckedChanged;
 
-            
-
             lblModify = new XNALabel(WindowManager);
             lblModify.Name = nameof(lblModify);
-            lblModify.Text = "Note: Changes may not take effect, and some may disrupt the flow of the mission".L10N("UI:Main:TurnOnCheat");
+            lblModify.Text = "Note: Changes may not take effect, and some options may cause campaign issues!!!\r\nYou are responsible for any campaign problems caused after enabling this.".L10N("UI:Main:TurnOnCheat");
             lblModify.ClientRectangle = new Rectangle(_tbMissionDescriptionList.X + _tbMissionDescriptionList.Width + 10, _tbMissionDescriptionList.Y, 0, 0);
             lblModify.TextColor = Color.AliceBlue;
             AddChild(lblModify);
@@ -416,13 +414,13 @@ namespace Ra2Client.DXGUI.Generic
 
             _cmbCredits = FindChild<GameLobbyDropDown>("cmbCredits");
 
-            chkTerrain = new XNAClientCheckBox(WindowManager);  // 地形扩展选项       ——dfyh
-            chkTerrain.Text = "扩展地形".L10N("UI:Main:chkTerrain");
+            chkTerrain = new XNAClientCheckBox(WindowManager);  // 地形扩展选项——dfyh
+            chkTerrain.Text = "Expanded Terrain".L10N("UI:Main:chkTerrain");
             chkTerrain.X = FindChild<XNAClientCheckBox>("chkSatellite").X;
             chkTerrain.Y = FindChild<XNAClientCheckBox>("chkCorr").Y + 25;
            
-            chkTerrain.SetToolTipText("启用TX扩展地形，如遇到空气墙或闪退可尝试关闭此选项后重试.\nThis option must be enabled for some map campaigns.".L10N("UI:Main:TPchkTerrain"));
-            _gameOptionsPanel.AddChild(chkTerrain);     // 添加地形扩展选项到游戏选项面板      ——dfyh
+            chkTerrain.SetToolTipText("Enable TX extended terrain. If you encounter airwalls or crashes, try disabling this option and retrying. Some campaign maps require this option to be enabled.".L10N("UI:Main:TPchkTerrain"));
+            _gameOptionsPanel.AddChild(chkTerrain);  // 添加地形扩展选项到游戏选项面板——dfyh
 
             _lbxInforBox.ClientRectangle = new Rectangle(_gameOptionsPanel.X, _mapPreviewBox.Y + 25, 345, _mapPreviewBox.Height - 185);
             _lbxInforBox.FontIndex = 1;
@@ -468,7 +466,7 @@ namespace Ra2Client.DXGUI.Generic
         {
             if (UserINISettings.Instance.第一次点击扩展)
             {
-                XNAMessageBox.Show(WindowManager, "警告", "如果你不知道这是什么，建议不要开启，可能会影响战役正常流程\n开启后会提供更多功能，但稳定性不保证。\n 如果战役出现异常请关闭后重玩，仍然异常请与我们联系，谢谢配合。");
+                XNAMessageBox.Show(WindowManager, "Warning".L10N("UI:Main:Warning"), "If you don't know what this is, it is recommended not to enable it, as it may affect the normal flow of the campaign.\nEnabling it will provide more features, but we are not responsible for its stability, so please use it with caution. If the campaign behaves abnormally, please disable it and restart.\nIf it still malfunctions, please contact us first. Thank you for your cooperation.".L10N("UI:Main:ExtPlatformWarning"));
                 UserINISettings.Instance.第一次点击扩展.Value = false;
                 UserINISettings.Instance.SaveSettings();
             }
@@ -1122,7 +1120,7 @@ namespace Ra2Client.DXGUI.Generic
                     return;
 
 
-                if (mission.Mod.Count != 0) //如果任务指定了Mod
+                if (mission.Mod.Count != 0) // 如果任务指定了Mod
                 {
                     foreach (var item in mission.Mod)
                     {
@@ -1182,10 +1180,10 @@ namespace Ra2Client.DXGUI.Generic
                     // 如果地图文件存在
                     _gameOptionsPanel.Visible = File.Exists(Path.Combine(ProgramConstants.GamePath, mission.Path, mission.Scenario));
 
-                   // lblModify.Visible = _gameOptionsPanel.Visible;
+                    // lblModify.Visible = _gameOptionsPanel.Visible;
                     
 
-                    //重新加载Mod选择器
+                    // 重新加载Mod选择器
 
                     _btnLaunch.AllowClick = true;
 
