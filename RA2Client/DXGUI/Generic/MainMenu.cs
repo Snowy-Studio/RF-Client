@@ -1,3 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security.Principal;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Settings;
@@ -20,17 +31,6 @@ using Ra2Client.Online;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using Logger = Rampastring.Tools.Logger;
 
 namespace Ra2Client.DXGUI.Generic
@@ -400,10 +400,8 @@ namespace Ra2Client.DXGUI.Generic
         /// <summary>
         /// Initializes the main menu's controls.
         /// </summary>
-        public override void  Initialize()
+        public override void Initialize()
         {
-            
-
             // Mix.UnPackMix("/mix","E:\\Documents\\My_File\\RA2Setup\\Updater\\expandmd06.mix");
 
             topBar.SetSecondarySwitch(cncnetLobby);
@@ -415,8 +413,6 @@ namespace Ra2Client.DXGUI.Generic
             ClientRectangle = new Rectangle(0, 0, BackgroundTexture.Width, BackgroundTexture.Height);
 
             WindowManager.CenterControlOnScreen(this);
-
-            
 
             btnNewCampaign = new XNAClientButton(WindowManager);
             btnNewCampaign.Name = nameof(btnNewCampaign);
@@ -653,9 +649,7 @@ namespace Ra2Client.DXGUI.Generic
             //var csf = new CSF("Run\\ra2md.csf").GetCsfDictionary();
             //Logger.Log("");
 
-
-
-         //   aAsync();
+            //aAsync();
         }
 
         public async Task aAsync()
@@ -663,8 +657,6 @@ namespace Ra2Client.DXGUI.Generic
             int pageNum = 1;
             int pageSize = 50; // 每页多少条自己设
             bool hasMore = true;
-
-
 
             while (hasMore)
             {
@@ -699,9 +691,7 @@ namespace Ra2Client.DXGUI.Generic
 
                 Console.WriteLine($"开始处理第 {pageNum} 页数据，共 {pageData.records.Count} 条");
 
-                // ===============================
                 // 在此处理每一页的数据
-                // ===============================
                 foreach (var m in pageData.records)
                 {
                     if (MissionPack.MissionPacks.Find(mi => mi.ID == m.id) == null)
@@ -718,7 +708,7 @@ namespace Ra2Client.DXGUI.Generic
                 pageNum++;
             }
 
-     //       UserINISettings.Instance.重新加载地图和任务包?.Invoke(null, null);
+            // UserINISettings.Instance.重新加载地图和任务包?.Invoke(null, null);
             Console.WriteLine("分页加载完毕！");
         }
 
@@ -730,6 +720,7 @@ namespace Ra2Client.DXGUI.Generic
             public int current { get; set; }
             public int pages { get; set; }
         }
+
         public class PageRequest
         {
             public string search { get; set; } = "";
@@ -741,7 +732,6 @@ namespace Ra2Client.DXGUI.Generic
             public Dictionary<string, List<string>> filters { get; set; }
                 = new Dictionary<string, List<string>>();
         }
-
 
         private void SetToolTip()
         {
@@ -1037,9 +1027,8 @@ namespace Ra2Client.DXGUI.Generic
 
         private void 清理根目录()
         {
-            
-                List<string> whitelist = [
-                    "cncnet5.dll",
+            List<string> whitelist = [
+                "cncnet5.dll",
                 "gamemd-spawn.exe",
                 "gamemd.exe",
                 "syringe.exe",
@@ -1057,7 +1046,7 @@ namespace Ra2Client.DXGUI.Generic
                 "qres.dat",
                 "qres32.dll",
                 "KeyBoardMD.ini"
-                    ];
+            ];
             try
             {
                 foreach (string file in Directory.GetFiles(ProgramConstants.GamePath))
