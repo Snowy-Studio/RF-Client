@@ -476,11 +476,11 @@ namespace Ra2Client.DXGUI.Generic
 
         private void ChkAres_CheckedChanged(object sender, EventArgs e)
         {
-          
+            
 
-            CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk =>{
+            CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk => {
                 chk.AllowChecking = chkAres.Checked;
-                if (!chk.AllowChecking) 
+                if (!chk.AllowChecking)
                     chk.Checked = chk.defaultValue;
             });
             DropDowns.FindAll(dd => dd.Ares == true).ForEach(dd =>
@@ -1166,6 +1166,13 @@ namespace Ra2Client.DXGUI.Generic
                     _lblGame.Visible = true;
                     _cmbGame.Visible = true;
                 }
+
+                chkAres.AllowChecking = mission.Ares == 0;
+                chkAres.Checked = mission.Ares == 1;
+
+                chkPhobos.AllowChecking = mission.Phobos == 0 && chkAres.Checked;
+                chkPhobos.Checked = mission.Phobos == 1 && chkAres.Checked;
+
 
                 CmbGame_SelectedChanged(null, null);
 

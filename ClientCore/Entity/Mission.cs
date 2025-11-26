@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Localization;
@@ -24,6 +24,8 @@ namespace DTAConfig.Entity
             CD = iniFile.GetValue(sectionName, nameof(CD), 0);
             Side = iniFile.GetValue(sectionName, nameof(Side), 0);
             GUIName = iniFile.GetValue(sectionName, "Description", MPack != null ? MPack.Name : "Undefined Path");
+            Ares = iniFile.GetValue(sectionName, "Ares", MPack != null ? MPack.Ares : 0);
+            Phobos = iniFile.GetValue(sectionName, "Phobos", MPack != null ? MPack.Phobos : 0);
             IconPath = iniFile.GetValue(sectionName, "SideName", MPack != null ? MPack.Sides: string.Empty);
             GUIDescription = iniFile.GetValue(sectionName, "LongDescription", MPack!=null?MPack.LongDescription: GUIName).L10N("UI:MissionText:" + sectionName);
             FinalMovie = iniFile.GetValue(sectionName, nameof(FinalMovie), "none");
@@ -98,6 +100,10 @@ namespace DTAConfig.Entity
         /// 任务名称
         /// </summary>
         public string GUIName { get; }
+        public int Ares { get; }
+
+        public int Phobos { get; }
+
         /// <summary>
         /// 任务图标
         /// </summary>

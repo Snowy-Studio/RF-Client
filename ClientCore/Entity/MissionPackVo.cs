@@ -22,6 +22,10 @@ namespace ClientCore.Entity
 
         public int? year { get; set; }
 
+        public int ares { get; set; }
+
+        public int phobos { get; set; }
+
         public int difficulty { get; set; }
 
         public int gameType { get; set; }

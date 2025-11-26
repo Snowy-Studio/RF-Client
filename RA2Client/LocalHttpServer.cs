@@ -625,7 +625,9 @@ namespace Ra2Client
                     UpdateTime = missionPackVo.updateTime,
                     Author = missionPackVo.author,
                     Other = false,
-                    Difficulty = difficultyText
+                    Difficulty = difficultyText,
+                   Ares = missionPackVo.ares,
+                   Phobos = missionPackVo.phobos,
                 };
 
                

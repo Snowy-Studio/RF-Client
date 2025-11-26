@@ -42,6 +42,9 @@ public class MissionPack : InfoBaseClass
         Sides = iniFile.GetValue(ID, "SideName", string.Empty);
         Difficulty = iniFile.GetValue(ID, "Difficulty", "中等");
 
+        Ares = iniFile.GetValue(ID, "Ares", 0);
+        Phobos = iniFile.GetValue(ID, "Phobos", 0);
+
         // 使用HashSet来暂存Mod，自动排除重复项
         HashSet<string> modSet = new HashSet<string>();
 
@@ -119,6 +122,8 @@ public class MissionPack : InfoBaseClass
             .SetValue(ID, "DefaultMod", DefaultMod)
             .SetValue(ID, "Other", Other)
             .SetValue(ID, "Author", Author)
+            .SetValue(ID, "Ares", Ares)
+            .SetValue(ID, "Phobos", Phobos)
             .SetValue(ID, "MissionPack", ID)
             .SetValue(ID, "BuildOffAlly", true)
             .SetValue(ID, "UpdateTime", UpdateTime)
@@ -185,6 +190,10 @@ public class MissionPack : InfoBaseClass
     /// 介绍
     /// </summary>
     public string LongDescription { get; set; }
+
+    public int Ares { get; set; } = 0;
+
+    public int Phobos { get; set; } = 0;
     /// <summary>
     /// 阵营
     /// </summary>
