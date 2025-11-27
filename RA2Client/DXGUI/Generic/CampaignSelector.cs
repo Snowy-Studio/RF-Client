@@ -455,9 +455,6 @@ namespace Ra2Client.DXGUI.Generic
             _ddSide.ClickSoundEffect = _cmbCredits.ClickSoundEffect;
             _ddMissionPack.ClickSoundEffect = _cmbCredits.ClickSoundEffect;
 
-            chkTerrain.Visible = false;
-            chkTerrain.Checked = false;
-
             ChkAres_CheckedChanged(null,null);
             ChkPhobos_CheckedChanged(null, null);
         }
@@ -1580,7 +1577,7 @@ namespace Ra2Client.DXGUI.Generic
             settings.SetValue("BuildOffAlly", mission.BuildOffAlly);
             settings.SetValue("DifficultyModeHuman", (mission.PlayerAlwaysOnNormalDifficulty ? "1" : _trbDifficultySelector.Value.ToString()));
             settings.SetValue("DifficultyModeComputer", GetComputerDifficulty());
-            settings.SetValue("chkTerrain", false);
+            settings.SetValue("chkTerrain", chkTerrain.Checked);
 
             spawnIni.AddSection(settings);
 
