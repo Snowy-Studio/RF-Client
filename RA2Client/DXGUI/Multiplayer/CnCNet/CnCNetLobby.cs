@@ -147,27 +147,6 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
 
         private Random random;
 
-        private XNALabel lblServerRegion;
-
-        private XNAClientDropDown ddServerRegion;
-
-        private DateTime lastRegionSwitchTime = DateTime.MinValue;
-
-        private const int REGION_SWITCH_COOLDOWN_MINUTES = 1;
-
-        private Timer regionSwitchTimer;
-        private Timer enableDropdownTimer;
-
-        private static readonly string[] SERVER_REGIONS =
-        [
-            "Chinese Mainland Zone 1",
-            "Chinese Mainland Zone 2",
-            "Chinese Mainland Zone 3",
-            "Asia Pacific Zone 1",
-            "Europe Zone 1",
-            "North America Zone 1"
-        ];
-
         private void GameList_ClientRectangleUpdated(object sender, EventArgs e)
         {
             panelGameFilters.ClientRectangle = lbGameList.ClientRectangle;
@@ -304,7 +283,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             ddCurrentChannel.Name = nameof(ddCurrentChannel);
             ddCurrentChannel.ClientRectangle = new Rectangle(
                 lbChatMessages.Right - 200,
-                ddColor.Y, 160, 21);
+                ddColor.Y, 200, 21);
             ddCurrentChannel.SelectedIndexChanged += DdCurrentChannel_SelectedIndexChanged;
             ddCurrentChannel.AllowDropDown = false;
 
@@ -315,35 +294,6 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
                 ddCurrentChannel.Y + 2, 0, 0);
             lblCurrentChannel.FontIndex = 1;
             lblCurrentChannel.Text = "CURRENT CHANNEL:".L10N("UI:Main:CurrentChannel");
-
-            ddServerRegion = new XNAClientDropDown(WindowManager);
-            ddServerRegion.Name = nameof(ddServerRegion);
-            ddServerRegion.ClientRectangle = new Rectangle(
-                lbPlayerList.Right - 117,
-                ddCurrentChannel.Y, 180, 21);
-
-            foreach (string region in SERVER_REGIONS)
-            {
-                ddServerRegion.AddItem(region.L10N("UI:Main:Region" + region.Replace(" ", "")));
-            }
-
-            int defaultRegionIndex = Array.IndexOf(SERVER_REGIONS, Connection.SelectedRegion);
-            if (defaultRegionIndex == -1)
-                defaultRegionIndex = 0;
-
-            ddServerRegion.SelectedIndex = defaultRegionIndex;
-            ddServerRegion.SelectedIndexChanged += DdServerRegion_SelectedIndexChanged;
-            ddServerRegion.AllowDropDown = false;
-            AddChild(ddServerRegion);
-
-            lblServerRegion = new XNALabel(WindowManager);
-            lblServerRegion.Name = nameof(lblServerRegion);
-            lblServerRegion.ClientRectangle = new Rectangle(
-                ddServerRegion.X - 103,
-                ddCurrentChannel.Y + 2, 0, 0);
-            lblServerRegion.FontIndex = 1;
-            lblServerRegion.Text = "SERVER REGION:".L10N("UI:Main:ServerRegion");
-            AddChild(lblServerRegion);
 
             lblOnline = new XNALabel(WindowManager);
             lblOnline.Name = nameof(lblOnline);
@@ -428,119 +378,6 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             WindowManager.CenterControlOnScreen(this);
 
             PostUIInit();
-        }
-
-        private void DdServerRegion_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!connectionManager.IsConnected)
-            {
-                ddServerRegion.AllowDropDown = false;
-                return;
-            }
-
-            if ((DateTime.Now - lastRegionSwitchTime).TotalMinutes < REGION_SWITCH_COOLDOWN_MINUTES)
-            {
-                TimeSpan remainingTime = TimeSpan.FromMinutes(REGION_SWITCH_COOLDOWN_MINUTES) - (DateTime.Now - lastRegionSwitchTime);
-                connectionManager.MainChannel?.AddMessage(new ChatMessage(Color.White,
-                    $"请等待 {remainingTime.Minutes} 分 {remainingTime.Seconds} 秒后再更换下一个服务器."));
-
-                int previousIndex = Array.IndexOf(SERVER_REGIONS, Connection.SelectedRegion);
-                if (previousIndex >= 0 && previousIndex < ddServerRegion.Items.Count)
-                    ddServerRegion.SelectedIndex = previousIndex;
-                else
-                    ddServerRegion.SelectedIndex = 0;
-
-                return;
-            }
-
-            string newRegion = SERVER_REGIONS[ddServerRegion.SelectedIndex];
-
-            if (newRegion == Connection.SelectedRegion)
-                return;
-
-            var confirmationBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
-                "服务器区域切换确认",
-                $"您确定要切换到 {newRegion} 吗? 这将使您与当前服务器断开连接.");
-
-            confirmationBox.YesClickedAction = (msgBox) => {
-                SwitchToRegion(newRegion);
-            };
-
-            confirmationBox.NoClickedAction = (msgBox) => {
-                int previousIndex = Array.IndexOf(SERVER_REGIONS, Connection.SelectedRegion);
-                if (previousIndex >= 0 && previousIndex < ddServerRegion.Items.Count)
-                    ddServerRegion.SelectedIndex = previousIndex;
-            };
-        }
-
-        private void SwitchToRegion(string newRegion)
-        {
-            lastRegionSwitchTime = DateTime.Now;
-
-            ddServerRegion.AllowDropDown = false;
-            ddCurrentChannel.AllowDropDown = false;
-            btnNewGame.AllowClick = false;
-            btnJoinGame.AllowClick = false;
-            tbChatInput.Enabled = false;
-
-            if (connectionManager.MainChannel != null)
-            {
-                connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White,
-                    $"正在切换到服务器区域: {newRegion}. 请稍候, 正在重新连接..."));
-            }
-
-            if (connectionManager.IsConnected)
-            {
-                connectionManager.Disconnect();
-
-                int maxWait = 50;
-                while (connectionManager.IsConnected && maxWait-- > 0)
-                {
-                    Thread.Sleep(100);
-                }
-            }
-
-            Connection.SelectedRegion = newRegion;
-
-            lbGameList.ClearGames();
-            lbPlayerList.Clear();
-            if (lbChatMessages != null)
-                lbChatMessages.Clear();
-
-            var field = typeof(CnCNetManager).GetField("userListInitialized",
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            if (field != null)
-                field.SetValue(connectionManager, false);
-
-            if (regionSwitchTimer != null)
-                regionSwitchTimer.Dispose();
-
-            regionSwitchTimer = new Timer(_ =>
-            {
-                WindowManager.AddCallback(() =>
-                {
-                    connectionManager.Connect();
-
-                    if (enableDropdownTimer != null)
-                        enableDropdownTimer.Dispose();
-
-                    enableDropdownTimer = new Timer(__ =>
-                    {
-                        WindowManager.AddCallback(() =>
-                        {
-                            if (connectionManager.IsConnected)
-                            {
-                                int currentIndex = Array.IndexOf(SERVER_REGIONS, Connection.SelectedRegion);
-                                if (currentIndex >= 0 && currentIndex < ddServerRegion.Items.Count)
-                                    ddServerRegion.SelectedIndex = currentIndex;
-
-                                ddServerRegion.AllowDropDown = true;
-                            }
-                            enableDropdownTimer?.Dispose();
-                        });
-                    }, null, 10000, Timeout.Infinite);
-                });
-            }, null, 500, Timeout.Infinite);
         }
 
         private void BtnGameSortAlpha_LeftClick(object sender, EventArgs e)
@@ -973,7 +810,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
         {
             if (hg.Game.InternalName.ToUpper() != localGameID.ToUpper())
                 return string.Format("The selected game is for {0}!".L10N("UI:Main:GameIsOfPurpose"), gameCollection.GetGameNameFromInternalName(hg.Game.InternalName));
-
+                
             if (hg.Incompatible && ClientConfiguration.Instance.DisallowJoiningIncompatibleGames)
                 return "Cannot join game. The host is on a different game version than you.".L10N("UI:Main:DisallowJoiningIncompatibleGames");
 
@@ -1067,7 +904,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             }
 
             // if (hg.GameVersion != ProgramConstants.GAME_VERSION)
-
+            
 
             if (hg.Passworded)
             {
@@ -1355,8 +1192,6 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
 
             gameCreationPanel.Hide();
 
-            ddServerRegion.AllowDropDown = false;
-
             // Switch channel to default
             if (localGame != null)
             {
@@ -1376,21 +1211,8 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             ddCurrentChannel.AllowDropDown = true;
             tbChatInput.Enabled = true;
 
-            int currentIndex = Array.IndexOf(SERVER_REGIONS, Connection.SelectedRegion);
-            if (currentIndex >= 0 && currentIndex < ddServerRegion.Items.Count)
-                ddServerRegion.SelectedIndex = currentIndex;
-
-            if (enableDropdownTimer != null)
-                enableDropdownTimer.Dispose();
-
-            enableDropdownTimer = new Timer(_ =>
-            {
-                WindowManager.AddCallback(() =>
-                {
-                    ddServerRegion.AllowDropDown = true;
-                    enableDropdownTimer?.Dispose();
-                });
-            }, null, 1000, Timeout.Infinite);
+            //Channel cncnetChannel = connectionManager.FindChannel("#cncnet");
+            //cncnetChannel.Join();
 
             string localGameChatChannelName = gameCollection.GetGameChatChannelNameFromIdentifier(localGameID);
             connectionManager.FindChannel(localGameChatChannelName).Join();
@@ -1563,7 +1385,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             currentChatChannel = (Channel)ddCurrentChannel.SelectedItem?.Tag;
             if (currentChatChannel == null)
                 throw new Exception("Current selected chat channel is null. This should not happen.");
-
+            
             currentChatChannel.UserAdded += RefreshPlayerList;
             currentChatChannel.UserLeft += RefreshPlayerList;
             currentChatChannel.UserQuitIRC += RefreshPlayerList;
@@ -1726,24 +1548,24 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
                 string mapName = splitMessage[7];
                 string gameMode = splitMessage[8];
 
-                string tunnelAddressAndPort = splitMessage[9];
-                string tunnelAddress;
-                int tunnelPort;
-
-                if (tunnelAddressAndPort.Count(c => c == ':') > 1)
-                {
-                    // IPv6 address 
-                    int lastColonIndex = tunnelAddressAndPort.LastIndexOf(':');
-                    tunnelAddress = tunnelAddressAndPort.Substring(0, lastColonIndex);
-                    tunnelPort = int.Parse(tunnelAddressAndPort.Substring(lastColonIndex + 1));
-                }
-                else
-                {
-                    // IPv4 address or hostname 
-                    string[] detailedAddress = tunnelAddressAndPort.Split(':');
-                    tunnelAddress = detailedAddress[0];
-                    tunnelPort = int.Parse(detailedAddress[1]);
-                }
+                 string tunnelAddressAndPort = splitMessage[9]; 
+                 string tunnelAddress; 
+                 int tunnelPort; 
+  
+                 if (tunnelAddressAndPort.Count(c => c == ':') > 1) 
+                 { 
+                     // IPv6 address 
+                     int lastColonIndex = tunnelAddressAndPort.LastIndexOf(':'); 
+                     tunnelAddress = tunnelAddressAndPort.Substring(0, lastColonIndex); 
+                     tunnelPort = int.Parse(tunnelAddressAndPort.Substring(lastColonIndex + 1)); 
+                 } 
+                 else 
+                 { 
+                     // IPv4 address or hostname 
+                     string[] detailedAddress = tunnelAddressAndPort.Split(':'); 
+                     tunnelAddress = detailedAddress[0]; 
+                     tunnelPort = int.Parse(detailedAddress[1]); 
+                 }
 
                 string loadedGameId = splitMessage[10];
                 int skillLevel = int.Parse(splitMessage[11]);
