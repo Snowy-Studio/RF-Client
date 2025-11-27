@@ -53,7 +53,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             XNALabel lblServerNotice = new XNALabel(WindowManager);
             AddChild(lblServerNotice);
             lblServerNotice.Name = "lblServerNotice";
-            lblServerNotice.Text = "Tip: Rooms on different servers are not connected, please choose carefully.".L10N("UI:Main:ServerTip");
+            lblServerNotice.Text = "Note: Rooms on different servers are not connected, please choose carefully (only servers in Chinese Mainland are interconnected)".L10N("UI:Main:ServerTip");
             lblServerNotice.FontIndex = 1;
             lblServerNotice.CenterOnParent();
             lblServerNotice.ClientRectangle = new Rectangle(lblServerNotice.X, lblConnectToCnCNet.Bottom + 8, lblServerNotice.Width, lblServerNotice.Height);
