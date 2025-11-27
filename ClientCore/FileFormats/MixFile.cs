@@ -33,37 +33,57 @@ namespace OpenRA.Mods.Cnc.FileSystem
 			readonly long dataStart;
 			readonly Stream s;
 
-			public MixFile(Stream s, string filename, string[] globalFilenames)
-			{
-				Name = filename;
-				this.s = s;
+            public MixFile(Stream s, string filename, string[] globalFilenames)
+            {
+                Name = filename;
+                this.s = s;
 
-				try
-				{
-					// Detect format type
-					var isCncMix = s.ReadUInt16() != 0;
+                // ----- ⭐ 从 Resources 目录加载 global mix database.dat ⭐ -----
+                var dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "global mix database.dat");
+                if (globalFilenames.Length == 0 && File.Exists(dbPath))
+                {
+                    using (var mixDatabase = File.OpenRead(dbPath))
+                    using (var db = new XccGlobalDatabase(mixDatabase))
+                        globalFilenames = db.Entries.ToHashSet().ToArray();
 
-					// The C&C mix format doesn't contain any flags or encryption
-					var isEncrypted = false;
-					if (!isCncMix)
-						isEncrypted = (s.ReadUInt16() & 0x2) != 0;
-
-					List<PackageEntry> entries;
-					if (isEncrypted)
-						entries = ParseHeader(DecryptHeader(s, 4, out dataStart), 0, out _);
-					else
-						entries = ParseHeader(s, isCncMix ? 0 : 4, out dataStart);
-
-					index = ParseIndex(entries.ToDictionaryWithConflictLog(x => x.Hash,
-						$"{filename} ({(isCncMix ? "C&C" : "RA/TS/RA2")} format, Encrypted: {isEncrypted}, DataStart: {dataStart})",
-						null, x => $"(offs={x.Offset}, len={x.Length})"), globalFilenames);
+                    Console.WriteLine($"Loaded global mix database: {globalFilenames.Length} entries");
                 }
-				catch (Exception)
-				{
-					Dispose();
-					throw;
-				}
-			}
+                else
+                {
+                    Console.WriteLine("Failed to load global mix database.dat");
+                }
+                // --------------------------------------------------------------------
+
+                try
+                {
+                    // Detect format type
+                    var isCncMix = s.ReadUInt16() != 0;
+
+                    // The C&C mix format doesn't contain any flags or encryption
+                    var isEncrypted = false;
+                    if (!isCncMix)
+                        isEncrypted = (s.ReadUInt16() & 0x2) != 0;
+
+                    List<PackageEntry> entries;
+                    if (isEncrypted)
+                        entries = ParseHeader(DecryptHeader(s, 4, out dataStart), 0, out _);
+                    else
+                        entries = ParseHeader(s, isCncMix ? 0 : 4, out dataStart);
+
+                    index = ParseIndex(
+                        entries.ToDictionaryWithConflictLog(
+                            x => x.Hash,
+                            $"{filename} ({(isCncMix ? "C&C" : "RA/TS/RA2")} format, Encrypted: {isEncrypted}, DataStart: {dataStart})",
+                            null,
+                            x => $"(offs={x.Offset}, len={x.Length})"),
+                        globalFilenames);
+                }
+                catch (Exception)
+                {
+                    Dispose();
+                    throw;
+                }
+            }
 
             public MixFile(string filename) : this(File.OpenRead(filename), filename, [])
             {

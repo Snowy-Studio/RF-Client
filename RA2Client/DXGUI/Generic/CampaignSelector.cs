@@ -45,6 +45,7 @@ namespace Ra2Client.DXGUI.Generic
         private XNADropDown _ddDifficulty;
         private XNADropDown _ddSide;
         private XNADropDown _ddMissionPack;
+        private XNATextBox _tbMissionPack;
         private GameLobbyDropDown _cmbCredits;
         private XNAClientButton _btnLaunch;
         private XNAListBox _tbMissionDescriptionList;
@@ -122,7 +123,7 @@ namespace Ra2Client.DXGUI.Generic
             _lbxCampaignList.Name = "lbCampaignList";
             _lbxCampaignList.BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 2, 2);
             _lbxCampaignList.PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
-            _lbxCampaignList.ClientRectangle = new Rectangle(12, lblSelectCampaign.Bottom + 36, 300, 480);
+            _lbxCampaignList.ClientRectangle = new Rectangle(12, lblSelectCampaign.Bottom +200, 300, 450);
             _lbxCampaignList.LineHeight = 20;
             _lbxCampaignList.SelectedIndexChanged += LbxCampaignListSelectedIndexChanged;
             _lbxCampaignList.RightClick += LbxCampaignListRightClick;
@@ -162,6 +163,13 @@ namespace Ra2Client.DXGUI.Generic
             _ddMissionPack.Name = nameof(_ddMissionPack);
             _ddMissionPack.ClientRectangle = new Rectangle(_lblScreen.X, _ddDifficulty.Y + _ddDifficulty.Height + 5, _lbxCampaignList.Width, _ddDifficulty.Height);
 
+            _tbMissionPack = new XNATextBox(WindowManager);
+            _tbMissionPack.Name = nameof(_tbMissionPack);
+            _tbMissionPack.ClientRectangle = new Rectangle(_lblScreen.X, _ddMissionPack.Y + _ddMissionPack.Height + 5, _lbxCampaignList.Width - 100, _ddDifficulty.Height);
+
+            var btnSearch = new XNAClientButton(WindowManager);
+            btnSearch.ClientRectangle = new Rectangle(_tbMissionPack.Right + 10, _tbMissionPack.Y + 2, UIDesignConstants.BUTTON_WIDTH_92,UIDesignConstants.BUTTON_HEIGHT);
+            btnSearch.Text = "搜索";
 
             var lblMissionDescriptionHeader = new XNALabel(WindowManager);
             lblMissionDescriptionHeader.Name = "lblMissionDescriptionHeader";
@@ -351,6 +359,8 @@ namespace Ra2Client.DXGUI.Generic
             AddChild(_ddSide);
             AddChild(_lbxInforBox);
             AddChild(_ddMissionPack);
+            AddChild(_tbMissionPack);
+            AddChild(btnSearch);
             AddChild(lblalter);
             AddChild(btnImport);
             AddChild(btnDownLoad);
@@ -368,6 +378,7 @@ namespace Ra2Client.DXGUI.Generic
             _ddSide.SelectedIndexChanged += DDDifficultySelectedIndexChanged;
             _ddDifficulty.SelectedIndexChanged += DDDifficultySelectedIndexChanged;
             _ddMissionPack.SelectedIndexChanged += DDDifficultySelectedIndexChanged;
+            btnSearch.LeftClick += DDDifficultySelectedIndexChanged;
 
             ReadMissionList();
 
@@ -1631,7 +1642,9 @@ namespace Ra2Client.DXGUI.Generic
 
             foreach (var mission in _missions)
             {
-               
+                if (_tbMissionPack.Text.TrimEnd().Length > 0 && !mission?.MPack?.Name?.Contains(_tbMissionPack.Text.TrimEnd())!=false)
+                    continue;
+
                 if (_ddDifficulty.SelectedItem.Tag != null && mission.Difficulty != (string)_ddDifficulty.SelectedItem.Tag)
                     continue;
                
