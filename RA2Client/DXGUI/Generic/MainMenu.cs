@@ -1,14 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Settings;
@@ -31,6 +20,19 @@ using Ra2Client.Online;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Principal;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using Logger = Rampastring.Tools.Logger;
 
 namespace Ra2Client.DXGUI.Generic
@@ -642,6 +644,8 @@ namespace Ra2Client.DXGUI.Generic
 
             UseDownloadedData();
 
+            //bAsync();
+
             //var ini = new IniFile("E:\\Documents\\file\\RF-Client\\Bin\\Maps\\CP\\battle[汉化]国外尤里任务—冰与火.ini");
             //ini.SetValue("MissionPack", "[汉化]国外尤里任务—冰与火", "[汉化]国外尤里任务—冰与火");
             //ini.WriteIniFile();
@@ -651,7 +655,7 @@ namespace Ra2Client.DXGUI.Generic
 
             //aAsync();
 
-           // CheckZips("E:\\Downloads\\新建文件夹");
+            // CheckZips("E:\\Downloads\\新建文件夹");
         }
 
         public async Task aAsync()
@@ -714,6 +718,147 @@ namespace Ra2Client.DXGUI.Generic
             Console.WriteLine("分页加载完毕！");
         }
 
+        public async Task bAsync()
+        {
+         
+
+            int pageNum = 1;
+            int pageSize = 50; // 每页多少条自己设
+            bool hasMore = true;
+
+            while (hasMore)
+            {
+                // 构造请求参数
+                var req = new PageRequest
+                {
+                    pageNum = pageNum,
+                    pageSize = pageSize,
+                    search = "",
+                    sortField = "",
+                    sortOrder = "",
+                    filters = new Dictionary<string, List<string>>()
+                };
+
+                // 序列化成 query 或者 body，看你后端要求
+                // 假设用 GET 并把参数拼成 url 查询字符串
+                string url = $"mission_pack/getMissionPackByPage?pageNum={req.pageNum}&pageSize={req.pageSize}";
+
+                var (pageData, error) = NetWorkINISettings.Get<PageResponse<ClientCore.Entity.MissionPackVo>>(url).Result;
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    Console.WriteLine($"请求失败：{error}");
+                    return;
+                }
+
+                if (pageData == null || pageData.records == null || pageData.records.Count == 0)
+                {
+                    Console.WriteLine("没有更多数据，结束");
+                    break;
+                }
+
+                Console.WriteLine($"开始处理第 {pageNum} 页数据，共 {pageData.records.Count} 条");
+
+                // 在此处理每一页的数据
+                foreach (var m in pageData.records)
+                {
+                    if (m.imgs.Count == 0)
+                    {
+                        Console.WriteLine($"正在处理 {m.name}");
+                        var mp = MissionPack.MissionPacks.Find(mi => mi.ID == m.id);
+                        if (mp == null)
+                        {
+                            Console.WriteLine($"本地没有，去下载");
+                            await LocalHttpServer.写入任务包(m, WindowManager);
+                            mp = MissionPack.MissionPacks.Find(mi => mi.ID == m.id);
+                            if(mp == null)
+                            {
+                                Console.WriteLine($"{m.name} 这个导入不了");
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            //RenderImage.RenderPreviewImageAsync(Directory.GetFiles(mp.FilePath, "*.map"));
+                        }
+
+                            // 获取文件夹下所有 .map 文件
+                        var mapFiles = Directory.GetFiles(mp.FilePath, "*.map", SearchOption.TopDirectoryOnly);
+
+
+                        // 创建 MultipartFormDataContent
+                        using var formData = new MultipartFormDataContent();
+
+                        // 添加 id 字段
+                        formData.Add(new StringContent(m.id), "id"); // 这里 123 是 missionPack id
+                        formData.Add(new StringContent(""), "name");
+
+                        if(m.missionCount == 1)
+                            formData.Add(new StringContent(mapFiles.Count().ToString()), "missionCount");
+
+                        int gametype = 1; // 默认
+
+                        foreach (var file in mapFiles)
+                        {
+                            var name = Path.GetFileNameWithoutExtension(file).ToLower();
+
+                            // 以 all 或 sov 开头
+                            bool isSpecial = name.StartsWith("all") || name.StartsWith("sov");
+
+                            // 不以 md 结尾
+                            bool notMd = !name.EndsWith("md");
+
+                            if (isSpecial && notMd)
+                            {
+                                gametype = 0;
+                                break;
+                            }
+                        }
+
+                        formData.Add(new StringContent(gametype.ToString()), "gameType");
+
+                        //// 遍历每个 map 文件，找同目录同名 jpg
+                        //foreach (var mapFile in mapFiles)
+                        //{
+                        //    var dir = Path.GetDirectoryName(mapFile);                // map 文件所在目录
+                        //    var mapNameWithoutExt = Path.GetFileNameWithoutExtension(mapFile);
+                        //    var jpgPath = Path.Combine(dir, mapNameWithoutExt + ".jpg"); // 同目录同名 jpg
+
+                        //    if (!File.Exists(jpgPath))
+                        //        continue; // 没有 jpg 就跳过
+
+                        //    var bytes = File.ReadAllBytes(jpgPath);
+                        //    var fileContent = new ByteArrayContent(bytes);
+                        //    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+
+                        //    // 上传时文件名保持 map 文件同名
+                        //    formData.Add(fileContent, "imgContents", mapNameWithoutExt + ".jpg");
+                        //}
+
+                        // 调用 Post 方法
+                        var (result, msg) = await NetWorkINISettings.Post<bool?>("mission_pack/updateImg", formData);
+
+                        if (!string.IsNullOrEmpty(msg))
+                        {
+                            Console.WriteLine("后端返回信息：" + msg);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"更新成功：{m.name}");
+                        }
+                    }
+                }
+
+                // 如果这一页不足 pageSize，说明已经最后一页    
+                hasMore = pageData.records.Count >= pageSize;
+
+                // 下一页
+                pageNum++;
+            }
+
+            // UserINISettings.Instance.重新加载地图和任务包?.Invoke(null, null);
+            Console.WriteLine("分页加载完毕！");
+        }
         public static void CheckZips(string folder)
         {
             foreach (var zipPath in Directory.GetFiles(folder, "*.zip"))

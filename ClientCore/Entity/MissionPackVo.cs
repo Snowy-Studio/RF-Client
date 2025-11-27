@@ -16,6 +16,7 @@ namespace ClientCore.Entity
 
         public string file { get; set; } = "";
 
+        public List<string> imgs { get; set; } = [];
         public string? author { get; set; }
 
         public int missionCount { get; set; } = 1;

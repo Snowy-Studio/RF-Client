@@ -223,10 +223,12 @@ public class NetWorkINISettings
 
     public static async Task<(T, string)> Post<T>(string url, MultipartFormDataContent formData)
     {
-        
-        using var client = new HttpClient();
 
-        client.Timeout = new TimeSpan(30 * TimeSpan.TicksPerSecond);
+        try
+        {
+            using var client = new HttpClient();
+
+        client.Timeout = new TimeSpan(600 * TimeSpan.TicksPerSecond);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", UserINISettings.Instance.Token.Value);
         
         HttpResponseMessage response;
@@ -236,7 +238,7 @@ public class NetWorkINISettings
             // 发送 POST 请求并传递 formData
             response = await client.PostAsync($"{Address}{url}", formData).ConfigureAwait(false);
         }
-        catch (HttpRequestException ex)
+        catch (Exception ex)
         {
             // 处理请求异常
             Console.WriteLine($"请求失败：{ex.Message}");
@@ -245,26 +247,28 @@ public class NetWorkINISettings
 
         // 读取响应内容
         T responseData;
-
         if (response.IsSuccessStatusCode)
         {
-            //var bytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            //var responseContent = Encoding.UTF8.GetString(bytes);
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            
             var resResult = JsonSerializer.Deserialize<ResResult<T>>(responseContent);
             responseData = resResult.data;
-            if(responseData == null
-                    || responseData.Equals(default(T)))
-                return (default,resResult.message);
+            if (responseData == null)
+                return (default, resResult.message);
         }
         else
         {
-            return default;
+            return (default(T), "网络错误");
         }
 
         // 返回响应数据
         return (responseData, string.Empty);
+        }
+        catch (Exception ex)
+        {
+            // 处理请求异常
+            Console.WriteLine($"请求失败：{ex.Message}");
+            return default;
+        }
     }
 
     public static async Task<(T,string)> Get<T>(string url,int timeOut = 30)
