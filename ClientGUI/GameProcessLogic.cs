@@ -451,8 +451,15 @@ namespace ClientGUI
                 // 所有需要复制的文件.Add("LiteExt.dll");
                 所有需要复制的文件.Add("qres.dat");
                 所有需要复制的文件.Add("qres32.dll");
-                
-                
+
+                var subFolders = Directory.GetDirectories("Custom", "*", SearchOption.TopDirectoryOnly);
+
+                // 加入列表
+                foreach (var folder in subFolders)
+                {
+                    if(!string.Equals(Path.GetFileName(folder), "INI", StringComparison.OrdinalIgnoreCase))
+                        所有需要复制的文件.Add(folder);
+                }
 
 
                 if (newSection.KeyExists("GameID"))

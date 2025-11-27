@@ -88,7 +88,7 @@ namespace ClientCore
         // 渲染多张图片的方法
         public static void RenderImages()
         {
-          //  return;
+            return;
 
             if (需要渲染的地图列表.Count == 0)
                 return;
@@ -149,7 +149,7 @@ namespace ClientCore
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"渲染过程中发生异常: {ex.Message}");
+                Console.WriteLine($"渲染过程中发生异常: {ex.Message}");
             }
         }
 

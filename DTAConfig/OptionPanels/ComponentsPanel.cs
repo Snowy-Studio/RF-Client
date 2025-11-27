@@ -87,6 +87,7 @@ namespace DTAConfig.OptionPanels
                 labeltypes.ClientRectangle = new Rectangle(20, 10, 0, 0);
                 labeltypes.Text = "Filter".L10N("UI:DTAConfig:Filter");
                 AddChild(labeltypes);
+                labeltypes.Visible = false;
 
                 comboBoxtypes = new XNAClientDropDown(WindowManager);
                 comboBoxtypes.Name = nameof(comboBoxtypes);
@@ -95,12 +96,12 @@ namespace DTAConfig.OptionPanels
                 comboBoxtypes.SelectedIndex = 0;
                 comboBoxtypes.SelectedIndexChanged += ComboBoxtypes_SelectedIndexChanged;
                 AddChild(comboBoxtypes);
-
+                comboBoxtypes.Visible = false;
 
 
                 textBoxSearch = new XNATextBox(WindowManager);
                 textBoxSearch.Name = nameof(textBoxSearch);
-                textBoxSearch.ClientRectangle = new Rectangle(comboBoxtypes.Right + 80, comboBoxtypes.Y, 200, UIDesignConstants.BUTTON_HEIGHT);
+                textBoxSearch.ClientRectangle = new Rectangle(20, comboBoxtypes.Y, 200, UIDesignConstants.BUTTON_HEIGHT);
 
                 AddChild(textBoxSearch);
 
@@ -121,9 +122,9 @@ namespace DTAConfig.OptionPanels
 
                 CompList.AddColumn("Serial number".L10N("UI:DTAConfig:Serialnumber"), 60)
                     .AddColumn("Component".L10N("UI:DTAConfig:Component"), CompList.Width - 420)
-                    .AddColumn("Type".L10N("UI:DTAConfig:Type"), 110)
-                    .AddColumn("Author".L10N("UI:DTAConfig:Author"), 90)
-                    .AddColumn("Version".L10N("UI:DTAConfig:Version"), 70)
+                    //.AddColumn("Type".L10N("UI:DTAConfig:Type"), 110)
+                    //.AddColumn("Author".L10N("UI:DTAConfig:Author"), 90)
+                    //.AddColumn("Version".L10N("UI:DTAConfig:Version"), 70)
                     .AddColumn("Status".L10N("UI:DTAConfig:Status"), 90);
                 AddChild(CompList);
 
@@ -180,7 +181,7 @@ namespace DTAConfig.OptionPanels
 
                 if (!File.Exists(componentnamePath))
                     File.Create(componentnamePath).Close();
-                _locIniData = new IniFile(componentnamePath);
+                
 
                 InitialComponets();
 
@@ -216,8 +217,8 @@ namespace DTAConfig.OptionPanels
 
         private void ComboBoxtypes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxtypes.SelectedIndex < 0 || comboBoxtypes.SelectedIndex >= comboBoxtypes.Items.Count)
-                return;
+            //if (comboBoxtypes.SelectedIndex < 0 || comboBoxtypes.SelectedIndex >= comboBoxtypes.Items.Count)
+            //    return;
 
             if (null == All_components || 0 == All_components.Count)
             {
@@ -243,32 +244,59 @@ namespace DTAConfig.OptionPanels
 
         private void InitialComponets()
         {
-            comboBoxtypes.Items.Clear();
-            comboBoxtypes.AddItem("All".L10N("UI:DTAConfig:All"));
-            Task.Run(async () => {
-                var Types = (await NetWorkINISettings.Get<string>("dict/getValue?section=component&key=type")).Item1?.Split(",") ?? [];
-                foreach (var item in Types) comboBoxtypes.AddItem(item);
-            });
+            _locIniData = new IniFile(componentnamePath);
+            //            comboBoxtypes.Items.Clear();
+            //            comboBoxtypes.AddItem("All".L10N("UI:DTAConfig:All"));
+            //            Task.Run(async () => {
+            //                var Types = (await NetWorkINISettings.Get<string>("dict/getValue?section=component&key=type")).Item1?.Split(",") ?? [];
+            //                foreach (var item in Types) comboBoxtypes.AddItem(item);
+            //            });
+
+            //            var context = SynchronizationContext.Current;
+            //            Task.Run(async () =>
+            //            {
+            //#if RELEASE
+            //                All_components = (await NetWorkINISettings.Get<List<Component>>("component/getAuditComponent")).Item1 ?? [];
+            //#else
+            //                //All_components = (await NetWorkINISettings.Get<List<Component>>("component/getUnAuditComponent")).Item1??[];
+            //                All_components = (await NetWorkINISettings.Get<List<Component>>("component/getAuditComponent")).Item1 ?? [];
+            //#endif
+
+            //if (All_components.Count > 0)
+            //{
+            //    context?.Post(_ =>
+            //    {
+            //        ComboBoxtypes_SelectedIndexChanged(null, null);
+            //    }, null);
+            //}
+
+            //            });
+
 
             var context = SynchronizationContext.Current;
-            Task.Run(async () =>
+            All_components.Clear();
+            comboBoxtypes.Items.Clear();
+
+            foreach (var sectionName in _locIniData.GetSections())
             {
-#if RELEASE
-                All_components = (await NetWorkINISettings.Get<List<Component>>("component/getAuditComponent")).Item1 ?? [];
-#else
-                //All_components = (await NetWorkINISettings.Get<List<Component>>("component/getUnAuditComponent")).Item1??[];
-                All_components = (await NetWorkINISettings.Get<List<Component>>("component/getAuditComponent")).Item1 ?? [];
-#endif
+                var section = _locIniData.GetSection(sectionName);
 
-                if (All_components.Count > 0)
+                var c = new Component()
                 {
-                    context?.Post(_ =>
-                    {
-                        ComboBoxtypes_SelectedIndexChanged(null, null);
-                    }, null);
-                }
+                    id = sectionName,
+                    name = section.GetValue("name",string.Empty),
+                };
 
-            });
+                All_components.Add(c);
+            }
+
+            if (All_components.Count > 0)
+            {
+                context?.Post(_ =>
+                {
+                    ComboBoxtypes_SelectedIndexChanged(null, null);
+                }, null);
+            }
         }
 
         private void InitialComponetsList(List<Component> components)
@@ -283,10 +311,11 @@ namespace DTAConfig.OptionPanels
                 CompList.AddItem(new XNAListBoxItem[] {
                         new(i.ToString()),
                         new (comp.name),
-                        new (comp.typeName),
-                        new (comp.author),
-                        new (comp.version),
-                        new (item.Text, item.TextColor)
+                        //new (comp.typeName),
+                        //new (comp.author),
+                        //new (comp.version),
+                        //new (item.Text, item.TextColor)
+                        new ("已安装"),
                     });
                 i++;
             }
@@ -348,27 +377,30 @@ namespace DTAConfig.OptionPanels
                 return;
 
             _curComponent = _components[nIndex];
-            StateItem item = CheckComponentStatus(_curComponent);
-            XNAListBoxItem lstItem = CompList.GetItem(5, nIndex);
-            if (item.Text != lstItem.Text)
-            {
-                lstItem.Text = item.Text;
-                lstItem.TextColor = item.TextColor;
-                CompList.SetItem(5, nIndex, lstItem);
-            }
+            //StateItem item = CheckComponentStatus(_curComponent);
+            //XNAListBoxItem lstItem = CompList.GetItem(5, nIndex);
+            //if (item.Text != lstItem.Text)
+            //{
+            //    lstItem.Text = item.Text;
+            //    lstItem.TextColor = item.TextColor;
+            //    CompList.SetItem(5, nIndex, lstItem);
+            //}
 
-            if (-1 != item.Code)
-            {
-                mainButton.Visible = true;
-                if (0 == item.Code)
-                    mainButton.Text = "安装".L10N("UI:DTAConfig:Install");
-                else if (1 == item.Code)
-                    mainButton.Text = "卸载".L10N("UI:DTAConfig:Uninstall");
-                else
-                    mainButton.Text = "更新".L10N("UI:DTAConfig:Update");
-            }
-            else
-                mainButton.Visible = false;
+            //if (-1 != item.Code)
+            //{
+            //    mainButton.Visible = true;
+            //    if (0 == item.Code)
+            //        mainButton.Text = "安装".L10N("UI:DTAConfig:Install");
+            //    else if (1 == item.Code)
+            //        mainButton.Text = "卸载".L10N("UI:DTAConfig:Uninstall");
+            //    else
+            //        mainButton.Text = "更新".L10N("UI:DTAConfig:Update");
+            //}
+            //else
+            //    mainButton.Visible = false;
+
+            mainButton.Visible = true;
+            mainButton.Text = "卸载".L10N("UI:DTAConfig:Uninstall");
         }
 
         private static void UpdateUserAgent(HttpClient httpClient)
@@ -576,7 +608,7 @@ namespace DTAConfig.OptionPanels
             {
                 sBuff.AppendFormat("{0},", strfile);
             }
-            _locIniData.SetValue(sectionName, "Unload", sBuff.ToString().TrimEnd(','));
+            _locIniData.SetValue(sectionName, "unload", sBuff.ToString().TrimEnd(','));
 
             _locIniData.WriteIniFile();
         }
@@ -634,19 +666,19 @@ namespace DTAConfig.OptionPanels
                 return;
 
             var secData = _locIniData.GetSection(_curComponent.id.ToString());
-            if (secData == null) return;
-            string strUnload = secData.GetValue("Unload", string.Empty);
-            string[] lstDelfiles = strUnload.Split(',');
+                if (secData == null) return;
+            string strunload = secData.GetValue("unload", string.Empty);
+            string[] lstDelfiles = strunload.Split(',');
 
             foreach (string strfile in lstDelfiles)
             {
                 try
                 {
                     var filePath = Path.Combine(ProgramConstants.GamePath, strfile);
-                    if (_curComponent.typeName == "地图" || _curComponent.typeName == "地图包")
-                    {
-                        filePath = Path.Combine(ProgramConstants.GamePath, "Maps/Multi/WorkShop", strfile);
-                    }
+                    //if (_curComponent.typeName == "地图" || _curComponent.typeName == "地图包")
+                    //{
+                    //    filePath = Path.Combine(ProgramConstants.GamePath, "Maps/Multi/WorkShop", strfile);
+                    //}
                     if (File.Exists(filePath))
                         File.Delete(filePath);
                     string pngFilePath = Path.ChangeExtension(filePath, ".png");
@@ -662,8 +694,8 @@ namespace DTAConfig.OptionPanels
                 需要刷新 = true;
                 WindowManager.Report();
             }
-
-            // RenderImage.RenderImagesAsync();
+            InitialComponets();
+             RenderImage.RenderImages();
         }
 
         public void InstallComponent(int reg_name)

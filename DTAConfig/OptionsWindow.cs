@@ -67,7 +67,7 @@ namespace DTAConfig
             tabControl.AddTab("CnCNet".L10N("UI:DTAConfig:TabCnCNet"), UIDesignConstants.BUTTON_WIDTH_92);
             //tabControl.AddTab("Skin".L10N("UI:DTAConfig:TabSkin"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Updater".L10N("UI:DTAConfig:TabUpdater"), UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("Workshop (Web)".L10N("UI:DTAConfig:TabWorkshop"), UIDesignConstants.BUTTON_WIDTH_121);
+            tabControl.AddTab("组件", UIDesignConstants.BUTTON_WIDTH_92);
             //tabControl.AddTab("Creator".L10N("UI:DTAConfig:TabCreator"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
@@ -109,7 +109,7 @@ namespace DTAConfig
                 new CnCNetOptionsPanel(WindowManager, UserINISettings.Instance, gameCollection),    //3 "CnCNet"页面
                 // new LocalSkinPanel(WindowManager, UserINISettings.Instance),                        //4 "皮肤"页面
                 updaterOptionsPanel,                                                                //5 "更新器"页面
-                //componentsPanel,                                                                    //6 "创意工坊"页面
+                componentsPanel,                                                                    //6 "创意工坊"页面
                 //new UserOptionsPanel(WindowManager, UserINISettings.Instance)                       //7 "创作者"页面
             ];
 
@@ -177,11 +177,11 @@ namespace DTAConfig
 
         public void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(tabControl.SelectedTab == 5)
-                { FunExtensions.OpenUrl($"https://creator.yra2.com/workshop/map/list?token={UserINISettings.Instance.Token}&port={UserINISettings.Instance.startPort}");
+            //if(tabControl.SelectedTab == 5)
+            //    { FunExtensions.OpenUrl($"https://creator.yra2.com/workshop/map/list?token={UserINISettings.Instance.Token}&port={UserINISettings.Instance.startPort}");
 
-                return;
-            }
+            //    return;
+            //}
 
             foreach (var panel in optionsPanels)
                 panel.Disable();

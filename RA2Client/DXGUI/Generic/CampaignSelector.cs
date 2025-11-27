@@ -1473,10 +1473,29 @@ namespace Ra2Client.DXGUI.Generic
                     SafePath.CombineFilePath(ProgramConstants.GamePath, DifficultyIniPaths[_trbDifficultySelector.Value]));
                 IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
                 IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
-                // IniFile.ConsolidateIniFiles(mapIni, new IniFile("Resources/SkinRulesmd.ini"));
 
-                // ===== 应用复选框配置 =====
-                foreach (GameLobbyCheckBox chkBox in CheckBoxes)
+                        var subFolders = Directory.GetDirectories("Custom/INI", "*", SearchOption.TopDirectoryOnly);
+
+                        foreach (var folder in subFolders)
+                        {
+                            //// 排除某个文件夹
+                            //if (string.Equals(Path.GetFileName(folder), excludeFolderName, StringComparison.OrdinalIgnoreCase))
+                            //    continue;
+
+                            // 拼接 custom_rules_all.ini 的完整路径
+                            string iniFilePath = Path.Combine(folder, "custom_rules_all.ini");
+
+                            // 如果文件存在，就 Consolidate
+                            if (File.Exists(iniFilePath))
+                            {
+                                IniFile.ConsolidateIniFiles(mapIni, new IniFile(iniFilePath));
+                            }
+                        }
+
+                        // IniFile.ConsolidateIniFiles(mapIni, new IniFile("Resources/SkinRulesmd.ini"));
+
+                        // ===== 应用复选框配置 =====
+                        foreach (GameLobbyCheckBox chkBox in CheckBoxes)
                 {
                     chkBox.ApplySpawnINICode(spawnIni);
                     chkBox.ApplyMapCode(mapIni, null);

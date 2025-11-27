@@ -650,6 +650,8 @@ namespace Ra2Client.DXGUI.Generic
             //Logger.Log("");
 
             //aAsync();
+
+           // CheckZips("E:\\Downloads\\新建文件夹");
         }
 
         public async Task aAsync()
@@ -701,7 +703,7 @@ namespace Ra2Client.DXGUI.Generic
                     }
                 }
 
-                // 如果这一页不足 pageSize，说明已经最后一页
+                // 如果这一页不足 pageSize，说明已经最后一页    
                 hasMore = pageData.records.Count >= pageSize;
 
                 // 下一页
@@ -711,6 +713,59 @@ namespace Ra2Client.DXGUI.Generic
             // UserINISettings.Instance.重新加载地图和任务包?.Invoke(null, null);
             Console.WriteLine("分页加载完毕！");
         }
+
+        public static void CheckZips(string folder)
+        {
+            foreach (var zipPath in Directory.GetFiles(folder, "*.zip"))
+            {
+                List<string> files;
+
+                try
+                {
+                    files = SevenZip.GetFile(zipPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"无法读取 {zipPath}：{ex.Message}");
+                    continue;
+                }
+
+                var lowerFiles = files.Select(f => f.ToLower()).ToList();
+
+                var mapFiles = lowerFiles.Where(f => f.EndsWith(".map")).ToList();
+                var mixFiles = lowerFiles.Where(f => f.EndsWith(".mix")).ToList();
+
+                // ⭐ 新条件：只要 mix 文件名包含 "md" 就排除整个 zip
+                bool hasMdMix = mixFiles.Any(f =>
+                {
+                    var name = Path.GetFileNameWithoutExtension(f);
+                    return name.Contains("md");   // ✅ 包含 md 即排除
+                });
+
+                if (hasMdMix)
+                    continue;   // ❌ 跳过整个 zip
+
+                // 条件 1：不包含 map 也不包含 mix
+                bool cond1 = mapFiles.Count == 0 && mixFiles.Count == 0;
+
+                // 条件 2：map 不以 md 结尾，且包含 rules.ini 或包含不以 md 结尾的 mix
+                bool allMapNotMd = mapFiles.All(f => !Path.GetFileNameWithoutExtension(f).EndsWith("md"));
+                bool hasRulesIni = lowerFiles.Any(f => f.EndsWith("rules.ini"));
+                bool hasNonMdMix = mixFiles.Any(f =>
+                {
+                    var name = Path.GetFileNameWithoutExtension(f);
+                    return !name.Contains("md");  // 不包含 md 的 mix
+                });
+
+                bool cond2 = allMapNotMd && (hasRulesIni || hasNonMdMix);
+
+                if (cond1 || cond2)
+                {
+                    Console.WriteLine("符合条件：" + Path.GetFileName(zipPath));
+                }
+            }
+        }
+
 
         public class PageResponse<T>
         {

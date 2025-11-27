@@ -225,8 +225,8 @@ namespace Ra2Client
                     var modVo = JsonSerializer.Deserialize<ModVo>(requestBody);
 
 
-                    _ = Task.Run(async () =>
-                    {
+                   // _ = Task.Run(async () =>
+                   // {
                         var messageBox = new XNAMessage(wm);
                         messageBox.caption = "写入模组";
                         messageBox.description = $"正在写入模组 {modVo.name},请稍等";
@@ -235,7 +235,7 @@ namespace Ra2Client
                         messageBox.Disable();
                         messageBox.Detach();
                         messageBox.Dispose();
-                    });
+                   // });
 
 
                     var result = new
@@ -272,8 +272,8 @@ namespace Ra2Client
                     var cmpVo = JsonSerializer.Deserialize<ComponentVo>(requestBody);
 
 
-                    _ = Task.Run(async () =>
-                    {
+                    //_ = Task.Run(async () =>
+                    //{
                         var messageBox = new XNAMessage(wm);
                         messageBox.caption = "写入扩展组件";
                         messageBox.description = $"正在写入扩展组件 {cmpVo.name},请稍等";
@@ -282,8 +282,8 @@ namespace Ra2Client
                         messageBox.Disable();
                         messageBox.Detach();
                         messageBox.Dispose();
-                        XNAMessageBox.Show(wm, "完成", "写入完成，请重启客户端生效。");
-                    });
+                        XNAMessageBox.Show(wm, "完成", $"写入组件 {cmpVo.name} 完成，请重启客户端生效。");
+                   // });
 
 
                     var result = new
@@ -735,10 +735,63 @@ namespace Ra2Client
                     return;
                 }
 
-                SevenZip.ExtractWith7Zip(tmpFile, "./", needDel: true);
+                List<string> unloadFiles = new List<string>();
 
+                if (cmpVo.type == 0)
+                {
+                    string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    Directory.CreateDirectory(tempDir);
+
+                    // 先完整解压
+                    SevenZip.ExtractWith7Zip(tmpFile, tempDir, needDel: true);
+
+                    // 找 ini 文件
+                    var iniFile = Directory.GetFiles(tempDir, "*.ini", SearchOption.AllDirectories).FirstOrDefault();
+
+                    if (iniFile != null)
+                    {
+                        string targetDir = Path.Combine("Custom", "INI", cmpVo.id.ToString());
+                        Directory.CreateDirectory(targetDir);
+
+                        string targetFile = Path.Combine(targetDir, Path.GetFileName(iniFile));
+
+                        File.Copy(iniFile, targetFile, overwrite: true);
+
+                        // 记录安装的具体文件
+                        unloadFiles.Add(targetFile);
+                    }
+
+                    // 清理临时目录
+                    Directory.Delete(tempDir, true);
+                }
+                else
+                {
+
+                    var newFiles = SevenZip.GetFile(tmpFile);
+
+                    SevenZip.ExtractWith7Zip(tmpFile, "./", needDel: true);
+
+                    // 只加入文件，不加入文件夹
+                    unloadFiles.AddRange(newFiles);
+                }
+
+                // 写入组件信息
                 var ini = new IniFile(Path.Combine(ProgramConstants.GamePath, "Resources", "component"));
-                ini.SetValue(cmpVo.id,"updateTime",cmpVo.updateTime);
+                ini.SetValue(cmpVo.id, "name", cmpVo.name);
+                ini.SetValue(cmpVo.id, "type", cmpVo.type);
+                ini.SetValue(cmpVo.id, "updateTime", cmpVo.updateTime);
+
+                // 写入 unload（多行）
+                // unloadFiles 可能包含文件或文件夹，所以要过滤掉文件夹
+                var onlyFiles = unloadFiles
+                    .Where(File.Exists)   // 只留下文件路径
+                    .ToList();
+
+                // 拼成逗号分隔字符串
+                string unloadValue = string.Join(",", onlyFiles);
+
+                // 一次写入
+                ini.SetValue(cmpVo.id, "unload", unloadValue);
                 ini.WriteIniFile();
 
                 if (Directory.Exists(Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp")))

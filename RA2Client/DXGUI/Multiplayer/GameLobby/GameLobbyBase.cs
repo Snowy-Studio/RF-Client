@@ -2580,10 +2580,29 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     .SetValue("Report", "SovietOccupiedAttack")
                     .SetValue("OccupantAnim", "UCFLASH")
                     ;
-            
+
 
             if (Name == "SkirmishLobby")
+            {
                 IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
+                var subFolders = Directory.GetDirectories("Custom/INI", "*", SearchOption.TopDirectoryOnly);
+
+                foreach (var folder in subFolders)
+                {
+                    //// 排除某个文件夹
+                    //if (string.Equals(Path.GetFileName(folder), excludeFolderName, StringComparison.OrdinalIgnoreCase))
+                    //    continue;
+
+                    // 拼接 custom_rules_all.ini 的完整路径
+                    string iniFilePath = Path.Combine(folder, "custom_rules_all.ini");
+
+                    // 如果文件存在，就 Consolidate
+                    if (File.Exists(iniFilePath))
+                    {
+                        IniFile.ConsolidateIniFiles(mapIni, new IniFile(iniFilePath));
+                    }
+                }
+            }
 
             if (chkRA2.Checked && mod.Ra2ModePath != string.Empty)
             {
