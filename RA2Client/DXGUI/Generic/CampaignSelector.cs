@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ClientCore;
+using ClientCore.Entity;
 using ClientCore.Settings;
 using ClientGUI;
 using DTAConfig.Entity;
@@ -18,7 +12,15 @@ using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Mission = DTAConfig.Entity.Mission;
+using Updater = ClientCore.Settings.Updater;
 
 namespace Ra2Client.DXGUI.Generic
 {
@@ -129,7 +131,7 @@ namespace Ra2Client.DXGUI.Generic
             _lbxCampaignList.RightClick += LbxCampaignListRightClick;
 
             _modManager = ModManager.GetInstance(WindowManager);
-            _modManager.触发刷新 += ReadMissionList;
+            _modManager.触发刷新 += () => ReadMissionList();
             //modManager.EnabledChanged += CampaignSelector_EnabledChanged;
 
             var btnImport = new XNAClientButton(WindowManager)
@@ -141,7 +143,7 @@ namespace Ra2Client.DXGUI.Generic
 
             var btnDownLoad = new XNAClientButton(WindowManager)
             {
-                Text = "下载房主传输的地图 Mission Packs".L10N("UI:Main:DownloadMissionPacks"),
+                Text = "下载 Mission Packs".L10N("UI:Main:DownloadMissionPacks"),
                 ClientRectangle = new Rectangle(btnImport.Right + 10, 32, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT)
             };
             btnDownLoad.LeftClick += BtnDownLoad_LeftClick;
@@ -382,7 +384,7 @@ namespace Ra2Client.DXGUI.Generic
 
             ReadMissionList();
 
-            UserINISettings.Instance.重新加载地图和任务包 += (_,_) => ReadMissionList();
+            UserINISettings.Instance.重新加载地图和任务包 += (missionPackID, _) => ReadMissionList(missionPackID);
 
             //ReadDrop();
 
@@ -617,9 +619,13 @@ namespace Ra2Client.DXGUI.Generic
             {
                 var missionPackID = _modManager.导入任务包(b1, b2, path);
                 var index = _lbxCampaignList.Items.FindIndex(item => item.Tag as string == missionPackID);
-                if (index > -1) { 
-                    _lbxCampaignList.SelectedIndex = index;
-                    _lbxCampaignList.TopIndex = index;
+                if (index > -1)
+                {
+                    // 计算新的索引，并保证不超过最大值
+                    int newIndex = Math.Min(index + 1, _lbxCampaignList.Items.Count - 1);
+
+                    _lbxCampaignList.SelectedIndex = newIndex;
+                    _lbxCampaignList.TopIndex = newIndex;
                 }
             };
 
@@ -1371,7 +1377,7 @@ namespace Ra2Client.DXGUI.Generic
         {
             foreach (string filePath in _filesToCheck)
             {
-                if (!Updater.IsFileNonexistantOrOriginal(filePath))
+                if (!ClientCore.Settings.Updater.IsFileNonexistantOrOriginal(filePath))
                     return true;
             }
 
@@ -1705,7 +1711,7 @@ namespace Ra2Client.DXGUI.Generic
             _lbxCampaignList.TopIndex = -1;
         }
 
-        public void ReadMissionList()
+        public void ReadMissionList(string missionPackID = "")
         {
             Mod.ReLoad();
             MissionPack.ReLoad();
@@ -1770,6 +1776,19 @@ namespace Ra2Client.DXGUI.Generic
             ScreenMission();
 
             _lbxCampaignList.SelectedIndex = -1;
+
+            if (missionPackID != string.Empty)
+            {
+                var index = _lbxCampaignList.Items.FindIndex(item => item.Tag as string == missionPackID);
+                if (index > -1)
+                {
+                    // 计算新的索引，并保证不超过最大值
+                    int newIndex = Math.Min(index + 1, _lbxCampaignList.Items.Count - 1);
+
+                    _lbxCampaignList.SelectedIndex = newIndex;
+                    _lbxCampaignList.TopIndex = newIndex;
+                }
+            }
         }
 
         /// <summary>

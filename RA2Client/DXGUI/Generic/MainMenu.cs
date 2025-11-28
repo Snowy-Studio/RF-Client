@@ -639,7 +639,7 @@ namespace Ra2Client.DXGUI.Generic
 
             Task.Run(NetWorkINISettings.Initialize);
 
-            SetButtonHotkeys(true);
+           // SetButtonHotkeys(true);
             SetToolTip();
 
             UseDownloadedData();
@@ -1025,35 +1025,35 @@ namespace Ra2Client.DXGUI.Generic
 
         private void SetButtonHotkeys(bool enableHotkeys)
         {
-            if (!Initialized)
-                return;
+            //if (!Initialized)
+            //    return;
 
-            if (enableHotkeys)
-            {
-                btnNewCampaign.HotKey = Keys.C;
-                btnLoadGame.HotKey = Keys.L;
-                btnSkirmish.HotKey = Keys.S;
-                btnCnCNet.HotKey = Keys.M;
-                btnLan.HotKey = Keys.N;
-                btnOptions.HotKey = Keys.O;
-                btnMapEditor.HotKey = Keys.E;
-                btnStatistics.HotKey = Keys.T;
-                btnCredits.HotKey = Keys.R;
-                btnExtras.HotKey = Keys.X;
-            }
-            else
-            {
-                btnNewCampaign.HotKey = Keys.None;
-                btnLoadGame.HotKey = Keys.None;
-                btnSkirmish.HotKey = Keys.None;
-                btnCnCNet.HotKey = Keys.None;
-                btnLan.HotKey = Keys.None;
-                btnOptions.HotKey = Keys.None;
-                btnMapEditor.HotKey = Keys.None;
-                btnStatistics.HotKey = Keys.None;
-                btnCredits.HotKey = Keys.None;
-                btnExtras.HotKey = Keys.None;
-            }
+            //if (enableHotkeys)
+            //{
+            //    btnNewCampaign.HotKey = Keys.C;
+            //    btnLoadGame.HotKey = Keys.L;
+            //    btnSkirmish.HotKey = Keys.S;
+            //    btnCnCNet.HotKey = Keys.M;
+            //    btnLan.HotKey = Keys.N;
+            //    btnOptions.HotKey = Keys.O;
+            //    btnMapEditor.HotKey = Keys.E;
+            //    btnStatistics.HotKey = Keys.T;
+            //    btnCredits.HotKey = Keys.R;
+            //    btnExtras.HotKey = Keys.X;
+            //}
+            //else
+            //{
+            //    btnNewCampaign.HotKey = Keys.None;
+            //    btnLoadGame.HotKey = Keys.None;
+            //    btnSkirmish.HotKey = Keys.None;
+            //    btnCnCNet.HotKey = Keys.None;
+            //    btnLan.HotKey = Keys.None;
+            //    btnOptions.HotKey = Keys.None;
+            //    btnMapEditor.HotKey = Keys.None;
+            //    btnStatistics.HotKey = Keys.None;
+            //    btnCredits.HotKey = Keys.None;
+            //    btnExtras.HotKey = Keys.None;
+            //}
         }
 
 
@@ -1762,7 +1762,7 @@ namespace Ra2Client.DXGUI.Generic
            
 
             innerPanel.Show(innerPanel.CampaignSelector);
-
+         //   UpdateInProgress = true;
             if (UserINISettings.Instance.StopMusicOnMenu)
                 MusicOff();
 

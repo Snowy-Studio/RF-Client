@@ -631,10 +631,11 @@ namespace Ra2Client
                    TX = missionPackVo.tx
                 };
 
+                var r = "";
                
                 if(missionPackVo.file.StartsWith("u"))
                     // 导入任务包
-                    ModManager.GetInstance(wm).导入任务包(
+                   r = ModManager.GetInstance(wm).导入任务包(
                         true,
                         true,
                         Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id), 
@@ -644,7 +645,7 @@ namespace Ra2Client
                 if(Directory.Exists(Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id)))
                     Directory.Delete(Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id),true);
 
-                UserINISettings.Instance.重新加载地图和任务包?.Invoke(null,null);
+                UserINISettings.Instance.重新加载地图和任务包?.Invoke(r,null);
             }
             catch (Exception ex)
             {
