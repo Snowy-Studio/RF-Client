@@ -26,8 +26,6 @@ namespace Ra2Client.DXGUI.Generic
 {
     public class CampaignSelector(WindowManager windowManager, DiscordHandler discordHandler) : INItializableXNAWindow(windowManager)
     {
-        private XNAClientCheckBox chkTerrain; // 地形扩展选项——dfyh
-
         private const int DefaultWidth = 650;
         private const int DefaultHeight = 600;
 
@@ -393,6 +391,7 @@ namespace Ra2Client.DXGUI.Generic
             chkAres.LeftClick += ChkAres_LeftClick;
             chkPhobos = FindChild<GameLobbyCheckBox>("chkPhobos");
             chkPhobos.CheckedChanged += ChkPhobos_CheckedChanged;
+            chkTerrain = FindChild<GameLobbyCheckBox>("chkTerrain");
 
             lblModify = new XNALabel(WindowManager);
             lblModify.Name = nameof(lblModify);
@@ -426,14 +425,6 @@ namespace Ra2Client.DXGUI.Generic
             _cmbGameSpeed = FindChild<GameLobbyDropDown>("cmbGameSpeed");
 
             _cmbCredits = FindChild<GameLobbyDropDown>("cmbCredits");
-
-            chkTerrain = new XNAClientCheckBox(WindowManager);  // 地形扩展选项——dfyh
-            chkTerrain.Text = "Expanded Terrain".L10N("UI:Main:chkTerrain");
-            chkTerrain.X = FindChild<XNAClientCheckBox>("chkSatellite").X;
-            chkTerrain.Y = FindChild<XNAClientCheckBox>("chkCorr").Y + 25;
-           
-            chkTerrain.SetToolTipText("Enable TX extended terrain. If you encounter airwalls or crashes, try disabling this option and retrying. Some campaign maps require this option to be enabled.".L10N("UI:Main:TPchkTerrain"));
-            _gameOptionsPanel.AddChild(chkTerrain);  // 添加地形扩展选项到游戏选项面板——dfyh
 
             _lbxInforBox.ClientRectangle = new Rectangle(_gameOptionsPanel.X, _mapPreviewBox.Y + 25, 345, _mapPreviewBox.Height - 185);
             _lbxInforBox.FontIndex = 1;
@@ -1090,6 +1081,7 @@ namespace Ra2Client.DXGUI.Generic
         private DateTime lastActionTime = DateTime.MinValue;
         private GameLobbyCheckBox chkAres;
         private GameLobbyCheckBox chkPhobos;
+        private GameLobbyCheckBox chkTerrain;
         private XNALabel _lblGame;
         private XNALabel lblModify;
 
