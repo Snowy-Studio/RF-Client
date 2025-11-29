@@ -1131,7 +1131,7 @@ namespace Ra2Client.DXGUI.Generic
             {
                 var ini = new IniFile(ProgramConstants.GamePath + "Resources/FA2SP_HDM_Edition/FinalAlert.ini", Encoding.GetEncoding("GBK"));
                 ini.SetStringValue("TS", "Exe", Path.Combine(ProgramConstants.游戏目录, "ra2md.mix").Replace('/', '\\')); //地编路径必须是\，这里写两个是因为有一个是转义符
-                ini.SetStringValue("FinalSun", "Language", "English");
+                ini.SetStringValue("FinalSun", "Language", "Chinese");
                 ini.SetStringValue("FinalSun", "FileSearchLikeTS", "yes");
                 ini.WriteIniFile();
                 Logger.Log("写入地编游戏路径");
