@@ -1762,7 +1762,9 @@ namespace Ra2Client.DXGUI.Generic
            
 
             innerPanel.Show(innerPanel.CampaignSelector);
-         //   UpdateInProgress = true;
+
+            // UpdateInProgress = true;
+
             if (UserINISettings.Instance.StopMusicOnMenu)
                 MusicOff();
 

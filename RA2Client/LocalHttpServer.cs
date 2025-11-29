@@ -619,28 +619,28 @@ namespace Ra2Client
 
                 var missionPack = new MissionPack()
                 {
-                     ID = missionPackVo.id,
-                     Name = missionPackVo.name,
+                    ID = missionPackVo.id,
+                    Name = missionPackVo.name,
                     LongDescription = missionPackVo.description,
                     UpdateTime = missionPackVo.updateTime,
                     Author = missionPackVo.author,
                     Other = false,
                     Difficulty = difficultyText,
-                   Ares = missionPackVo.ares,
-                   Phobos = missionPackVo.phobos,
-                   TX = missionPackVo.tx
+                    Ares = missionPackVo.ares,
+                    Phobos = missionPackVo.phobos,
+                    TX = missionPackVo.tx
                 };
 
                 var r = "";
                
                 if(missionPackVo.file.StartsWith("u"))
-                    // 导入任务包
+                   // 导入任务包
                    r = ModManager.GetInstance(wm).导入任务包(
-                        true,
-                        true,
-                        Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id), 
-                        m: missionPack
-                    );
+                       true,
+                       true,
+                       Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id), 
+                       m: missionPack
+                   );
 
                 if(Directory.Exists(Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id)))
                     Directory.Delete(Path.Combine(ProgramConstants.GamePath, "tmp", missionPackVo.id),true);

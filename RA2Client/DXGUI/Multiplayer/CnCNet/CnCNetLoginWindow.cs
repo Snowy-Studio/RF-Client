@@ -80,12 +80,10 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             ddRegion = new XNADropDown(WindowManager);
             ddRegion.Name = "ddRegion";
             ddRegion.ClientRectangle = new Rectangle(100, lblPlayerName.Bottom + 10, 188, 21);
-            ddRegion.AddItem("Chinese Mainland Zone 1".L10N("UI:Main:RegionChineseMainlandZone1"));
-            ddRegion.AddItem("Chinese Mainland Zone 2".L10N("UI:Main:RegionChineseMainlandZone2"));
-            ddRegion.AddItem("Chinese Mainland Zone 3".L10N("UI:Main:RegionChineseMainlandZone3"));
-            ddRegion.AddItem("Asia Pacific Zone 1".L10N("UI:Main:RegionAsiaPacificZone1"));
-            ddRegion.AddItem("Europe Zone 1".L10N("UI:Main:RegionEuropeZone1"));
-            ddRegion.AddItem("North America Zone 1".L10N("UI:Main:RegionNorthAmericaZone1"));
+            ddRegion.AddItem("Reunion Availability Zone 1".L10N("UI:Main:AvailabilityZone1"));
+            ddRegion.AddItem("Reunion Availability Zone 2".L10N("UI:Main:AvailabilityZone2"));
+            ddRegion.AddItem("Reunion Availability Zone 3".L10N("UI:Main:AvailabilityZone3"));
+            ddRegion.AddItem("Reunion Availability Zone 4".L10N("UI:Main:AvailabilityZone4"));
             ddRegion.SelectedIndex = 0;
 
             lblRegion = new XNALabel(WindowManager);
@@ -174,17 +172,13 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
             switch (index)
             {
                 case 0: 
-                    return "Chinese Mainland Zone 1 Introduction (XE6):\n\nRegion: Zhejiang, China / Hubei, China\nApplicable region: Chinese Mainland\n\nLine: China Telecom (Single Line)\nNetwork support: IPv4+IPv6\nCloud service provider: Rainyun".L10N("UI:Main:RegionDescCN1");
+                    return "Availability Zone 1 Overview (China):\r\n\r\nRegion: Beijing, China / Guangdong, China\r\nAverage latency: 33ms (Delayed test location: China)\r\n\r\nLine: China BGP (Telecom, Unicom, Mobile)\r\nNetwork Support: IPv4+IPv6\r\nCloud Service Provider: Tencent Cloud".L10N("UI:Main:RegionDescCN");
                 case 1: 
-                    return "Chinese Mainland Zone 2 Introduction (XE7):\n\nRegion: Beijing, China / Guangdong, China\nApplicable region: Chinese Mainland\n\nLine: China BGP (Telecom, Unicom, Mobile)\nNetwork support: IPv4+IPv6\nCloud service provider: TencentCloud".L10N("UI:Main:RegionDescCN2");
+                    return "Availability Zone 2 Overview (Japan):\r\n\r\nRegion: Tokyo, Japan\r\nAverage latency: 102ms (Delayed test location: China)\r\n\r\nLine: Cogent+GSL+EIE+BBIX+JPIX\r\nNetwork Support: IPv4\r\nCloud Service Provider: Yunyoo".L10N("UI:Main:RegionDescJP");
                 case 2: 
-                    return "Chinese Mainland Zone 3 Introduction (XF2):\n\nRegion: Jiangsu, China\nApplicable region: Chinese Mainland\n\nLine: China BGP (Telecom, Unicom, Mobile)\nNetwork support: IPv4\nCloud service provider: 4299Cloud".L10N("UI:Main:RegionDescCN3");
+                    return "Availability Zone 3 Overview (United Kingdom):\n\nRegion: London, United Kingdom / Coventry, United Kingdom\nAverage latency: 235ms (Delayed test location: China)\n\nLine: GTT+NTT+PCCW+Arelion+RETN\nNetwork support: IPv4+IPv6\nCloud service provider: Yunyoo".L10N("UI:Main:RegionDescUK");
                 case 3: 
-                    return "Asia Pacific Zone 1 Introduction (XG4):\n\nRegion: Tokyo, Japan\nApplicable regions: Asia/Oceania\n\nLine: Cogent+GSL+EIE+BBIX+JPIX+IIJ+JPNAP\nNetwork support: IPv4+IPv6\nCloud service provider: Yunyoo".L10N("UI:Main:RegionDescAP1");
-                case 4: 
-                    return "Europe Zone 1 Introduction (XG5):\n\nRegion: London, United Kingdom / Coventry, United Kingdom\nApplicable regions: Europe/Africa\n\nLine: GTT+NTT+PCCW+Arelion+RETN\nNetwork support: IPv4+IPv6\nCloud service provider: Yunyoo".L10N("UI:Main:RegionDescEU1");
-                case 5: 
-                    return "North America Zone 1 Introduction (XF3):\n\nRegion: Los Angeles, USA\nApplicable regions: North America/South America\n\nLine: GSL+CN2GIA+9929+10099+CMIN2\nNetwork support: IPv4+IPv6\nCloud service provider: DMIT".L10N("UI:Main:RegionDescNA1");
+                    return "Availability Zone 4 Overview (United States):\n\nRegion: Los Angeles, USA\nAverage latency: 160ms (Delayed test location: China)\n\nLine: GSL+CN2GIA+9929+10099+CMIN2\nNetwork support: IPv4+IPv6\nCloud service provider: DMIT".L10N("UI:Main:RegionDescUS");
                 default: 
                     return "Please select a server region to view the region introduction.".L10N("UI:Main:RegionDescDefault");
             }
@@ -227,26 +221,20 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
                 return;
             }
 
-            string selectedRegion = "Chinese Mainland Zone 1";
+            string selectedRegion = "Reunion Availability Zone 1";
             switch (ddRegion.SelectedIndex)
             {
                 case 0: 
-                    selectedRegion = "Chinese Mainland Zone 1";
+                    selectedRegion = "Reunion Availability Zone 1";
                     break;
                 case 1: 
-                    selectedRegion = "Chinese Mainland Zone 2";
+                    selectedRegion = "Reunion Availability Zone 2";
                     break;
                 case 2: 
-                    selectedRegion = "Chinese Mainland Zone 3";
+                    selectedRegion = "Reunion Availability Zone 3";
                     break;
                 case 3: 
-                    selectedRegion = "Asia Pacific Zone 1";
-                    break;
-                case 4: 
-                    selectedRegion = "Europe Zone 1";
-                    break;
-                case 5: 
-                    selectedRegion = "North America Zone 1";
+                    selectedRegion = "Reunion Availability Zone 4";
                     break;
             }
             Connection.SelectedRegion = selectedRegion;
