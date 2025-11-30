@@ -523,7 +523,7 @@ namespace Ra2Client.DXGUI.Generic
             lblPlayerCount.Name = "lblPlayerCount";
             lblPlayerCount.Text = "联机大厅玩家数: N/A";
             lblPlayerCount.ClientRectangle = new Rectangle(1000, 9, 0, 0);
-
+            lblPlayerCount.Visible = false;
 
             lblannouncement = new XNATextBlock(WindowManager);
             lblannouncement.Name = nameof(lblannouncement);
