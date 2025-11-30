@@ -1585,6 +1585,7 @@ namespace Ra2Client.DXGUI.Generic
                         var difficultyIni = new Rampastring.Tools.IniFile(
                     SafePath.CombineFilePath(ProgramConstants.GamePath, DifficultyIniPaths[_trbDifficultySelector.Value]));
                         IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
+
                         IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
 
                         var subFolders = Directory.GetDirectories("Custom/INI", "*", SearchOption.TopDirectoryOnly);

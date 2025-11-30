@@ -2594,6 +2594,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     //    continue;
 
                     // 拼接 custom_rules_all.ini 的完整路径
+                    var cmpINI = new IniFile("Resources\\component");
+                    if (cmpINI.GetValue(folder, "enable", 1) == 0) continue;
                     string iniFilePath = Path.Combine(folder, "custom_rules_all.ini");
 
                     // 如果文件存在，就 Consolidate

@@ -113,10 +113,18 @@ namespace DTAConfig.OptionPanels
                 btnSearch.LeftClick += ComboBoxtypes_SelectedIndexChanged;
                 AddChild(btnSearch);
 
+                var btnDown = new XNAClientButton(WindowManager)
+                {
+                    Text = "下载更多",
+                    ClientRectangle = new Rectangle(btnSearch.Right + 30, labeltypes.Y - 2, UIDesignConstants.BUTTON_WIDTH_75, UIDesignConstants.BUTTON_HEIGHT)
+                };
+                btnDown.LeftClick += (_,_) => { FunExtensions.OpenUrl($"https://creator.yra2.com/workshop/component/list?port={UserINISettings.Instance.startPort}"); };
+                AddChild(btnDown);
+
                 var lbldesc = new XNALabel(WindowManager)
                 {
                     Text = "右击可启用/停用",
-                    ClientRectangle = new Rectangle(btnSearch.Right + 10, labeltypes.Y, UIDesignConstants.BUTTON_WIDTH_75, UIDesignConstants.BUTTON_HEIGHT),
+                    ClientRectangle = new Rectangle(btnDown.Right + 10, labeltypes.Y+2, UIDesignConstants.BUTTON_WIDTH_75, UIDesignConstants.BUTTON_HEIGHT),
                     TextColor = Color.White
                 };
                 AddChild(lbldesc);
