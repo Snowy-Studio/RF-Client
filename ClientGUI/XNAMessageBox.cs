@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using Localization;
 using Microsoft.Xna.Framework;
@@ -14,7 +14,7 @@ namespace ClientGUI
     public class XNAMessageBox : XNAWindow
     {
 
-        private string TruncateDescription(string description, int maxLength)
+        private static string TruncateDescription(string description, int maxLength)
         {
             if (description.Length > maxLength)
             {
@@ -35,7 +35,7 @@ namespace ClientGUI
             : base(windowManager)
         {
             this.caption = caption;
-            this.description = TruncateDescription(description, 600);
+            this.description = TruncateDescription(description, 400);
             this.messageBoxButtons = messageBoxButtons;
             
             if (isBlocking)
@@ -255,13 +255,15 @@ namespace ClientGUI
         /// <param name="description">The description of the message box.</param>
         public static void Show(WindowManager windowManager, string caption, string description,bool isBlocking = false)
         {
+
+            var d = TruncateDescription(description, 400);
             var panel = new DarkeningPanel(windowManager);
             panel.Focused = true;
             windowManager.AddAndInitializeControl(panel);
 
             var msgBox = new XNAMessageBox(windowManager,
                 Renderer.GetSafeString(caption, 1),
-                Renderer.GetSafeString(description??"", 0),
+                Renderer.GetSafeString(d??"", 0),
                 XNAMessageBoxButtons.OK);
 
             panel.AddChild(msgBox);

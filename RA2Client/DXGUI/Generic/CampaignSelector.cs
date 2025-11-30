@@ -14,10 +14,12 @@ using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Mission = DTAConfig.Entity.Mission;
 using Updater = ClientCore.Settings.Updater;
@@ -34,10 +36,102 @@ namespace Ra2Client.DXGUI.Generic
         private static readonly string[] DifficultyIniPaths =
         {
             "INI/MapCode/Difficulty Easy.ini",
-            "INI/MapCode/Difficulty Medium.ini", 
+            "INI/MapCode/Difficulty Medium.ini",
             "INI/MapCode/Difficulty Hard.ini"
         };
         private readonly DiscordHandler _discordHandler = discordHandler;
+
+        private readonly Dictionary<string, string> replaceRA2Dict = new()
+        {
+            { "E1", "E2" },               // 美国大兵 <=> 动员兵
+            { "ADOG", "DOG" },            // 警犬（盟） <=> 警犬（苏）
+            { "ENGINEER", "SENGINEER" },  // 工程师（盟） <=> 工程师（苏）
+            { "HTNK", "MTNK"},            // 灰熊坦克 <=> 犀牛坦克
+            {"AMCV","SMCV" },             // 基地车（盟） <=> 基地车（苏）
+            {"V3","SREF" },               // V3火箭车 <=> 光棱坦克
+            {"HTK","FV" },                // 煤球车 <=> 多功能（FV）
+            {"SAPC","LCRF" },             // 运输船（盟） <=> 运输船（苏）
+            {"DEST","SUB" },              // 驱逐舰 <=> 潜艇
+            {"DLPH","SQD"},               // 海豚 <=> 巨型鱿鱼
+            {"HYD","AEGIS"},              // 海螺（盟） <=> 宙斯盾巡洋舰
+            {"DRED","CARRIER"},           // 无畏级战舰 <=> 航空母舰
+            {"CMIN","HARV"},              // 盟军矿车 <=> 苏军矿车
+            {"CMON","HORV"},              // 盟军矿车（倒矿） <=> 苏军矿车（倒矿）
+            {"MGTK","APOC"},              // 幻影坦克 <=> 天启坦克
+
+            // 建筑对应
+            { "GAPOWR", "NAPOWR" },       // 发电厂（盟） <=> 发电厂（苏）
+            { "NAREFN", "GAREFN" },       // 精炼厂（苏） <=> 精炼厂（盟）
+            { "GAPILE", "NAHAND" },       // 兵营（盟） <=> 兵营（苏）
+            { "NAWALL", "GAWALL" },       // 围墙（苏） <=> 围墙（盟）
+            { "GAWEAP","NAWEAP"},         // 战车工厂（盟） <=> 战车工厂（苏）
+            { "GAAIRC", "NARADR"},        // 机场（盟） <=> 苏军雷达（苏）
+            { "AMRADR", "NARADR"},        // 霉国机场 <=> 苏军雷达
+            {"GADEPT","NADEPT" },         // 维修厂（盟） <=> 维修厂（苏）
+            {"NAYARD","GAYARD" },         // 造船厂（苏） <=> 造船厂（盟）
+            {"GATECH","NATECH" },         // 高科（盟） <=> 高科（苏）
+            {"NALASR","GAPILL" },         // 哨戒炮（苏） <=> 地堡（盟）
+            {"NASAM","NAFLAK"},           // 爱国者 <=> 防空炮
+            {"TESLA","ATESLA"},           // 磁暴线圈（苏） <=> 光棱塔（盟）
+            {"GACNST","NACNST"},          // 建造厂（盟） <=> 建造厂（苏）
+            {"NAIRON","GACSPH"},          // 铁幕装置 <=> 超时空（盟）
+            {"NAMISL","GAWEAT"},          // 核弹发射井 <=> 天气控制器
+            {"NAPSIS","GAGAP"},           // 心灵探测器（苏） <=> 裂缝生成器（盟）
+        };
+
+        private readonly Dictionary<string, string> replaceYRDict = new()
+        {
+            { "E1", "E2" },               // 美国大兵 <=> 动员兵
+            { "ADOG", "DOG" },            // 警犬（盟） <=> 警犬（苏）
+            { "ENGINEER", "SENGINEER" },  // 工程师（盟） <=> 工程师（苏）
+            { "HTNK", "MTNK"},            // 灰熊坦克 <=> 犀牛坦克
+            {"AMCV","SMCV" },             // 基地车（盟） <=> 基地车（苏）
+            {"V3","SREF" },               // V3火箭车 <=> 光棱坦克
+
+            {"HTK","FV" },                // 煤球车 <=> 多功能（FV）
+            {"SAPC","LCRF" },             // 运输船（盟） <=> 运输船（苏）
+            {"DEST","SUB" },              // 驱逐舰 <=> 潜艇
+            {"DLPH","SQD"},               // 海豚 <=> 巨型鱿鱼
+            {"HYD","AEGIS"},              // 海螺（盟） <=> 宙斯盾巡洋舰
+            {"DRED","CARRIER"},           // 无畏级战舰 <=> 航空母舰
+            {"CMIN","HARV"},              // 盟军矿车 <=> 苏军矿车
+            {"CMON","HORV"},              // 盟军矿车（倒矿） <=> 苏军矿车（倒矿）
+            {"MGTK","APOC"},              // 幻影坦克 <=> 天启坦克
+
+            {"BORIS","TANY" },            // 鲍里斯 <=> 谭雅
+            {"GGI","FLAKT" },            // 重装步兵 <=> 煤球兵
+            {"APOC","BFRT" },              //天启坦克 <=> 要塞
+
+            // 建筑对应
+            { "GAPOWR", "NAPOWR" },       // 发电厂（盟） <=> 发电厂（苏）
+            { "NAREFN", "GAREFN" },       // 精炼厂（苏） <=> 精炼厂（盟）
+            { "GAPILE", "NAHAND" },       // 兵营（盟） <=> 兵营（苏）
+            { "NAWALL", "GAWALL" },       // 围墙（苏） <=> 围墙（盟）
+            { "GAWEAP","NAWEAP"},         // 战车工厂（盟） <=> 战车工厂（苏）
+            { "GAAIRC", "NARADR"},        // 机场（盟） <=> 苏军雷达（苏）
+            { "AMRADR", "NARADR"},        // 霉国机场 <=> 苏军雷达
+            {"GADEPT","NADEPT" },         // 维修厂（盟） <=> 维修厂（苏）
+            {"NAYARD","GAYARD" },         // 造船厂（苏） <=> 造船厂（盟）
+            {"GATECH","NATECH" },         // 高科（盟） <=> 高科（苏）
+            {"NALASR","GAPILL" },         // 哨戒炮（苏） <=> 地堡（盟）
+            {"NASAM","NAFLAK"},           // 爱国者 <=> 防空炮
+            {"TESLA","ATESLA"},           // 磁暴线圈（苏） <=> 光棱塔（盟）
+            {"GACNST","NACNST"},          // 建造厂（盟） <=> 建造厂（苏）
+            {"NAIRON","GACSPH"},          // 铁幕装置 <=> 超时空（盟）
+            {"NAMISL","GAWEAT"},          // 核弹发射井 <=> 天气控制器
+            //{"NAPSIS","GAGAP"},           // 心灵探测器（苏） <=> 裂缝生成器（盟）
+
+            {"GAOREP","NAINDP" }            // 矿石精炼器 <=> 工业工厂
+        };
+
+        //private readonly Dictionary<string, string> replaceYRDict = new()
+        //{
+        //    { "E1", "E2" },
+        //    { "ADOG", "DOG" },
+        //    { "GGI", "FLAKT" },
+        //    { "ENGINEER", "SENGINEER" },
+        //    { "TANY","BORIS"}
+        //};
 
         private readonly List<Mission> _missions = [];
         private readonly List<Mission> _screenMissions = [];
@@ -107,7 +201,7 @@ namespace Ra2Client.DXGUI.Generic
             if (!Directory.Exists(Path.Combine(ProgramConstants.存档目录)))
                 Directory.CreateDirectory(Path.Combine(ProgramConstants.存档目录));
 
-                BackgroundTexture = AssetLoader.LoadTexture("missionselectorbg.png");
+            BackgroundTexture = AssetLoader.LoadTexture("missionselectorbg.png");
             ClientRectangle = new Rectangle(0, 0, DefaultWidth, DefaultHeight);
             BorderColor = UISettings.ActiveSettings.PanelBorderColor;
 
@@ -123,7 +217,7 @@ namespace Ra2Client.DXGUI.Generic
             _lbxCampaignList.Name = "lbCampaignList";
             _lbxCampaignList.BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 2, 2);
             _lbxCampaignList.PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
-            _lbxCampaignList.ClientRectangle = new Rectangle(12, lblSelectCampaign.Bottom +200, 300, 450);
+            _lbxCampaignList.ClientRectangle = new Rectangle(12, lblSelectCampaign.Bottom + 200, 300, 450);
             _lbxCampaignList.LineHeight = 20;
             _lbxCampaignList.SelectedIndexChanged += LbxCampaignListSelectedIndexChanged;
             _lbxCampaignList.RightClick += LbxCampaignListRightClick;
@@ -136,7 +230,7 @@ namespace Ra2Client.DXGUI.Generic
             {
                 Text = "Import Mission Packs".L10N("UI:Main:ImportMissionPacks"),
                 ClientRectangle = new Rectangle(10, 32, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT)
-            }; 
+            };
             btnImport.LeftClick += BtnImport_LeftClick;
 
             var btnDownLoad = new XNAClientButton(WindowManager)
@@ -168,7 +262,7 @@ namespace Ra2Client.DXGUI.Generic
             _tbMissionPack.ClientRectangle = new Rectangle(_lblScreen.X, _ddMissionPack.Y + _ddMissionPack.Height + 5, _lbxCampaignList.Width - 100, _ddDifficulty.Height);
 
             var btnSearch = new XNAClientButton(WindowManager);
-            btnSearch.ClientRectangle = new Rectangle(_tbMissionPack.Right + 10, _tbMissionPack.Y + 2, UIDesignConstants.BUTTON_WIDTH_92,UIDesignConstants.BUTTON_HEIGHT);
+            btnSearch.ClientRectangle = new Rectangle(_tbMissionPack.Right + 10, _tbMissionPack.Y + 2, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
             btnSearch.Text = "搜索";
 
             var lblMissionDescriptionHeader = new XNALabel(WindowManager);
@@ -192,7 +286,7 @@ namespace Ra2Client.DXGUI.Generic
             _tbMissionDescriptionList.BackgroundTexture = AssetLoader.CreateTexture(AssetLoader.GetColorFromString(ClientConfiguration.Instance.AltUIBackgroundColor),
                 _tbMissionDescriptionList.Width, _tbMissionDescriptionList.Height);
 
-         
+
             var lblDifficultyLevel = new XNALabel(WindowManager);
             lblDifficultyLevel.Name = "lblDifficultyLevel";
             lblDifficultyLevel.Text = "DIFFICULTY LEVEL".L10N("UI:Main:DifficultyLevel");
@@ -214,7 +308,7 @@ namespace Ra2Client.DXGUI.Generic
             _trbDifficultySelector.ButtonTexture = AssetLoader.LoadTextureUncached(
                 "trackbarButton_difficulty.png");
 
-         
+
 
             _campaignMenu = new XNAContextMenu(WindowManager);
             _campaignMenu.Name = nameof(_campaignMenu);
@@ -393,6 +487,9 @@ namespace Ra2Client.DXGUI.Generic
             chkPhobos.CheckedChanged += ChkPhobos_CheckedChanged;
             chkTerrain = FindChild<GameLobbyCheckBox>("chkTerrain");
 
+
+
+
             lblModify = new XNALabel(WindowManager);
             lblModify.Name = nameof(lblModify);
             lblModify.Text = "Note: Changes may not take effect, and some options may cause campaign issues!!!\r\nYou are responsible for any campaign problems caused after enabling this.".L10N("UI:Main:TurnOnCheat");
@@ -406,7 +503,8 @@ namespace Ra2Client.DXGUI.Generic
                 ClientRectangle = new Rectangle(lblModify.X, _tbMissionDescriptionList.Y + 40, 0, 0),
             };
 
-            _cmbGame = new GameLobbyDropDown(WindowManager) {
+            _cmbGame = new GameLobbyDropDown(WindowManager)
+            {
                 ClientRectangle = new Rectangle(_lblGame.Right + 80, _lblGame.Y - 2, 250, 23)
             };
             // lbCampaignList.SelectedIndex = 1;
@@ -459,7 +557,7 @@ namespace Ra2Client.DXGUI.Generic
             _ddSide.ClickSoundEffect = _cmbCredits.ClickSoundEffect;
             _ddMissionPack.ClickSoundEffect = _cmbCredits.ClickSoundEffect;
 
-            ChkAres_CheckedChanged(null,null);
+            ChkAres_CheckedChanged(null, null);
             ChkPhobos_CheckedChanged(null, null);
         }
 
@@ -475,9 +573,10 @@ namespace Ra2Client.DXGUI.Generic
 
         private void ChkAres_CheckedChanged(object sender, EventArgs e)
         {
-            
 
-            CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk => {
+
+            CheckBoxes.FindAll(chk => chk.Ares == true).ForEach(chk =>
+            {
                 chk.AllowChecking = chkAres.Checked;
                 if (!chk.AllowChecking)
                     chk.Checked = chk.defaultValue;
@@ -491,7 +590,8 @@ namespace Ra2Client.DXGUI.Generic
 
         private void ChkPhobos_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBoxes.FindAll(chk => chk.Phobos == true).ForEach(chk => {
+            CheckBoxes.FindAll(chk => chk.Phobos == true).ForEach(chk =>
+            {
                 chk.AllowChecking = chkPhobos.Checked;
                 if (!chk.AllowChecking)
                     chk.Checked = chk.defaultValue;
@@ -585,7 +685,7 @@ namespace Ra2Client.DXGUI.Generic
                 {
                     Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     XNAMessageBox.Show(WindowManager, "Error".L10N("UI:Main:Error"), ex.ToString());
                 }
@@ -685,7 +785,7 @@ namespace Ra2Client.DXGUI.Generic
                      ini.SetValue(missionName, "Mark", _scoreLevel);
                      ini.WriteIniFile();
 
-                    _ = updateMark(missionName, missionPack);
+                     _ = updateMark(missionName, missionPack);
                  });
 
             }
@@ -695,13 +795,14 @@ namespace Ra2Client.DXGUI.Generic
         {
             string player = iniFile.GetStringValue("Basic", "Player", string.Empty);
 
-            if (!string.IsNullOrEmpty(player)) {
+            if (!string.IsNullOrEmpty(player))
+            {
                 iniFile.SetIntValue(player, "Credits", money);
             }
 
         }
 
-        
+
         private void CmbGame_SelectedChanged(object sender, EventArgs e)
         {
             if (_cmbGame.SelectedItem == null || _cmbGame.SelectedItem == null)
@@ -870,14 +971,14 @@ namespace Ra2Client.DXGUI.Generic
                 {
                     campaignSettingsIni.SetValue("GameOptions", cb.Name ?? nameof(cb), cb.Checked.ToString());
                 }
-             
+
                 campaignSettingsIni.WriteIniFile();
-        }
+            }
             catch (Exception ex)
             {
                 Logger.Log("Saving campaign settings failed! Reason: " + ex.Message);
             }
-}
+        }
 
         /// <summary>
         /// 载入上次保存的设置
@@ -926,7 +1027,7 @@ namespace Ra2Client.DXGUI.Generic
                 {
                     _trbDifficultySelector.Value = DifficultySelector;
                 }
-            
+
             }
             //if (ClientConfiguration.Instance.SaveSkirmishGameOptions)
             //{
@@ -962,7 +1063,7 @@ namespace Ra2Client.DXGUI.Generic
             _modManager.DDModAI.SelectedIndex = -1;
             _modManager.删除任务包(missionPack);
 
-            
+
         }
 
         /// <summary>
@@ -987,7 +1088,7 @@ namespace Ra2Client.DXGUI.Generic
 
         }
 
-        private Task updateMark(string name,string missionPack)
+        private Task updateMark(string name, string missionPack)
         {
             //显示远程总分数
             try
@@ -1035,7 +1136,7 @@ namespace Ra2Client.DXGUI.Generic
             }
         }
 
-        private async Task UploadScore(string strName,string missionPack,string brief, int strScore)
+        private async Task UploadScore(string strName, string missionPack, string brief, int strScore)
         {
 
             var score = new ClientCore.Entity.Score()
@@ -1188,39 +1289,39 @@ namespace Ra2Client.DXGUI.Generic
                 if ((_cmbGame.SelectedItem?.Tag as Mod)?.ID != oldModID)
                     CmbGame_SelectedChanged(null, null);
 
-                    _ = Task.Run(async () =>
+                _ = Task.Run(async () =>
+            {
+                // 如果地图文件存在
+                _gameOptionsPanel.Visible = File.Exists(Path.Combine(ProgramConstants.GamePath, mission.Path, mission.Scenario));
+
+                // lblModify.Visible = _gameOptionsPanel.Visible;
+
+
+                // 重新加载Mod选择器
+
+                _btnLaunch.AllowClick = true;
+
+
+
+                if (!string.IsNullOrEmpty(mission.Scenario))
                 {
-                    // 如果地图文件存在
-                    _gameOptionsPanel.Visible = File.Exists(Path.Combine(ProgramConstants.GamePath, mission.Path, mission.Scenario));
+                    加载预览图(mission);
+                }
 
-                    // lblModify.Visible = _gameOptionsPanel.Visible;
-                    
-
-                    // 重新加载Mod选择器
-
-                    _btnLaunch.AllowClick = true;
-
-                    
-
-                    if (!string.IsNullOrEmpty(mission.Scenario))
+                if (!mission.Other)
+                {
+                    await updateMark(mission.SectionName, mission.MPack?.Name ?? "").ConfigureAwait(false);
+                    if (!_ratingBox.Visible)
                     {
-                        加载预览图(mission);
+                        _lblRatingResult.Visible = _ratingBox.Visible = _btnRatingDone.Visible = true;
                     }
-
-                    if (!mission.Other)
-                    {
-                        await updateMark(mission.SectionName,mission.MPack?.Name ?? "").ConfigureAwait(false);
-                        if (!_ratingBox.Visible)
-                        {
-                            _lblRatingResult.Visible = _ratingBox.Visible = _btnRatingDone.Visible = true;
-                        }
-                    }
-                    else
-                    {
-                        if (_ratingBox.Visible)
-                            _lblRatingResult.Visible = _ratingBox.Visible = _btnRatingDone.Visible = false;
-                    }
-                });
+                }
+                else
+                {
+                    if (_ratingBox.Visible)
+                        _lblRatingResult.Visible = _ratingBox.Visible = _btnRatingDone.Visible = false;
+                }
+            });
             }
             finally
             {
@@ -1344,8 +1445,8 @@ namespace Ra2Client.DXGUI.Generic
         private string LaunchCheck()
         {
             //if (_chkModify.Checked)
-                if (_cmbGame.SelectedItem == null)
-                    return "Please select a game".L10N("UI:Main:SelectGame");
+            if (_cmbGame.SelectedItem == null)
+                return "Please select a game".L10N("UI:Main:SelectGame");
             return string.Empty;
         }
 
@@ -1416,41 +1517,41 @@ namespace Ra2Client.DXGUI.Generic
             {
                 var mapName = SafePath.CombineFilePath(ProgramConstants.GamePath, Path.Combine(mission.Path, mission.Scenario));
                 if (!File.Exists(mapName)) return;
-
-                 void ProcessMission(Mission m)
-        {
-            if (string.IsNullOrEmpty(m.Scenario)) return;
-
-            var mapIni = new IniFile(
-                SafePath.CombineFilePath(m.MPack.FilePath, m.Scenario),
-                Encoding.GetEncoding("GBK"));
-
-            if (mapIni.GetSections().Count == 0)
-            {
-                File.Copy(
-                    SafePath.CombineFilePath(m.MPack.FilePath, m.Scenario),
-                    SafePath.CombineFilePath(战役临时目录, m.Scenario));
-            }
-            else
-            {
-                // ===== Header 修复 =====
-                if (!mapIni.SectionExists("Header"))
-                    mapIni.AddSection("Header");
-                if (mapIni.GetValue("Header", "NumberStartingPoints", string.Empty) == string.Empty)
-                    mapIni.SetValue("Header", "NumberStartingPoints", 0);
-
-                // ===== General 修复 =====
-                if (!mapIni.SectionExists("General"))
-                    mapIni.AddSection("General");
-                if (mapIni.GetIntValue("General", "MaximumQueuedObjects", 0) == 0)
-                    mapIni.SetIntValue("General", "MaximumQueuedObjects", 100);
-
-                // ===== mod 特殊处理 =====
-                if (mod.md == string.Empty)
+                var chkReverse = FindChild<GameLobbyCheckBox>("chkReverse");
+                void ProcessMission(Mission m)
                 {
-                    mapIni.SetIntValue("MindControl", "Damage", 1);
-                    mapIni.SetIntValue("SuperMindControl", "Damage", 1);
-                }
+                    if (string.IsNullOrEmpty(m.Scenario)) return;
+
+                    var mapIni = new IniFile(
+                        SafePath.CombineFilePath(m.MPack.FilePath, m.Scenario),
+                        Encoding.GetEncoding("GBK"));
+
+                    if (mapIni.GetSections().Count == 0)
+                    {
+                        File.Copy(
+                            SafePath.CombineFilePath(m.MPack.FilePath, m.Scenario),
+                            SafePath.CombineFilePath(战役临时目录, m.Scenario));
+                    }
+                    else
+                    {
+                        // ===== Header 修复 =====
+                        if (!mapIni.SectionExists("Header"))
+                            mapIni.AddSection("Header");
+                        if (mapIni.GetValue("Header", "NumberStartingPoints", string.Empty) == string.Empty)
+                            mapIni.SetValue("Header", "NumberStartingPoints", 0);
+
+                        // ===== General 修复 =====
+                        if (!mapIni.SectionExists("General"))
+                            mapIni.AddSection("General");
+                        if (mapIni.GetIntValue("General", "MaximumQueuedObjects", 0) == 0)
+                            mapIni.SetIntValue("General", "MaximumQueuedObjects", 100);
+
+                        // ===== mod 特殊处理 =====
+                        if (mod.md == string.Empty)
+                        {
+                            mapIni.SetIntValue("MindControl", "Damage", 1);
+                            mapIni.SetIntValue("SuperMindControl", "Damage", 1);
+                        }
 
                         if (!mapIni.SectionExists("AlliedOccupyW"))
 
@@ -1462,7 +1563,7 @@ namespace Ra2Client.DXGUI.Generic
                                     .SetValue("Warhead", "SSAB")
                                     .SetValue("Report", "AlliedOccupiedAttack")
                                     .SetValue("OccupantAnim", "UCFLASH")
-                                    ;  
+                                    ;
                         if (!mapIni.SectionExists("SovietOccupyW"))
                             mapIni.AddSection("SovietOccupyW")
                                 .SetValue("Damage", 20)
@@ -1477,8 +1578,8 @@ namespace Ra2Client.DXGUI.Generic
                         // ===== 难度 ini 合并 =====
                         var difficultyIni = new Rampastring.Tools.IniFile(
                     SafePath.CombineFilePath(ProgramConstants.GamePath, DifficultyIniPaths[_trbDifficultySelector.Value]));
-                IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
-                IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
+                        IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
+                        IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
 
                         var subFolders = Directory.GetDirectories("Custom/INI", "*", SearchOption.TopDirectoryOnly);
 
@@ -1489,6 +1590,8 @@ namespace Ra2Client.DXGUI.Generic
                             //    continue;
 
                             // 拼接 custom_rules_all.ini 的完整路径
+                            var cmpINI = new IniFile("Resources\\component");
+                            if (cmpINI.GetValue(folder, "enable", 1) == 0) continue;
                             string iniFilePath = Path.Combine(folder, "custom_rules_all.ini");
 
                             // 如果文件存在，就 Consolidate
@@ -1502,32 +1605,45 @@ namespace Ra2Client.DXGUI.Generic
 
                         // ===== 应用复选框配置 =====
                         foreach (GameLobbyCheckBox chkBox in CheckBoxes)
-                {
-                    chkBox.ApplySpawnINICode(spawnIni);
-                    chkBox.ApplyMapCode(mapIni, null);
-                }
+                        {
+                            chkBox.ApplySpawnINICode(spawnIni);
+                            chkBox.ApplyMapCode(mapIni, null);
+                        }
 
-                // ===== 应用下拉框配置 =====
-                foreach (GameLobbyDropDown dd in DropDowns)
-                {
-                    dd.ApplySpawnIniCode(spawnIni);
-                    dd.ApplyMapCode(mapIni, null);
-                }
+                        // ===== 应用下拉框配置 =====
+                        foreach (GameLobbyDropDown dd in DropDowns)
+                        {
+                            dd.ApplySpawnIniCode(spawnIni);
+                            dd.ApplyMapCode(mapIni, null);
+                        }
 
-                // ===== 金币数配置 =====
-                if (_cmbCredits.SelectedItem != null && _cmbCredits.SelectedItem.Text != string.Empty)
-                    Credits(mapIni, int.Parse(_cmbCredits.SelectedItem.Text) / 100);
+                        // ===== 金币数配置 =====
+                        if (_cmbCredits.SelectedItem != null && _cmbCredits.SelectedItem.Text != string.Empty)
+                            Credits(mapIni, int.Parse(_cmbCredits.SelectedItem.Text) / 100);
 
 
-                // ===== 保存文件 =====
-                mapIni.WriteIniFile(
+
+
+                        // ===== 保存文件 =====
+                        mapIni.WriteIniFile(
                     SafePath.CombineFilePath(战役临时目录, m.Scenario),
                     Encoding.GetEncoding("GBK"));
-            }
-        }
 
-        // 1. 先处理当前任务（同步，保证立即可用）
-        ProcessMission(mission);
+
+                        if (chkReverse.Checked)
+                        {
+                            string text = File.ReadAllText(SafePath.CombineFilePath(战役临时目录, m.Scenario));
+
+                            string newText = ReplaceTwoWay(text,mod.md == string.Empty ? replaceRA2Dict : replaceYRDict);
+
+                            // 写回文件
+                            File.WriteAllText(SafePath.CombineFilePath(战役临时目录, m.Scenario), newText);
+                        }
+                    }
+                }
+
+                // 1. 先处理当前任务（同步，保证立即可用）
+                ProcessMission(mission);
 
                 // 2. 后台异步处理同一任务包内的其他任务
                 Task.Run(() =>
@@ -1551,7 +1667,7 @@ namespace Ra2Client.DXGUI.Generic
                 UserINISettings.Instance.Difficulty.Value = _trbDifficultySelector.Value;
                 UserINISettings.Instance.SaveSettings();
 
-                
+
                 //Mix.PackToMix(战役临时目录, Path.Combine(mission.MPack.FilePath, ProgramConstants.MISSION_MIX));
             }
 
@@ -1614,7 +1730,7 @@ namespace Ra2Client.DXGUI.Generic
 
         //private void 保存配置(IniFile settings)
         //{
-            
+
         //};
 
         private int GetComputerDifficulty() =>
@@ -1628,7 +1744,7 @@ namespace Ra2Client.DXGUI.Generic
         protected virtual void GameProcessExited()
         {
             GameProcessLogic.GameProcessExited -= GameProcessExited_Callback;
-         
+
             _discordHandler.UpdatePresence();
         }
 
@@ -1640,20 +1756,20 @@ namespace Ra2Client.DXGUI.Generic
 
             foreach (var mission in _missions)
             {
-                if (_tbMissionPack.Text.TrimEnd().Length > 0 && !mission?.MPack?.Name?.Contains(_tbMissionPack.Text.TrimEnd())!=false)
+                if (_tbMissionPack.Text.TrimEnd().Length > 0 && !mission?.MPack?.Name?.Contains(_tbMissionPack.Text.TrimEnd()) != false)
                     continue;
 
                 if (_ddDifficulty.SelectedItem.Tag != null && mission.Difficulty != (string)_ddDifficulty.SelectedItem.Tag)
                     continue;
-               
+
                 // 筛选阵营
                 if (_ddSide.SelectedItem.Tag != null && mission.IconPath != (string)_ddSide.SelectedItem.Tag)
                     continue;
-               
+
                 // 筛选任务包
                 if (_ddMissionPack.SelectedItem.Tag != null && mission.MPack != (MissionPack)_ddMissionPack.SelectedItem.Tag)
                     continue;
-               
+
                 _screenMissions.Add(mission);
 
                 var item = new XNAListBoxItem();
@@ -1686,13 +1802,13 @@ namespace Ra2Client.DXGUI.Generic
                 }
                 var mod = Mod.Mods.Find(mod => mod.ID == mission?.MPack?.DefaultMod);
 
-                 var iconPath = Path.Combine(ProgramConstants.GamePath, "Resources", mission.IconPath + "icon.png");
+                var iconPath = Path.Combine(ProgramConstants.GamePath, "Resources", mission.IconPath + "icon.png");
                 if (mod != null)
                 {
-                    var modIconPath = Path.Combine(mod.FilePath,"Resources", mission.IconPath) + "icon.png";
+                    var modIconPath = Path.Combine(mod.FilePath, "Resources", mission.IconPath) + "icon.png";
                     if (File.Exists(modIconPath))
                         iconPath = modIconPath;
-                } 
+                }
 
                 if (File.Exists(iconPath))
                     item.Texture = AssetLoader.LoadTexture(iconPath);
@@ -1707,9 +1823,9 @@ namespace Ra2Client.DXGUI.Generic
         {
             Mod.ReLoad();
             MissionPack.ReLoad();
-            
+
             _missions.Clear();
-         
+
             _ddSide.SelectedIndexChanged -= DDDifficultySelectedIndexChanged;
             _ddDifficulty.SelectedIndexChanged -= DDDifficultySelectedIndexChanged;
             _ddMissionPack.SelectedIndexChanged -= DDDifficultySelectedIndexChanged;
@@ -1729,10 +1845,10 @@ namespace Ra2Client.DXGUI.Generic
 
             foreach (var file in files)
             {
-                 ParseBattleIni(file);
+                ParseBattleIni(file);
             }
 
-            
+
 
             //if (Missions.oldSaves == 0)
             //    ParseBattleIni("INI/" + ClientConfiguration.Instance.BattleFSFileName);
@@ -1743,7 +1859,7 @@ namespace Ra2Client.DXGUI.Generic
             foreach (string diff in _difficultyList)
             {
                 _ddDifficulty.AddItem(new XNADropDownItem() { Text = diff.L10N("UI:Campaign:" + diff), Tag = diff });
-          
+
             }
 
             foreach (string side in _sideList)
@@ -1753,7 +1869,7 @@ namespace Ra2Client.DXGUI.Generic
 
             foreach (var missionPack in MissionPack.MissionPacks)
             {
-               
+
                 _ddMissionPack.AddItem(new XNADropDownItem() { Text = missionPack.Description, Tag = missionPack });
             }
 
@@ -1854,7 +1970,7 @@ namespace Ra2Client.DXGUI.Generic
 
         private string GetFixedFormatText(string strDes)
         {
-            string strTmp = strDes.Replace("\r\n\r\n\r\n","\r\n").Replace("。", "。\r\n").Replace("!", "!\r\n");
+            string strTmp = strDes.Replace("\r\n\r\n\r\n", "\r\n").Replace("。", "。\r\n").Replace("!", "!\r\n");
             string[] strArr = strTmp.Split("\r\n");
             StringBuilder sBuff = new StringBuilder();
             for (int i = 0; i < strArr.Length; i++)
@@ -1862,7 +1978,7 @@ namespace Ra2Client.DXGUI.Generic
                 if (strArr[i].Length > 39)
                 {
                     var lstStr = SplitLongString(strArr[i]);
-                    foreach(string str in lstStr)
+                    foreach (string str in lstStr)
                     {
                         sBuff.Append(str + "\r\n");
                     }
@@ -1875,6 +1991,44 @@ namespace Ra2Client.DXGUI.Generic
             return strTmp;
         }
 
+        public string ReplaceTwoWay(string text, Dictionary<string, string> dict)
+        {
+            var tempMap = new Dictionary<string, string>();
+            int index = 0;
+
+            foreach (var (key, value) in dict)
+            {
+                // 前面：开头 或 换行 或 , 或 =
+                string lookBehind = $@"(?:(?<=^)|(?<=\n)|(?<=,)|(?<==))";
+
+                // 后面：结尾 或 换行 或 , 或 =
+                string lookAhead = $@"(?:(?=$)|(?=\n)|(?=,)|(?==))";
+
+                // 正则组合（只允许两边是上述字符）
+                string patternKey = $"{lookBehind}{Regex.Escape(key)}{lookAhead}";
+                string patternValue = $"{lookBehind}{Regex.Escape(value)}{lookAhead}";
+
+                string tempKey = $"__TEMP_KEY_{index}__";
+                string tempValue = $"__TEMP_VALUE_{index}__";
+
+                tempMap[tempKey] = value;
+                tempMap[tempValue] = key;
+
+                text = Regex.Replace(text, patternKey, tempKey, RegexOptions.IgnoreCase);
+                text = Regex.Replace(text, patternValue, tempValue, RegexOptions.IgnoreCase);
+
+                index++;
+            }
+
+            // 最后还原占位符
+            foreach (var kv in tempMap)
+            {
+                text = text.Replace(kv.Key, kv.Value, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return text;
+        }
+
         private List<string> SplitLongString(string strText, int nSize = 39)
         {
             int nLen = strText.Length;
@@ -1882,7 +2036,7 @@ namespace Ra2Client.DXGUI.Generic
             List<string> lstStrs = new List<string>();
             for (int i = 0; i < nCount; i++)
             {
-                if(i < (nCount- 1))
+                if (i < (nCount - 1))
                     lstStrs.Add(strText.Substring(i * nSize, nSize));
                 else
                     lstStrs.Add(strText.Substring(i * nSize));

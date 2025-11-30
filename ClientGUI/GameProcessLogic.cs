@@ -417,7 +417,7 @@ namespace ClientGUI
                 }
                 所有需要复制的文件.Add("zh");
                 所有需要复制的文件.Add("cncnet5.dll");
-                所有需要复制的文件.Add($"Resources/Voice/{UserINISettings.Instance.Voice.Value}");
+                
 
                 // if(!Ares && !File.Exists(Path.Combine(newGame,"ares.dll")))
                 所有需要复制的文件.Add("gamemd-spawn.exe");
@@ -433,10 +433,24 @@ namespace ClientGUI
                     //所有需要复制的文件.Add("Syringe.exe");
                 }
 
-                所有需要复制的文件.Add(newGame);
+                void 加入需要复制的文件夹(string path)
+                {
+                    var filesInDir = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+                    foreach (var file in filesInDir)
+                    {
+                        // 跳过 .csf 文件
+                        if (Path.GetExtension(file).Equals(".csf", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        //  string relativePath = Path.GetRelativePath(path, file);
+                        所有需要复制的文件.Add(file);
+                    }
+                }
+
+                加入需要复制的文件夹(newGame);
 
                 if(newMission != newGame && newMission != string.Empty)
-                    所有需要复制的文件.Add(newMission);
+                    加入需要复制的文件夹(newMission);
 
                 if (newSection.KeyExists("CampaignID"))
                 {
@@ -445,21 +459,12 @@ namespace ClientGUI
 
                 if(otherFile != string.Empty)
                 {
-                    所有需要复制的文件.Add(otherFile);
+                    加入需要复制的文件夹(otherFile);
                 }
 
                 // 所有需要复制的文件.Add("LiteExt.dll");
                 所有需要复制的文件.Add("qres.dat");
                 所有需要复制的文件.Add("qres32.dll");
-
-                var subFolders = Directory.GetDirectories("Custom", "*", SearchOption.TopDirectoryOnly);
-
-                // 加入列表
-                foreach (var folder in subFolders)
-                {
-                    if(!string.Equals(Path.GetFileName(folder), "INI", StringComparison.OrdinalIgnoreCase))
-                        所有需要复制的文件.Add(folder);
-                }
 
 
                 if (newSection.KeyExists("GameID"))
@@ -481,6 +486,64 @@ namespace ClientGUI
                     所有需要复制的文件.Add(Path.Combine(ProgramConstants.GamePath, "Resources\\shroud.shp"));
                 }
 
+                var componentINI = new IniFile("Resources\\component");
+                var rules = 所有需要复制的文件.Find(f => f.ToLower().Contains("rulesmd.ini"));
+                var art = 所有需要复制的文件.Find(f => f.ToLower().Contains("artmd.ini"));
+
+                var 启用皮肤 = rules != null && art != null;
+
+                IniFile rulesINI = null;
+                IniFile artINI = null;
+
+                if (启用皮肤)
+                {
+                    所有需要复制的文件.Remove(rules);
+                    所有需要复制的文件.Remove(art);
+                    rulesINI = new IniFile(rules);
+                    artINI = new IniFile(art);
+                }
+
+
+
+                foreach (var componentSection in componentINI.GetSections())
+                {
+                    var type = componentINI.GetValue(componentSection, "type", -1);
+                    if (componentINI.GetValue(componentSection, "enable", 1) == 0 || type == 4 || type == 0) continue;
+
+                    if (type == 2 && 启用皮肤)
+                    {
+                        string skinPath = Path.Combine("Custom", "Skin", componentSection);
+                        if (!Directory.Exists(skinPath)) continue;
+                        // 获取所有文件（不包含子目录，如果需要包含子目录告诉我）
+                        var files = Directory.GetFiles(skinPath);
+
+                        // 排除的名字（不含后缀）
+                        var blacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                        {
+                            "rulesmd",
+                            "artmd"
+                        };
+
+                        foreach (var file in files)
+                        {
+                            string fileName = Path.GetFileNameWithoutExtension(file);
+                            if (!blacklist.Contains(fileName))
+                            {
+                                所有需要复制的文件.Add(file);
+                            }
+                        }
+
+                        if (File.Exists(Path.Combine(skinPath, "rulesSkin.ini")))
+                        {
+                            IniFile.ConsolidateIniFiles(rulesINI,new IniFile(Path.Combine(skinPath, "rulesSkin.ini")));
+                        }
+                        if (File.Exists(Path.Combine(skinPath, "artSkin.ini")))
+                        {
+                            IniFile.ConsolidateIniFiles(artINI, new IniFile(Path.Combine(skinPath, "artSkin.ini")));
+                        }
+                    }
+                }
+
                 var e = string.Empty;
 
                 if (IsNtfs(ProgramConstants.GamePath))
@@ -489,8 +552,16 @@ namespace ClientGUI
                 }
                 else
                 {
+                    Logger.Log("用不了符号链接");
                     e = 复制文件(所有需要复制的文件);
                 }
+
+                if (启用皮肤)
+                {
+                    rulesINI.WriteIniFile(Path.Combine(ProgramConstants.游戏目录,"rulesmd.ini"));
+                    artINI.WriteIniFile(Path.Combine(ProgramConstants.游戏目录, "artmd.ini"));
+                }
+
 
                 if (e != string.Empty)
                 {
@@ -498,7 +569,9 @@ namespace ClientGUI
                     return false;
                 }
 
-                    复制CSF(newGame);
+
+
+                复制CSF(newGame);
                 if (newMission != newGame && newMission != string.Empty)
                         复制CSF(newMission);
                 if(otherFile != string.Empty)
@@ -511,6 +584,11 @@ namespace ClientGUI
                     WindowManager.progress.Report("正在加载音乐");
                     加载音乐(ProgramConstants.游戏目录);
                 }
+
+
+
+
+                所有需要复制的文件.Add($"Resources/Voice/{UserINISettings.Instance.Voice.Value}");
 
                 if (!Directory.Exists(Path.Combine(ProgramConstants.游戏目录, "Saved Games")))
                     Directory.CreateDirectory(Path.Combine(ProgramConstants.游戏目录, "Saved Games"));

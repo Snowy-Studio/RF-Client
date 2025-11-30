@@ -113,6 +113,14 @@ namespace DTAConfig.OptionPanels
                 btnSearch.LeftClick += ComboBoxtypes_SelectedIndexChanged;
                 AddChild(btnSearch);
 
+                var lbldesc = new XNALabel(WindowManager)
+                {
+                    Text = "右击可启用/停用",
+                    ClientRectangle = new Rectangle(btnSearch.Right + 10, labeltypes.Y, UIDesignConstants.BUTTON_WIDTH_75, UIDesignConstants.BUTTON_HEIGHT),
+                    TextColor = Color.White
+                };
+                AddChild(lbldesc);
+
                 CompList = new XNAMultiColumnListBox(WindowManager);
                 CompList.Name = nameof(CompList);
                 CompList.ClientRectangle = new Rectangle(labeltypes.Left, labeltypes.Bottom + 10, Width - 40, Height - 75);
@@ -132,6 +140,8 @@ namespace DTAConfig.OptionPanels
                 _menu.Name = nameof(_menu);
                 _menu.Width = 100;
 
+                _menu.AddItem("启用", 启用, null, 判断是否停用);
+                _menu.AddItem("停用", 停用, null, 判断是否启用);
                 _menu.AddItem(new XNAContextMenuItem
                 {
                     Text = "Refresh".L10N("UI:DTAConfig:Refresh"),
@@ -139,6 +149,7 @@ namespace DTAConfig.OptionPanels
                         InitialComponets();
                     }
                 });
+                
                 _menu.AddItem("Check out the introduction".L10N("UI:DTAConfig:Checkouttheintroduction"), 查看介绍, null, 判断是否有介绍);
 
                 AddChild(_menu);
@@ -209,10 +220,25 @@ namespace DTAConfig.OptionPanels
 
         private bool 判断是否有介绍() => !string.IsNullOrEmpty(_curComponent?.description);
 
-
+        private bool 判断是否启用() => CheckComponentStatus(_curComponent).Code == 1 && _curComponent.type != 4 && _curComponent.type != 1;
+        private bool 判断是否停用() => CheckComponentStatus(_curComponent).Code == 0 && _curComponent.type != 4 && _curComponent.type != 1;
         private void 查看介绍()
         {
             XNAMessageBox.Show(WindowManager, _curComponent.name, _curComponent.description);
+        }
+
+
+        private void 启用()
+        {
+            _locIniData.SetValue(_curComponent.id,"enable",1);
+            _locIniData.WriteIniFile();
+            InitialComponets();
+        }
+        private void 停用()
+        {
+            _locIniData.SetValue(_curComponent.id, "enable", 0);
+            _locIniData.WriteIniFile();
+            InitialComponets();
         }
 
         private void ComboBoxtypes_SelectedIndexChanged(object sender, EventArgs e)
@@ -285,6 +311,7 @@ namespace DTAConfig.OptionPanels
                 {
                     id = sectionName,
                     name = section.GetValue("name",string.Empty),
+                    type = section.GetValue("type", 4)
                 };
 
                 All_components.Add(c);
@@ -314,8 +341,8 @@ namespace DTAConfig.OptionPanels
                         //new (comp.typeName),
                         //new (comp.author),
                         //new (comp.version),
-                        //new (item.Text, item.TextColor)
-                        new ("已安装"),
+                        new (item.Text, item.TextColor)
+                     //   new ("已安装"),
                     });
                 i++;
             }
@@ -329,24 +356,16 @@ namespace DTAConfig.OptionPanels
         /// <returns></returns>
         private StateItem CheckComponentStatus(Component comp)
         {
-            StateItem state = new StateItem { Code = -1, Text = "Not available".L10N("UI:DTAConfig:Notavailable"), TextColor = Color.Red };
-            string strid = comp.id.ToString();
-            if (string.IsNullOrEmpty(strid))
-                return state;
+            StateItem state = new StateItem { Code = 1, Text = "已启用", TextColor = Color.Orange };
+            //string strid = comp.id.ToString();
+            //if (string.IsNullOrEmpty(strid))
+            //    return state;
 
-            state = new StateItem { Code = 0, Text = "Not installed".L10N("UI:DTAConfig:Notinstalled"), TextColor = Color.Orange };
-            foreach (var locSec in _locIniData.GetSections())
+            //state = new StateItem { Code = 0, Text = "Not installed".L10N("UI:DTAConfig:Notinstalled"), TextColor = Color.Orange };
+            var enable = _locIniData.GetValue(comp.id,"enable",1);
+            if(enable == 0)
             {
-                if (strid == locSec)
-                {
-                    state = new StateItem { Code = 1, Text = "Installed".L10N("UI:DTAConfig:Installed"), TextColor = Color.Green };
-                    // 使用哈希校验比对是否有更新
-                    if (CheckVersionNew(_locIniData.GetValue(locSec, "hash", string.Empty), comp.hash))
-                    {
-                        state = new StateItem { Code = 2, Text = "Updatable".L10N("UI:DTAConfig:Updatable"), TextColor = Color.AliceBlue };
-                    }
-                    break;
-                }
+                state = new StateItem { Code = 0, Text = "未启用", TextColor = Color.Red };
             }
             return state;
         }

@@ -732,7 +732,7 @@ namespace Ra2Client
 
                 if (!success)
                 {
-                    Console.WriteLine($"❌ 下载Mod失败: {downloadUrl}");
+                    Console.WriteLine($"❌ 下载组件失败: {downloadUrl}");
                     return;
                 }
 
@@ -765,22 +765,58 @@ namespace Ra2Client
                     // 清理临时目录
                     Directory.Delete(tempDir, true);
                 }
+                else if (cmpVo.type == 1)
+                {
+                    var newFiles = SevenZip.GetFile(tmpFile); // 压缩包中文件（带相对路径）
+                    SevenZip.ExtractWith7Zip(tmpFile, extractDir, needDel: true);
+
+                    // 提取完成后，找到根目录
+                    string root = GetRootDirectory(newFiles);
+
+                    // 目标目录
+                    string targetDir = Path.Combine("Resources/Voice", cmpVo.id);
+                    Directory.CreateDirectory(targetDir);
+
+                    // 将根目录下所有文件移动到目标目录
+                    foreach (var file in newFiles)
+                    {
+                        // 解压后实际路径
+                        string actualPath = Path.Combine(extractDir, file);
+
+                        // 跳过目录
+                        if (Directory.Exists(actualPath)) continue;
+
+                        // 去掉根目录部分
+                        string relative = file.Substring(root.Length).TrimStart('/', '\\');
+
+                        string destPath = Path.Combine(targetDir, Path.GetFileName(relative));
+
+                        // 确保目标文件夹存在
+                        Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+
+                        // 移动或复制
+                        File.Move(actualPath, destPath, true);
+                        unloadFiles.Add(destPath);
+                    }
+                }
                 else
                 {
 
                     var newFiles = SevenZip.GetFile(tmpFile);
 
-                    SevenZip.ExtractWith7Zip(tmpFile, "./", needDel: true);
+                    SevenZip.ExtractWith7Zip(tmpFile, "./tmp", needDel: true);
 
                     // 只加入文件，不加入文件夹
                     unloadFiles.AddRange(newFiles);
                 }
+
 
                 // 写入组件信息
                 var ini = new IniFile(Path.Combine(ProgramConstants.GamePath, "Resources", "component"));
                 ini.SetValue(cmpVo.id, "name", cmpVo.name);
                 ini.SetValue(cmpVo.id, "type", cmpVo.type);
                 ini.SetValue(cmpVo.id, "updateTime", cmpVo.updateTime);
+                ini.SetValue(cmpVo.id, "enable", 1);
 
                 // 写入 unload（多行）
                 // unloadFiles 可能包含文件或文件夹，所以要过滤掉文件夹
@@ -852,6 +888,37 @@ namespace Ra2Client
         {
             if (_installedMapIds.ContainsKey(id))
                 _installedMapIds.Remove(id);
+        }
+
+        public static string GetRootDirectory(List<string> files)
+        {
+            // 只查文件（不包含目录）
+            var filePaths = files
+                .Where(f => !f.EndsWith("/") && !f.EndsWith("\\"))
+                .ToList();
+
+            if (filePaths.Count == 0)
+                return "";
+
+            // 找所有文件路径的“最前面的目录部分”
+            var splitted = filePaths
+                .Select(f => f.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries))
+                .ToList();
+
+            int minLen = splitted.Min(s => s.Length);
+            int prefixLen = 0;
+
+            for (; prefixLen < minLen; prefixLen++)
+            {
+                var part = splitted[0][prefixLen];
+                if (splitted.Any(s => s[prefixLen] != part))
+                    break;
+            }
+
+            if (prefixLen == 0)
+                return ""; // 无公共目录，说明都是根目录
+
+            return string.Join("/", splitted[0].Take(prefixLen)) + "/";
         }
 
     }

@@ -1,11 +1,13 @@
-using System;
-using System.IO;
 using ClientCore;
 using ClientGUI;
 using Localization;
 using Microsoft.Xna.Framework;
+using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace DTAConfig.OptionPanels
 {
@@ -181,9 +183,29 @@ namespace DTAConfig.OptionPanels
             ddVoice.ClientRectangle = new Rectangle(lblVoice.Right + 12, lblVoice.Top - 2, 160, 20);
             AddChild(ddVoice);
 
-            foreach (string voice in Directory.GetDirectories("Resources/Voice"))
+            var voiceINI = new IniFile("Resources/component");
+
+            // 用来记录 ini 中已经存在的 section（即 voice 名）
+            var iniVoices = new HashSet<string>(voiceINI.GetSections(), StringComparer.OrdinalIgnoreCase);
+
+            // 1. 先加入 ini 内的 voice
+            foreach (string voice in iniVoices)
             {
-                ddVoice.AddItem(Path.GetFileName(voice));
+                if (voiceINI.GetValue(voice, "type", 0) != 1) continue;
+                string displayName = voiceINI.GetValue(voice, "name", voice);
+                ddVoice.AddItem(displayName, Path.Combine("Resources/Voice", voice));
+            }
+
+            // 2. 再扫描目录，如果目录不在 ini 中，再加入
+            foreach (string dir in Directory.GetDirectories("Resources/Voice"))
+            {
+                string folderName = Path.GetFileName(dir);
+
+                // 如果 ini 中没有这个 voice 才加入
+                if (!iniVoices.Contains(folderName))
+                {
+                    ddVoice.AddItem(folderName, folderName);
+                }
             }
 
 

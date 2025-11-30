@@ -1133,7 +1133,7 @@ public class ModManager : XNAWindow
         Mod.ReLoad();
         MissionPack.ReLoad();
         // listBoxModAI.Clear();
-        //DDModAI_SelectedIndexChanged(DDModAI, null);
+        DDModAI_SelectedIndexChanged(DDModAI, null);
 
         LoadModInfo();
         ListBoxModAi.SelectedIndexChanged += ListBoxModAISelectedIndexChanged;
@@ -1312,6 +1312,8 @@ public class ModManager : XNAWindow
 
     private void LoadModInfo()
     {
+        if (!Visible) return;
+
         _mcListBoxInfo.ClearItems();
         Dictionary<string, string> properties = null;
         if (ListBoxModAi.SelectedItem == null)
@@ -1321,6 +1323,7 @@ public class ModManager : XNAWindow
             //筛选Mod
             case 0:
                 var mod = Mod.Mods.Find(m => m.ID == ((Mod)ListBoxModAi.SelectedItem.Tag).ID);
+                if (mod == null) return;
                 properties = mod.GetProperties();
                 BtnNew.Text = "Import a new Mod".L10N("UI:DTAConfig:ImportNewMod");
                 BtnDel.Text = "Delete Mod".L10N("UI:DTAConfig:DeleteMod");
@@ -1330,6 +1333,7 @@ public class ModManager : XNAWindow
             //筛选任务包
             case 1:
                 var missionPack = MissionPack.MissionPacks.Find(m => m.ID == ((MissionPack)ListBoxModAi.SelectedItem.Tag).ID);
+                if (missionPack == null) return;
                 properties = missionPack.GetProperties();
                 BtnNew.Text = "Import mission package".L10N("UI:DTAConfig:ImportMissionPackage");
                 BtnDel.Text = "Delete mission package".L10N("UI:DTAConfig:DeleteMissionPackage");

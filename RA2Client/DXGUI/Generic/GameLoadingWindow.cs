@@ -290,7 +290,7 @@ namespace Ra2Client.DXGUI.Generic
             {
                 string[] item = [
                     Renderer.GetSafeString(sg.GUIName, lbSaveGameList.FontIndex),sg.LastModified.ToString().Replace(" ","-") ];
-                Console.WriteLine(sg.LastModified.ToString());
+              //  Console.WriteLine(sg.LastModified.ToString());
                 lbSaveGameList.AddItem(item, true);
             }
         }
