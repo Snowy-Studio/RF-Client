@@ -51,12 +51,10 @@ namespace Ra2Client.Online
         /// </summary>
         private static readonly IList<Server> Servers = new List<Server>
         {
-            new Server("xe-6.irc.ra2yr.com", "Reunion Chinese Mainland Prefix-6406", new int[1] { 6697 }, "Chinese Mainland Zone 1"),
-            new Server("xe-7.irc.ra2yr.com", "Reunion Chinese Mainland Prefix-6407", new int[1] { 6697 }, "Chinese Mainland Zone 2"),
-            new Server("xf-2.irc.ra2yr.com", "Reunion Chinese Mainland Prefix-0402", new int[1] { 6697 }, "Chinese Mainland Zone 3"),
-            new Server("xg-4.irc.ra2yr.com", "Reunion Asia Pacific Prefix-6404", new int[1] { 6697 }, "Asia Pacific Zone 1"),
-            new Server("xg-5.irc.ra2yr.com", "Reunion Europe Prefix-6405", new int[1] { 6697 }, "Europe Zone 1"),
-            new Server("xf-3.irc.ra2yr.com", "Reunion North America Prefix-6403", new int[1] { 6697 }, "North America Zone 1"),
+            new Server("a1-xe7.irc.ra2yr.com", "Reunion Chinese Mainland Prefix-2465", [6697], "Reunion Availability Zone 1"), // PEK+CAN X2
+            new Server("a2-xe4.irc.ra2yr.com", "Reunion Japan Prefix-2461", [6697], "Reunion Availability Zone 2"), // TYO X2
+            new Server("b1-xe5.irc.ra2yr.com", "Reunion United Kingdom Prefix-2468", [6697], "Reunion Availability Zone 3"), // CVT+LON X2
+            new Server("b2-xe6.irc.ra2yr.com", "Reunion United States Prefix-2469", [6697], "Reunion Availability Zone 4"), // LAX X2
         }.AsReadOnly();
 
         bool _isConnected = false;
@@ -84,6 +82,7 @@ namespace Ra2Client.Online
         private volatile bool welcomeMessageReceived = false;
         private volatile bool sendQueueExited = false;
         bool _disconnect = false;
+
         private bool disconnect
         {
             get
