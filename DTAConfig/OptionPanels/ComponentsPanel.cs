@@ -149,7 +149,8 @@ namespace DTAConfig.OptionPanels
                         InitialComponets();
                     }
                 });
-                
+                _menu.AddItem("删除", 删除, null, 判断是否能删除);
+
                 _menu.AddItem("Check out the introduction".L10N("UI:DTAConfig:Checkouttheintroduction"), 查看介绍, null, 判断是否有介绍);
 
                 AddChild(_menu);
@@ -222,6 +223,9 @@ namespace DTAConfig.OptionPanels
 
         private bool 判断是否启用() => CheckComponentStatus(_curComponent).Code == 1 && _curComponent.type != 4 && _curComponent.type != 1;
         private bool 判断是否停用() => CheckComponentStatus(_curComponent).Code == 0 && _curComponent.type != 4 && _curComponent.type != 1;
+
+        private bool 判断是否能删除() => _curComponent.type != 4;
+
         private void 查看介绍()
         {
             XNAMessageBox.Show(WindowManager, _curComponent.name, _curComponent.description);
@@ -239,6 +243,30 @@ namespace DTAConfig.OptionPanels
             _locIniData.SetValue(_curComponent.id, "enable", 0);
             _locIniData.WriteIniFile();
             InitialComponets();
+        }
+
+        private void 删除()
+        {
+            var box = new XNAMessageBox(WindowManager,"删除", $"你确定要删除组件 {_curComponent.name}吗？",XNAMessageBoxButtons.YesNo);
+            box.YesClickedAction += (_) =>
+            {
+                try
+                {
+                    foreach(var file in _locIniData.GetValue(_curComponent.id, "unload", string.Empty).Split(","))
+                    {
+                        if(File.Exists(file))
+                            File.Delete(file);
+                    }
+                    _locIniData.RemoveSection(_curComponent.id);
+                    _locIniData.WriteIniFile();
+                    InitialComponets();
+                }
+                catch(Exception ex)
+                {
+                    XNAMessageBox.Show(WindowManager,"出错",ex.Message);
+                }
+            };
+            box.Show();
         }
 
         private void ComboBoxtypes_SelectedIndexChanged(object sender, EventArgs e)
@@ -652,7 +680,7 @@ namespace DTAConfig.OptionPanels
             }
             else if (button.Text == "Uninstall".L10N("UI:DTAConfig:Uninstall"))
             {
-                UnInstall();
+                删除();
                 RefreshInstallButtonStatus(CompList.SelectedIndex);
             }
             else

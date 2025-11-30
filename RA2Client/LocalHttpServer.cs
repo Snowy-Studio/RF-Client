@@ -738,7 +738,7 @@ namespace Ra2Client
 
                 List<string> unloadFiles = new List<string>();
 
-                if (cmpVo.type == 0)
+                if (cmpVo.type == 0) // 全局 ini custom_cules_all
                 {
                     string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                     Directory.CreateDirectory(tempDir);
@@ -765,39 +765,13 @@ namespace Ra2Client
                     // 清理临时目录
                     Directory.Delete(tempDir, true);
                 }
-                else if (cmpVo.type == 1)
+                else if (cmpVo.type == 1) //语音
                 {
-                    var newFiles = SevenZip.GetFile(tmpFile); // 压缩包中文件（带相对路径）
-                    SevenZip.ExtractWith7Zip(tmpFile, extractDir, needDel: true);
-
-                    // 提取完成后，找到根目录
-                    string root = GetRootDirectory(newFiles);
-
-                    // 目标目录
-                    string targetDir = Path.Combine("Resources/Voice", cmpVo.id);
-                    Directory.CreateDirectory(targetDir);
-
-                    // 将根目录下所有文件移动到目标目录
-                    foreach (var file in newFiles)
-                    {
-                        // 解压后实际路径
-                        string actualPath = Path.Combine(extractDir, file);
-
-                        // 跳过目录
-                        if (Directory.Exists(actualPath)) continue;
-
-                        // 去掉根目录部分
-                        string relative = file.Substring(root.Length).TrimStart('/', '\\');
-
-                        string destPath = Path.Combine(targetDir, Path.GetFileName(relative));
-
-                        // 确保目标文件夹存在
-                        Directory.CreateDirectory(Path.GetDirectoryName(destPath));
-
-                        // 移动或复制
-                        File.Move(actualPath, destPath, true);
-                        unloadFiles.Add(destPath);
-                    }
+                    ExtractAndMoveByType(cmpVo.type, cmpVo.id, tmpFile, extractDir, unloadFiles);
+                }
+                else if (cmpVo.type == 2) // 皮肤
+                {
+                    ExtractAndMoveByType(cmpVo.type, cmpVo.id, tmpFile, extractDir, unloadFiles);
                 }
                 else
                 {
@@ -840,6 +814,62 @@ namespace Ra2Client
                 Console.WriteLine($"❌ 写入模组时发生异常: {ex}");
             }
         }
+
+        /// <summary>
+        /// 解压并按照类型移动文件到指定目录
+        /// </summary>
+        /// <param name="type">1=语音，2=皮肤</param>
+        /// <param name="cmpId">资源ID</param>
+        /// <param name="tmpFile">压缩包路径</param>
+        /// <param name="extractDir">临时解压目录</param>
+        /// <param name="unloadFiles">返回的最终文件列表</param>
+        public static void ExtractAndMoveByType(int type, string cmpId, string tmpFile, string extractDir, List<string> unloadFiles)
+        {
+            // 类型对应基础目录
+            var typeBasePaths = new Dictionary<int, string>
+    {
+        { 1, "Resources/Voice" },
+        { 2, "Custom/Skin" }
+    };
+
+            if (!typeBasePaths.TryGetValue(type, out var baseDir))
+                throw new Exception($"未知类型: {type}");
+
+            // 最终目标目录：例如 Custom/Skin/123
+            string targetDir = Path.Combine(baseDir, cmpId);
+            Directory.CreateDirectory(targetDir);
+
+            // 取文件列表（压缩包中的文件路径）
+            var newFiles = SevenZip.GetFile(tmpFile);
+
+            // 解压
+            SevenZip.ExtractWith7Zip(tmpFile, extractDir, needDel: true);
+
+            // 获取压缩包的根目录（你原来的逻辑）
+            string root = GetRootDirectory(newFiles);
+
+            foreach (var file in newFiles)
+            {
+                string actualPath = Path.Combine(extractDir, file);
+
+                // 跳过目录
+                if (Directory.Exists(actualPath))
+                    continue;
+
+                // file 去掉根目录部分
+                string relative = file.Substring(root.Length).TrimStart('/', '\\');
+
+                // 最终放置路径（文件名不带子目录）
+                string destPath = Path.Combine(targetDir, Path.GetFileName(relative));
+
+                Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+
+                File.Move(actualPath, destPath, true);
+
+                unloadFiles.Add(destPath);
+            }
+        }
+
         /// <summary>
         /// 将字符串用";"分隔后写入 INI
         /// </summary>
