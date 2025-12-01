@@ -193,7 +193,7 @@ namespace DTAConfig.OptionPanels
             {
                 if (voiceINI.GetValue(voice, "type", 0) != 1) continue;
                 string displayName = voiceINI.GetValue(voice, "name", voice);
-                ddVoice.AddItem(displayName, Path.Combine("Resources/Voice", voice));
+                ddVoice.AddItem(displayName, voice);
             }
 
             // 2. 再扫描目录，如果目录不在 ini 中，再加入
@@ -329,7 +329,7 @@ namespace DTAConfig.OptionPanels
             chkStopGameLobbyMessageAudio.Checked = IniSettings.StopGameLobbyMessageAudio;
 
             var voiceValue = UserINISettings.Instance.Voice.Value;
-            var i = ddVoice.Items.FindIndex(item => item.Text == voiceValue);
+            var i = ddVoice.Items.FindIndex(item => item.Tag as string == voiceValue);
             if (i >= 0)
                 ddVoice.SelectedIndex = i;
             else
@@ -355,7 +355,7 @@ namespace DTAConfig.OptionPanels
             IniSettings.PlayMainMenuMusic.Value = chkMainMenuMusic.Checked;
             IniSettings.StopMusicOnMenu.Value = chkStopMusicOnMenu.Checked;
             IniSettings.StopGameLobbyMessageAudio.Value = chkStopGameLobbyMessageAudio.Checked;
-            UserINISettings.Instance.Voice.Value = ddVoice.SelectedItem?.Text;
+            UserINISettings.Instance.Voice.Value = ddVoice.SelectedItem?.Tag as string;
 
             return restartRequired;
         }

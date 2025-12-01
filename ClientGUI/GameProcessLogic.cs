@@ -544,6 +544,8 @@ namespace ClientGUI
                     }
                 }
 
+                所有需要复制的文件.Add($"Resources/Voice/{UserINISettings.Instance.Voice.Value}");
+
                 var e = string.Empty;
 
                 if (IsNtfs(ProgramConstants.GamePath))
@@ -585,7 +587,7 @@ namespace ClientGUI
                 }
 
 
-                所有需要复制的文件.Add($"Resources/Voice/{UserINISettings.Instance.Voice.Value}");
+                
 
                 if (!Directory.Exists(Path.Combine(ProgramConstants.游戏目录, "Saved Games")))
                     Directory.CreateDirectory(Path.Combine(ProgramConstants.游戏目录, "Saved Games"));
