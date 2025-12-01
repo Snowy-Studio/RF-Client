@@ -45,7 +45,7 @@ namespace ClientGUI
         /// Starts the main game process.  
         /// </summary>
         /// 
-        public static void StartGameProcess(WindowManager windowManager, IniFile iniFile = null)
+        public static void StartGameProcess(WindowManager windowManager, IniFile iniFile = null,Action start = null)
         {
 #if !DEBUG
             try
@@ -196,9 +196,11 @@ namespace ClientGUI
                 //旧存档数 = Directory.GetFiles(ProgramConstants.存档目录, "*.sav");
                 try
                 {
-                    if(启用连点器 && UserINISettings.Instance.启用连点器.Value) ShiftClickAutoClicker.Instance.Start();
+                    
+                    if (启用连点器 && UserINISettings.Instance.启用连点器.Value) ShiftClickAutoClicker.Instance.Start();
                     gameProcess.Start();
-               
+                start?.Invoke();
+
                 WindowManager.progress.Report("游戏进行中....");
                     Logger.Log("游戏处理逻辑: 进程开始.");
                 
@@ -696,7 +698,7 @@ namespace ClientGUI
                     if (File.Exists(path))
                     {
                         // 跳过 .csf 文件
-                        if (Path.GetExtension(path).Equals(".csf", StringComparison.OrdinalIgnoreCase))
+                        if (Path.GetExtension(path).Equals(".csf", StringComparison.OrdinalIgnoreCase) || Path.GetExtension(path).Equals(".map", StringComparison.OrdinalIgnoreCase))
                             continue;
 
                         string fileName = Path.GetFileName(path);
@@ -708,7 +710,7 @@ namespace ClientGUI
                         foreach (var file in filesInDir)
                         {
                             // 跳过 .csf 文件
-                            if (Path.GetExtension(file).Equals(".csf", StringComparison.OrdinalIgnoreCase))
+                            if (Path.GetExtension(file).Equals(".csf", StringComparison.OrdinalIgnoreCase) || Path.GetExtension(path).Equals(".map", StringComparison.OrdinalIgnoreCase))
                                 continue;
 
                             string relativePath = Path.GetRelativePath(path, file);

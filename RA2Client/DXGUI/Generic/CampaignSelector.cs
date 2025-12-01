@@ -1530,7 +1530,7 @@ namespace Ra2Client.DXGUI.Generic
                 }
             }
             catch { }
-
+            Action action = null;
             if (_gameOptionsPanel.Visible)
             {
                 var mapName = SafePath.CombineFilePath(ProgramConstants.GamePath, Path.Combine(mission.Path, mission.Scenario));
@@ -1665,29 +1665,39 @@ namespace Ra2Client.DXGUI.Generic
                             // 写回文件
                             File.WriteAllText(SafePath.CombineFilePath(战役临时目录, m.Scenario), newText);
                         }
+
+                        
                     }
                 }
 
                 // 1. 先处理当前任务（同步，保证立即可用）
                 ProcessMission(mission);
 
-                // 2. 后台异步处理同一任务包内的其他任务
-                Task.Run(() =>
+                
+
+                action += () =>
                 {
-                    foreach (var m in mission.MPack.Missions)
+                    Task.Run(() =>
                     {
-                        if (m == mission) continue; // 跳过当前任务
-                        try
+                        foreach (var m in mission.MPack.Missions)
                         {
-                            ProcessMission(m);
+                            if (m == mission || m.Scenario == string.Empty) continue; // 跳过当前任务
+                            try
+                            {
+                                ProcessMission(m);
+                                File.CreateSymbolicLink(SafePath.CombineFilePath(ProgramConstants.游戏目录, m.Scenario), SafePath.CombineFilePath(战役临时目录, m.Scenario));
+                            }
+                            catch (Exception ex)
+                            {
+                                // 建议写日志，别影响主流程
+                                Console.WriteLine($"处理任务 {m.Scenario} 出错: {ex.Message}");
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            // 建议写日志，别影响主流程
-                            Console.WriteLine($"处理任务 {m.Scenario} 出错: {ex.Message}");
-                        }
-                    }
-                });
+                    });
+                };
+
+                // 2. 后台异步处理同一任务包内的其他任务
+                
 
                 UserINISettings.Instance.CampaignDefaultGameSpeed.Value = 6 - _cmbGameSpeed.SelectedIndex;
                 UserINISettings.Instance.Difficulty.Value = _trbDifficultySelector.Value;
@@ -1751,7 +1761,7 @@ namespace Ra2Client.DXGUI.Generic
 
             GameProcessLogic.GameProcessExited += GameProcessExited_Callback;
 
-            GameProcessLogic.StartGameProcess(WindowManager, spawnIni);
+            GameProcessLogic.StartGameProcess(WindowManager, spawnIni, action);
         }
 
         //private void 保存配置(IniFile settings)
