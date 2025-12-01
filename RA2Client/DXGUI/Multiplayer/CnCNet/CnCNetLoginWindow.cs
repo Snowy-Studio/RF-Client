@@ -174,7 +174,7 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
                 case 0: 
                     return "Availability Zone 1 Overview (China):\r\n\r\nRegion: Beijing, China / Guangdong, China\r\nAverage latency: 33ms (Delayed test location: China)\r\n\r\nLine: China BGP (Telecom, Unicom, Mobile)\r\nNetwork Support: IPv4+IPv6\r\nCloud Service Provider: Tencent Cloud".L10N("UI:Main:RegionDescCN");
                 case 1: 
-                    return "Availability Zone 2 Overview (Japan):\r\n\r\nRegion: Tokyo, Japan\r\nAverage latency: 102ms (Delayed test location: China)\r\n\r\nLine: Cogent+GSL+EIE+BBIX+JPIX\r\nNetwork Support: IPv4\r\nCloud Service Provider: Yunyoo".L10N("UI:Main:RegionDescJP");
+                    return "Availability Zone 2 Overview (Japan):\r\n\r\nRegion: Tokyo, Japan\r\nAverage latency: 92ms (Delayed test location: China)\r\n\r\nLine: Cogent+GSL+EIE+BBIX+JPIX\r\nNetwork Support: IPv4\r\nCloud Service Provider: Yunyoo".L10N("UI:Main:RegionDescJP");
                 case 2: 
                     return "Availability Zone 3 Overview (United Kingdom):\n\nRegion: London, United Kingdom / Coventry, United Kingdom\nAverage latency: 235ms (Delayed test location: China)\n\nLine: GTT+NTT+PCCW+Arelion+RETN\nNetwork support: IPv4+IPv6\nCloud service provider: Yunyoo".L10N("UI:Main:RegionDescUK");
                 case 3: 

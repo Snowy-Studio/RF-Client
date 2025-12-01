@@ -320,10 +320,10 @@ namespace Ra2Client.DXGUI.Multiplayer.CnCNet
                 lbPlayerList.Right - 117,
                 ddCurrentChannel.Y, 180, 21);
 
-            foreach (string region in SERVER_REGIONS)
-            {
-                ddServerRegion.AddItem(region.L10N("UI:Main:Region" + region.Replace(" ", "")));
-            }
+            ddServerRegion.AddItem("Reunion Availability Zone 1".L10N("UI:Main:AvailabilityZone1"));
+            ddServerRegion.AddItem("Reunion Availability Zone 2".L10N("UI:Main:AvailabilityZone2"));
+            ddServerRegion.AddItem("Reunion Availability Zone 3".L10N("UI:Main:AvailabilityZone3"));
+            ddServerRegion.AddItem("Reunion Availability Zone 4".L10N("UI:Main:AvailabilityZone4"));
 
             int defaultRegionIndex = Array.IndexOf(SERVER_REGIONS, Connection.SelectedRegion);
             if (defaultRegionIndex == -1)

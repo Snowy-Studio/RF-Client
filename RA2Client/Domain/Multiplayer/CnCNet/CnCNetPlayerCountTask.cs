@@ -24,10 +24,10 @@ namespace Ra2Client.Domain.Multiplayer.CnCNet
         public static void InitializeService(CancellationTokenSource cts)
         {
             cncnetLiveStatusIdentifier = ClientConfiguration.Instance.CnCNetLiveStatusIdentifier;
-          //  PlayerCount = GetCnCNetPlayerCount();
+            //PlayerCount = GetCnCNetPlayerCount();
 
             //CnCNetGameCountUpdated?.Invoke(null, new PlayerCountEventArgs(PlayerCount));
-           // ThreadPool.QueueUserWorkItem(new WaitCallback(RunService), cts);
+            //ThreadPool.QueueUserWorkItem(new WaitCallback(RunService), cts);
         }
 
         private static void RunService(object tokenObj)

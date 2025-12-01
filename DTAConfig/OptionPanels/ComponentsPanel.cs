@@ -378,7 +378,7 @@ namespace DTAConfig.OptionPanels
                         //new (comp.author),
                         //new (comp.version),
                         new (item.Text, item.TextColor)
-                     //   new ("已安装"),
+                        //new ("已安装"),
                     });
                 i++;
             }
