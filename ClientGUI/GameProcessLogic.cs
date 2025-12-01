@@ -503,8 +503,6 @@ namespace ClientGUI
                     artINI = new IniFile(art);
                 }
 
-
-
                 foreach (var componentSection in componentINI.GetSections())
                 {
                     var type = componentINI.GetValue(componentSection, "type", -1);

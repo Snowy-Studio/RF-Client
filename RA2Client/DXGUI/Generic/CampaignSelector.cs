@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.Settings;
 using ClientGUI;
@@ -14,18 +7,26 @@ using Localization;
 using Localization.Tools;
 using Microsoft.Xna.Framework;
 using Ra2Client.Domain;
+using Ra2Client.Domain.Multiplayer;
 using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
+using System;
+using System.Collections.Generic;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics;
+using System.IO;
 using System.IO;
 using System.Linq;
+using System.Linq;
+using System.Text;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Threading.Tasks;
 using Mission = DTAConfig.Entity.Mission;
 using Updater = ClientCore.Settings.Updater;
@@ -647,12 +648,16 @@ namespace Ra2Client.DXGUI.Generic
         private void 重新渲染此地图()
         {
             var mod = _cmbGame.SelectedItem.Tag as Mod;
+            var ares = chkAres.Checked;
+            var tx = chkTerrain.Checked;
+            var phobos = chkPhobos.Checked;
+
             var m = _screenMissions[_lbxCampaignList.SelectedIndex];
             var path = Path.Combine(ProgramConstants.GamePath, m.Path, m.Scenario).Replace(@"/", @"\");
 
             var box = new XNAMessageBox(WindowManager,
                 "重新渲染地图",
-                $"确定删掉旧预览图并重新渲染地图:{m.GUIName}? 渲染配置如下：\n\n模组:{mod.Name}",
+                $"确定删掉旧预览图并重新渲染地图:{m.GUIName}? 渲染配置如下：\n\n模组:{mod.Name},使用Ares:{(ares ? "是" : "否")},使用Phobos:{(phobos ? "是" : "否")},使用TX地形:{(tx ? "是" : "否")}",
                 XNAMessageBoxButtons.YesNo
                 );
             box.YesClickedAction += (_) =>
@@ -672,6 +677,9 @@ namespace Ra2Client.DXGUI.Generic
                 Task.Run(async () =>
                 {
                     List<string> paths = [mod.FilePath];
+                    if (ares) paths.Add("Ares");
+                    if (tx) paths.Add("TX");
+                    if (phobos) paths.Add("Phobos");
                     await RenderImage.RenderPreviewImageAsync([path], paths);
                     加载预览图(m);
                     //return Task.CompletedTask;
@@ -1281,6 +1289,9 @@ namespace Ra2Client.DXGUI.Generic
 
                 chkAres.AllowChecking = mission.Ares == 0;
                 chkAres.Checked = mission.Ares == 1;
+
+                chkTerrain.AllowChecking = mission.TX == 0;
+                chkTerrain.Checked = mission.TX == 1;
 
                 chkPhobos.AllowChecking = mission.Phobos == 0 && chkAres.Checked;
                 chkPhobos.Checked = mission.Phobos == 1 && chkAres.Checked;
