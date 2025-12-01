@@ -2585,7 +2585,13 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             if (Name == "SkirmishLobby")
             {
                 IniFile.ConsolidateIniFiles(mapIni, new IniFile("Client/custom_rules_all.ini"));
-                var subFolders = Directory.GetDirectories("Custom/INI", "*", SearchOption.TopDirectoryOnly);
+                string target = "Custom/INI";
+                string[] subFolders = [];
+
+                if (Directory.Exists(target))
+                {
+                    subFolders = Directory.GetDirectories(target, "*", SearchOption.TopDirectoryOnly);
+                }
 
                 foreach (var folder in subFolders)
                 {
