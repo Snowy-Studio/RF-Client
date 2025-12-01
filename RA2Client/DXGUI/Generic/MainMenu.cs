@@ -32,6 +32,8 @@ using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using Logger = Rampastring.Tools.Logger;
+using MissionPackVo = ClientCore.Entity.MissionPackVo;
+//using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue;
 
 namespace Ra2Client.DXGUI.Generic
 {
@@ -680,7 +682,7 @@ namespace Ra2Client.DXGUI.Generic
                 // 假设用 GET 并把参数拼成 url 查询字符串
                 string url = $"mission_pack/getMissionPackByPage?pageNum={req.pageNum}&pageSize={req.pageSize}";
 
-                var (pageData, error) = NetWorkINISettings.Get<PageResponse<ClientCore.Entity.MissionPackVo>>(url).Result;
+                var (pageData, error) = NetWorkINISettings.Get<PageResponse<MissionPackVo>>(url).Result;
 
                 if (!string.IsNullOrEmpty(error))
                 {
@@ -742,7 +744,7 @@ namespace Ra2Client.DXGUI.Generic
                 // 假设用 GET 并把参数拼成 url 查询字符串
                 string url = $"mission_pack/getMissionPackByPage?pageNum={req.pageNum}&pageSize={req.pageSize}";
 
-                var (pageData, error) = NetWorkINISettings.Get<PageResponse<ClientCore.Entity.MissionPackVo>>(url).Result;
+                var (pageData, error) = NetWorkINISettings.Get<PageResponse<MissionPackVo>>(url).Result;
 
                 if (!string.IsNullOrEmpty(error))
                 {
@@ -828,7 +830,7 @@ namespace Ra2Client.DXGUI.Generic
 
                         //    var bytes = File.ReadAllBytes(jpgPath);
                         //    var fileContent = new ByteArrayContent(bytes);
-                        //    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+                        //    fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
 
                         //    // 上传时文件名保持 map 文件同名
                         //    formData.Add(fileContent, "imgContents", mapNameWithoutExt + ".jpg");

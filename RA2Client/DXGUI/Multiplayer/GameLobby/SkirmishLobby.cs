@@ -508,7 +508,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                         skirmishSettingsIni.SetStringValue("GameOptions", cb.Name, cb.Checked.ToString());
                     }
 
-                    //skirmishSettingsIni.SetStringValue("GameOptions", "chkExtension", chkExtension.Checked.ToString());
+                    // skirmishSettingsIni.SetStringValue("GameOptions", "chkExtension", chkExtension.Checked.ToString());
                 }
 
                 skirmishSettingsIni.WriteIniFile();
@@ -532,7 +532,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 return;
             }
 
-           // disableGameOptionUpdateBroadcast = true;
+            // disableGameOptionUpdateBroadcast = true;
             Logger.Log("载入遭遇战配置!");
 
             var skirmishSettingsIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, SETTINGS_PATH));
@@ -555,7 +555,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
                 string mapSHA1 = skirmishSettingsIni.GetStringValue("Settings", "Map", string.Empty);
 
-                //int gameModeMapIndex = gameModeMapFilter.GetGameModeMaps().FindIndex(gmm => gmm.Map.SHA1 == mapSHA1);
+                // int gameModeMapIndex = gameModeMapFilter.GetGameModeMaps().FindIndex(gmm => gmm.Map.SHA1 == mapSHA1);
                 int gameModeMapIndex = GetSortedGameModeMaps().OrderBy(o => o.Map?.MaxPlayers).ToList().FindIndex(map => map.Map.SHA1 == mapSHA1);
                 
                   if (gameModeMapIndex > -1)
@@ -674,7 +674,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                     cb.Checked = skirmishSettingsIni.GetBooleanValue("GameOptions", cb.Name, cb.Checked);
                 }
 
-               // chkExtension.Checked = skirmishSettingsIni.GetBooleanValue("GameOptions", "chkExtension", chkExtension.Checked);
+                // chkExtension.Checked = skirmishSettingsIni.GetBooleanValue("GameOptions", "chkExtension", chkExtension.Checked);
             }
         }
 

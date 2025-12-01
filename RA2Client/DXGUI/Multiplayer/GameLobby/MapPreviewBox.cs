@@ -416,10 +416,10 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             if (!string.IsNullOrEmpty(GameModeMap.Map.Briefing))
             {
-               
                 briefingBox.SetText(AutoWrapBriefing(GameModeMap.Map.Briefing));
                 //briefingBox.SetText(GameModeMap.Map.Briefing);
                 briefingBox.Enable();
+
                 if (IsActive)
                     briefingBox.SetAlpha(0f);
             }
@@ -522,7 +522,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         private static string AutoWrapBriefing(string briefing, int maxLength = 25)
         {
-            // 超过 50 字符，直接截断加省略号（我要的）
+            // 超过 50 字符，直接截断加省略号
             if (briefing.Length > 200)
                 briefing = string.Concat(briefing.AsSpan(0, 200), "...");
 

@@ -45,7 +45,7 @@ namespace ClientGUI
         /// Starts the main game process.  
         /// </summary>
         /// 
-        public static void StartGameProcess(WindowManager windowManager, IniFile iniFile = null,Action start = null)
+        public static void StartGameProcess(WindowManager windowManager, IniFile iniFile = null, Action start = null)
         {
 #if !DEBUG
             try
@@ -194,16 +194,15 @@ namespace ClientGUI
                     DebugCount = Directory.GetDirectories(Path.Combine(ProgramConstants.游戏目录,"Debug")).Length;
 
                 //旧存档数 = Directory.GetFiles(ProgramConstants.存档目录, "*.sav");
+
                 try
                 {
-                    
                     if (启用连点器 && UserINISettings.Instance.启用连点器.Value) ShiftClickAutoClicker.Instance.Start();
                     gameProcess.Start();
-                start?.Invoke();
+                    start?.Invoke();
 
-                WindowManager.progress.Report("游戏进行中....");
-                    Logger.Log("游戏处理逻辑: 进程开始.");
-                
+                    WindowManager.progress.Report("游戏进行中....");
+                        Logger.Log("游戏处理逻辑: 进程开始.");
                 }
                 catch (Exception ex)
                 {
@@ -222,6 +221,7 @@ namespace ClientGUI
         }
 
         static readonly FileInfo spawnerSettingsFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.SPAWNER_SETTINGS);
+
         private static void 加载音乐(string modPath)
         {
             Mix.PackToMix($"{ProgramConstants.GamePath}Resources/thememd/", Path.Combine(ProgramConstants.游戏目录, "thememd.mix"));

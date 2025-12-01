@@ -19,13 +19,13 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         private XNALabel lblTitle;
 
-        private XNALabel lblClimate;        // 气候
+        private XNALabel lblClimate;         // 气候
         private XNAClientDropDown ddClimate;
 
-        private XNALabel lblPeople;         // 人数
+        private XNALabel lblPeople;          // 人数
         private XNAClientDropDown ddPeople;
 
-        private XNAClientCheckBox cbDamage; // 建筑物损伤
+        private XNAClientCheckBox cbDamage;  // 建筑物损伤
 
         private XNALabel lblSize;
         private XNAClientDropDown ddSize;

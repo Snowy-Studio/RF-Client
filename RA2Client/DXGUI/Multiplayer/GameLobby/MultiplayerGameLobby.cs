@@ -61,8 +61,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         }
 
-
-
         private CommandHandlerBase[] ctcpCommandHandlers;
 
         protected XNAPlayerSlotIndicator[] StatusIndicators;
@@ -77,6 +75,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         protected bool IsHost = false;
 
         private bool locked = false;
+
         protected bool Locked
         {
             get => locked;
