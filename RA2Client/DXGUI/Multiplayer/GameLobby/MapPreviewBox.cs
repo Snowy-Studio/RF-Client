@@ -416,6 +416,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             if (!string.IsNullOrEmpty(GameModeMap.Map.Briefing))
             {
+               
                 briefingBox.SetText(AutoWrapBriefing(GameModeMap.Map.Briefing));
                 //briefingBox.SetText(GameModeMap.Map.Briefing);
                 briefingBox.Enable();
@@ -521,6 +522,10 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         private static string AutoWrapBriefing(string briefing, int maxLength = 25)
         {
+            // 超过 50 字符，直接截断加省略号（你要的）
+            if (briefing.Length > 220)
+                briefing = briefing.Substring(0, 200) + "...";
+
             if (briefing.Contains("@"))
                 return briefing.Replace("@", Environment.NewLine); // 已经有换行符，不处理
 
@@ -529,7 +534,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
             {
                 result.Append(briefing[i]);
 
-                // 每 maxLength 个字符插入一个 @，但不在末尾插
+                // 每 maxLength 个字符插入换行符，但不在末尾插
                 if ((i + 1) % maxLength == 0 && (i + 1) < briefing.Length)
                 {
                     result.Append('\r');
