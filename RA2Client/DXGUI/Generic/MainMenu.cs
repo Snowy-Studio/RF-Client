@@ -1,3 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Principal;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientCore.Settings;
@@ -20,19 +33,6 @@ using Ra2Client.Online;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Principal;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using Logger = Rampastring.Tools.Logger;
 
 namespace Ra2Client.DXGUI.Generic
@@ -521,9 +521,10 @@ namespace Ra2Client.DXGUI.Generic
 
             lblPlayerCount = new XNALabel(WindowManager);
             lblPlayerCount.Name = "lblPlayerCount";
-            lblPlayerCount.Text = "联机大厅玩家数: N/A";
+            //lblPlayerCount.Text = "联机大厅玩家数: N/A";
+            lblPlayerCount.Text = "重聚未来官方公告栏";
             lblPlayerCount.ClientRectangle = new Rectangle(1000, 9, 0, 0);
-            lblPlayerCount.Visible = false;
+            //lblPlayerCount.Visible = false;
 
             lblannouncement = new XNATextBlock(WindowManager);
             lblannouncement.Name = nameof(lblannouncement);
@@ -1394,9 +1395,10 @@ namespace Ra2Client.DXGUI.Generic
             lock (locker)
             {
                 if (e.PlayerCount == -1)
-                    lblPlayerCount.Text = "当前在线玩家: N/A";
-                else
-                    lblPlayerCount.Text = $"当前在线玩家: {CnCNetPlayerCountTask.PlayerCount}";
+                //    lblPlayerCount.Text = "当前在线玩家: N/A";
+                    lblPlayerCount.Text = "重聚未来官方公告栏";
+                //else
+                //    lblPlayerCount.Text = $"当前在线玩家: {CnCNetPlayerCountTask.PlayerCount}";
             }
         }
 
