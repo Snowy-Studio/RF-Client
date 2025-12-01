@@ -715,8 +715,8 @@ namespace Ra2Client
 
         private static async Task 写入组件(ComponentVo cmpVo, WindowManager wm)
         {
-          //  try
-         //   {
+            //try
+            //{
                 var fileName = Path.GetFileName(cmpVo.file);
                 string tmpFile = Path.Combine(ProgramConstants.GamePath, "tmp", fileName);
                 string extractDir = Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp");
@@ -738,7 +738,7 @@ namespace Ra2Client
 
                 List<string> unloadFiles = new List<string>();
 
-                if (cmpVo.type == 0) // 全局 ini custom_cules_all
+                if (cmpVo.type == 0) // 全局 ini (custom_cules_all)
                 {
                     string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                     Directory.CreateDirectory(tempDir);
@@ -808,11 +808,11 @@ namespace Ra2Client
                 if (Directory.Exists(Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp")))
                     Directory.Delete(Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp"), true);
 
-           // }
-           // catch (Exception ex)
-          //  {
-          //      Console.WriteLine($"❌ 写入模组时发生异常: {ex}");
-          //  }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine($"❌ 写入模组时发生异常: {ex}");
+            //}
         }
 
         /// <summary>

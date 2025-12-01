@@ -583,8 +583,6 @@ namespace ClientGUI
                     WindowManager.progress.Report("正在加载音乐");
                     加载音乐(ProgramConstants.游戏目录);
                 }
-
-
                 
 
                 if (!Directory.Exists(Path.Combine(ProgramConstants.游戏目录, "Saved Games")))

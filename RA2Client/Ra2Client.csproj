@@ -9,8 +9,8 @@
 		<Product>RA2Client</Product>
 		<Copyright>Copyright © Snowy Studio 2022-2032</Copyright> 
 		<Trademark>RA2Client</Trademark>
-		<Version>1.5.2.0</Version>
-		<FileVersion>1.5.2.0</FileVersion>
+		<Version>1.5.3.1</Version>
+		<FileVersion>1.5.3.1</FileVersion>
 		<AssemblyName>RA2Client</AssemblyName>
 		<RootNamespace>RA2Client</RootNamespace>
 		<Nullable>disable</Nullable>

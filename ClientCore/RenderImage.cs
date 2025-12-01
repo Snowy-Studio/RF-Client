@@ -88,8 +88,6 @@ namespace ClientCore
         // 渲染多张图片的方法
         public static void RenderImages()
         {
-          
-
             if (需要渲染的地图列表.Count == 0)
                 return;
 
@@ -174,7 +172,7 @@ namespace ClientCore
             string yrPath = UserINISettings.Instance.YRPath;
             
 
-            // 1️⃣ 准备渲染目录
+            // 准备渲染目录
             if (!Directory.Exists(渲染目录))
                 Directory.CreateDirectory(渲染目录);
             else
@@ -193,7 +191,7 @@ namespace ClientCore
                 }
             }
 
-            // 2️⃣ 用字典记录最终文件映射（文件名 -> 源文件路径）
+            // 用字典记录最终文件映射（文件名 -> 源文件路径）
             var fileMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             // 先处理 YRPath
@@ -223,7 +221,7 @@ namespace ClientCore
                 }
             }
 
-            // 3️⃣ 创建符号链接
+            // 创建符号链接
             foreach (var kv in fileMap)
             {
                 string linkPath = Path.Combine(渲染目录, kv.Key);
