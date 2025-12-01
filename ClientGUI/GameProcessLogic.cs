@@ -490,7 +490,7 @@ namespace ClientGUI
                 var rules = 所有需要复制的文件.Find(f => f.ToLower().Contains("rulesmd.ini"));
                 var art = 所有需要复制的文件.Find(f => f.ToLower().Contains("artmd.ini"));
 
-                var 启用皮肤 = rules != null && art != null;
+                var 启用皮肤 = rules != null && art != null && !newSection.KeyExists("GameID");
 
                 IniFile rulesINI = null;
                 IniFile artINI = null;
