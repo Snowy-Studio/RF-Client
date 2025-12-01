@@ -522,8 +522,8 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
         private static string AutoWrapBriefing(string briefing, int maxLength = 25)
         {
-            // 超过 50 字符，直接截断加省略号（你要的）
-            if (briefing.Length > 220)
+            // 超过 50 字符，直接截断加省略号（我要的）
+            if (briefing.Length > 200)
                 briefing = briefing.Substring(0, 200) + "...";
 
             if (briefing.Contains("@"))
