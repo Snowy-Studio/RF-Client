@@ -106,6 +106,7 @@ namespace Ra2Client.DXGUI.Generic
 
             {"BORIS","TANY" },            // 鲍里斯 <=> 谭雅
             {"GGI","FLAKT" },            // 重装步兵 <=> 煤球兵
+            {"JUMPJET","LUNR"},
             {"APOC","BFRT" },              //天启坦克 <=> 要塞
 
             // 建筑对应
