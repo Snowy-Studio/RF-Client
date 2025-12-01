@@ -524,7 +524,7 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
         {
             // 超过 50 字符，直接截断加省略号（我要的）
             if (briefing.Length > 200)
-                briefing = briefing.Substring(0, 200) + "...";
+                briefing = string.Concat(briefing.AsSpan(0, 200), "...");
 
             if (briefing.Contains("@"))
                 return briefing.Replace("@", Environment.NewLine); // 已经有换行符，不处理

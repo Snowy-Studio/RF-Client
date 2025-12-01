@@ -269,6 +269,7 @@ namespace ClientGUI
             var 战役ID = spawn.GetValue("Settings", "CampaignID", -1);
             var chkTerrain = spawn.GetValue("Settings", "chkTerrain", false);
             var chkAres = spawn.GetValue("Settings", "chkAres", false);
+            var chkPhobos = spawn.GetValue("Settings", "chkPhobos", false);
             var buildOffAlly = spawn.GetValue("Settings", "BuildOffAlly", false);
             //if (mission != null)
             //    mission = Path.GetFileName(mission);
@@ -293,6 +294,7 @@ namespace ClientGUI
                     iniFile.SetValue(sectionName, "CampaignID", 战役ID);
                 iniFile.SetValue(sectionName, "chkTerrain", chkTerrain);
                 iniFile.SetValue(sectionName, "chkAres", chkAres);
+                iniFile.SetValue(sectionName, "chkPhobos", chkPhobos);
                 iniFile.SetValue(sectionName, "BuildOffAlly", buildOffAlly);
             }
 
@@ -813,7 +815,15 @@ namespace ClientGUI
             var RA2MD = Path.Combine(ProgramConstants.游戏目录, mod.SettingsFile);
             if (File.Exists(RA2MD))
                 File.Copy(RA2MD, "RA2MD.ini", true);
-            获取新的存档();
+
+            try
+            {
+                获取新的存档();
+            }
+            catch
+            {
+                    
+            }
             
             if ( Directory.Exists(Path.Combine(ProgramConstants.游戏目录, "Debug")) && DebugCount < Directory.GetDirectories(Path.Combine(ProgramConstants.游戏目录, "Debug")).Length)
             {

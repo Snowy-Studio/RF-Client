@@ -18,7 +18,7 @@ namespace Ra2Client.Domain
             Mission = mission;
             FileName = fileName;
             Ares = ares;
-            Phobos = Phobos;
+            Phobos = phobos;
             Tx = tx;
             BuildOffAlly = buildOffAlly;
         }

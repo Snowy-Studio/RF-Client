@@ -146,6 +146,7 @@ namespace Ra2Client.DXGUI.Generic
             settings.SetValue("Mission", newMission);
             settings.SetValue("chkAres", ares);
             settings.SetValue("chkPhobos", phobos);
+            settings.SetValue("chkTerrain", tx);
             settings.SetValue("OtherFile", newMission);
             settings.SetValue("BuildOffAlly", buildOffAlly);
 
@@ -160,8 +161,7 @@ namespace Ra2Client.DXGUI.Generic
             settings.SetValue("CustomLoadScreen", LoadingScreenController.GetLoadScreenName("g"));
             settings.SetValue("Firestorm","No");
             settings.SetValue("GameSpeed", UserINISettings.Instance.GameSpeed.Value);
-            settings.SetValue("chkTerrain", tx);
-
+            
             spawnIni.AddSection(settings);
             
 
