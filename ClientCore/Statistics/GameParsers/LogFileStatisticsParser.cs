@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Rampastring.Tools;
@@ -112,16 +112,16 @@ namespace ClientCore.Statistics.GameParsers
 
                     //line = line.Substring(1);
 
-                    if (line.StartsWith("Lost: "))
-                        currentPlayer.Losses = int.Parse(line.Substring(6));
-                    else if (line.StartsWith("Kills: "))
-                        currentPlayer.Kills = int.Parse(line.Substring(7));
-                    else if (line.StartsWith("Score: "))
-                        currentPlayer.Score = Int32.Parse(line.Substring(7));
+                    if (line.StartsWith(" Lost = "))
+                        currentPlayer.Losses = int.Parse(line.Substring(8));
+                    else if (line.StartsWith(" Kills = "))
+                        currentPlayer.Kills = int.Parse(line.Substring(9));
+                    else if (line.StartsWith(" Score = "))
+                        currentPlayer.Score = Int32.Parse(line.Substring(9));
                     //else if (line.StartsWith(economyString + ": "))
                     //    currentPlayer.Economy = Int32.Parse(line.Substring(economyString.Length + 1));
-                    else if (line.StartsWith("Built: "))
-                        currentPlayer.Economy = int.Parse(line.Substring(7));
+                    else if (line.StartsWith(" Built = "))
+                        currentPlayer.Economy = int.Parse(line.Substring(9));
                 }
 
                 // Check empty players for take-over by AIs
