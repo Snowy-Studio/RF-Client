@@ -65,8 +65,7 @@ namespace Ra2Client.DXGUI
         {
             string windowTitle = ClientConfiguration.Instance.WindowTitle;
             // 在主线程上执行 UI 更新逻辑
-           
-                Window.Title = $"{windowTitle} ver{Updater.GameVersion} {s}";
+            Window.Title = $"{windowTitle} ver{Updater.GameVersion} {s}";
         }
 
         protected override void Initialize()
@@ -74,7 +73,6 @@ namespace Ra2Client.DXGUI
             Logger.Log("加载客户端UI。");
 
             ChangeTiTle();
-
             
             base.Initialize();
 
@@ -129,8 +127,6 @@ namespace Ra2Client.DXGUI
             }
 
             InitializeUISettings();
-
-
 
             WindowManager wm = new(this, graphics);
             wm.Initialize(content, ProgramConstants.GetBaseResourcePath());
@@ -380,7 +376,6 @@ namespace Ra2Client.DXGUI
 
         /// <summary>
         /// Sets the client's graphics mode.
-        
         /// </summary>
         /// <param name="wm">The window manager</param>
         public static void SetGraphicsMode(WindowManager wm)

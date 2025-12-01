@@ -19,8 +19,6 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
 
             Name = "添加至游戏模式";
 
-           
-
             var lblMapName = new XNALabel(windowManager)
             {
                 Text = $"地图名: {map.Name}",

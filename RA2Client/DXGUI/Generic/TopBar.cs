@@ -217,7 +217,8 @@ namespace Ra2Client.DXGUI.Generic
             //    0, 
             //    (38 + 2) * 21, 
             //    (25 + 4 + 2) * 21);
-            ////每边空出一格 用于放边框
+
+            //每边空出一格 用于放边框
 
             //minesweeperGameWindow.CenterOnParent();
             
@@ -239,6 +240,7 @@ namespace Ra2Client.DXGUI.Generic
                 0,
                 (38 + 2) * 21,
                 (25 + 4 + 2) * 21);
+
             //每边空出一格 用于放边框
 
             minesweeperGameWindow.CenterOnParent();

@@ -20,6 +20,7 @@ using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using Mission = DTAConfig.Entity.Mission;
+using Score = ClientCore.Entity.Score;
 using Updater = ClientCore.Settings.Updater;
 
 namespace Ra2Client.DXGUI.Generic
@@ -1099,7 +1100,7 @@ namespace Ra2Client.DXGUI.Generic
             //显示远程总分数
             try
             {
-                var score = NetWorkINISettings.Get<ClientCore.Entity.Score>($"score/getScore?name={name}&missionPack={missionPack}").GetAwaiter().GetResult().Item1;
+                var score = NetWorkINISettings.Get<Score>($"score/getScore?name={name}&missionPack={missionPack}").GetAwaiter().GetResult().Item1;
                 if (score != null)
                     _lblRatingResult.Text = string.Format("Mission Rating: {0:F1} (Number of participants: {1})".L10N("UI:Main:MissionRating"), score.score, score.total);
                 else
@@ -1145,7 +1146,7 @@ namespace Ra2Client.DXGUI.Generic
         private async Task UploadScore(string strName, string missionPack, string brief, int strScore)
         {
 
-            var score = new ClientCore.Entity.Score()
+            var score = new Score()
             {
                 missionPack = missionPack,
                 name = strName,
@@ -1479,7 +1480,7 @@ namespace Ra2Client.DXGUI.Generic
         {
             foreach (string filePath in _filesToCheck)
             {
-                if (!ClientCore.Settings.Updater.IsFileNonexistantOrOriginal(filePath))
+                if (!Updater.IsFileNonexistantOrOriginal(filePath))
                     return true;
             }
 
@@ -1521,7 +1522,9 @@ namespace Ra2Client.DXGUI.Generic
                 }
             }
             catch { }
+
             Action action = null;
+
             if (_gameOptionsPanel.Visible)
             {
                 var mapName = SafePath.CombineFilePath(ProgramConstants.GamePath, Path.Combine(mission.Path, mission.Scenario));
@@ -1661,10 +1664,8 @@ namespace Ra2Client.DXGUI.Generic
                     }
                 }
 
-                // 1. 先处理当前任务（同步，保证立即可用）
+                // 先处理当前任务（同步，保证立即可用）
                 ProcessMission(mission);
-
-                
 
                 action += () =>
                 {
@@ -1687,13 +1688,10 @@ namespace Ra2Client.DXGUI.Generic
                     });
                 };
 
-                // 2. 后台异步处理同一任务包内的其他任务
-                
-
+                // 后台异步处理同一任务包内的其他任务
                 UserINISettings.Instance.CampaignDefaultGameSpeed.Value = 6 - _cmbGameSpeed.SelectedIndex;
                 UserINISettings.Instance.Difficulty.Value = _trbDifficultySelector.Value;
                 UserINISettings.Instance.SaveSettings();
-
 
                 //Mix.PackToMix(战役临时目录, Path.Combine(mission.MPack.FilePath, ProgramConstants.MISSION_MIX));
             }
@@ -1874,8 +1872,6 @@ namespace Ra2Client.DXGUI.Generic
             {
                 ParseBattleIni(file);
             }
-
-
 
             //if (Missions.oldSaves == 0)
             //    ParseBattleIni("INI/" + ClientConfiguration.Instance.BattleFSFileName);
