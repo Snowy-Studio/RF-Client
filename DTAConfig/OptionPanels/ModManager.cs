@@ -1312,12 +1312,14 @@ public class ModManager : XNAWindow
 
     private void LoadModInfo()
     {
-        if (!Visible) return;
+        if (!Visible)
+            return;
 
         _mcListBoxInfo.ClearItems();
         Dictionary<string, string> properties = null;
         if (ListBoxModAi.SelectedItem == null)
             return;
+
         switch (DDModAI.SelectedIndex)
         {
             //筛选Mod

@@ -570,7 +570,6 @@ namespace ClientGUI
                 }
 
 
-
                 复制CSF(newGame);
                 if (newMission != newGame && newMission != string.Empty)
                         复制CSF(newMission);
@@ -584,8 +583,6 @@ namespace ClientGUI
                     WindowManager.progress.Report("正在加载音乐");
                     加载音乐(ProgramConstants.游戏目录);
                 }
-
-
 
 
                 所有需要复制的文件.Add($"Resources/Voice/{UserINISettings.Instance.Voice.Value}");
