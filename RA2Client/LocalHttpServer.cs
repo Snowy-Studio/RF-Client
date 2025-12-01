@@ -715,8 +715,8 @@ namespace Ra2Client
 
         private static async Task 写入组件(ComponentVo cmpVo, WindowManager wm)
         {
-            try
-            {
+          //  try
+         //   {
                 var fileName = Path.GetFileName(cmpVo.file);
                 string tmpFile = Path.Combine(ProgramConstants.GamePath, "tmp", fileName);
                 string extractDir = Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp");
@@ -808,11 +808,11 @@ namespace Ra2Client
                 if (Directory.Exists(Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp")))
                     Directory.Delete(Path.Combine(ProgramConstants.GamePath, "tmp", "Cmp"), true);
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ 写入模组时发生异常: {ex}");
-            }
+           // }
+           // catch (Exception ex)
+          //  {
+          //      Console.WriteLine($"❌ 写入模组时发生异常: {ex}");
+          //  }
         }
 
         /// <summary>
@@ -827,45 +827,35 @@ namespace Ra2Client
         {
             // 类型对应基础目录
             var typeBasePaths = new Dictionary<int, string>
-    {
-        { 1, "Resources/Voice" },
-        { 2, "Custom/Skin" }
-    };
+            {
+                { 1, "Resources/Voice" },
+                { 2, "Custom/Skin" }
+            };
 
             if (!typeBasePaths.TryGetValue(type, out var baseDir))
                 throw new Exception($"未知类型: {type}");
 
-            // 最终目标目录：例如 Custom/Skin/123
+            // 最终目标目录
             string targetDir = Path.Combine(baseDir, cmpId);
             Directory.CreateDirectory(targetDir);
 
-            // 取文件列表（压缩包中的文件路径）
-            var newFiles = SevenZip.GetFile(tmpFile);
+            // 先清空临时解压目录
+            if (Directory.Exists(extractDir))
+                Directory.Delete(extractDir, true);
+            Directory.CreateDirectory(extractDir);
 
             // 解压
             SevenZip.ExtractWith7Zip(tmpFile, extractDir, needDel: true);
 
-            // 获取压缩包的根目录（你原来的逻辑）
-            string root = GetRootDirectory(newFiles);
+            // 获取所有文件（递归）
+            var files = Directory.GetFiles(extractDir, "*", SearchOption.AllDirectories);
 
-            foreach (var file in newFiles)
+            foreach (var file in files)
             {
-                string actualPath = Path.Combine(extractDir, file);
+                // 扁平化：只取文件名
+                string destPath = Path.Combine(targetDir, Path.GetFileName(file));
 
-                // 跳过目录
-                if (Directory.Exists(actualPath))
-                    continue;
-
-                // file 去掉根目录部分
-                string relative = file.Substring(root.Length).TrimStart('/', '\\');
-
-                // 最终放置路径（文件名不带子目录）
-                string destPath = Path.Combine(targetDir, Path.GetFileName(relative));
-
-                Directory.CreateDirectory(Path.GetDirectoryName(destPath));
-
-                File.Move(actualPath, destPath, true);
-
+                File.Move(file, destPath, true);
                 unloadFiles.Add(destPath);
             }
         }
