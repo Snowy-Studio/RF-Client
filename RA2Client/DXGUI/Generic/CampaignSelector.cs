@@ -1,3 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.Settings;
 using ClientGUI;
@@ -7,27 +15,10 @@ using Localization;
 using Localization.Tools;
 using Microsoft.Xna.Framework;
 using Ra2Client.Domain;
-using Ra2Client.Domain.Multiplayer;
 using Ra2Client.DXGUI.Multiplayer.GameLobby;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
-using System;
-using System;
-using System.Collections.Generic;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics;
-using System.IO;
-using System.IO;
-using System.Linq;
-using System.Linq;
-using System.Text;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Threading.Tasks;
 using Mission = DTAConfig.Entity.Mission;
 using Updater = ClientCore.Settings.Updater;
 
@@ -50,96 +41,96 @@ namespace Ra2Client.DXGUI.Generic
 
         private readonly Dictionary<string, string> replaceRA2Dict = new()
         {
-            { "E1", "E2" },               // 美国大兵 <=> 动员兵
-            { "ADOG", "DOG" },            // 警犬（盟） <=> 警犬（苏）
-            { "ENGINEER", "SENGINEER" },  // 工程师（盟） <=> 工程师（苏）
-            { "HTNK", "MTNK"},            // 灰熊坦克 <=> 犀牛坦克
-            {"AMCV","SMCV" },             // 基地车（盟） <=> 基地车（苏）
-            {"V3","SREF" },               // V3火箭车 <=> 光棱坦克
-            {"HTK","FV" },                // 煤球车 <=> 多功能（FV）
-            {"SAPC","LCRF" },             // 运输船（盟） <=> 运输船（苏）
-            {"DEST","SUB" },              // 驱逐舰 <=> 潜艇
-            {"DLPH","SQD"},               // 海豚 <=> 巨型鱿鱼
-            {"HYD","AEGIS"},              // 海螺（盟） <=> 宙斯盾巡洋舰
-            {"DRED","CARRIER"},           // 无畏级战舰 <=> 航空母舰
-            {"CMIN","HARV"},              // 盟军矿车 <=> 苏军矿车
-            {"CMON","HORV"},              // 盟军矿车（倒矿） <=> 苏军矿车（倒矿）
-            {"MGTK","APOC"},              // 幻影坦克 <=> 天启坦克
+            // 步兵单位部分(RA2)
+            {"E1", "E2"},               // 美国大兵 <=> 动员兵
+            {"ADOG", "DOG"},            // 警犬 (盟) <=> 警犬 (苏)
+            {"ENGINEER", "SENGINEER"},  // 工程师 (盟) <=> 工程师 (苏)
 
-            // 建筑对应
-            { "GAPOWR", "NAPOWR" },       // 发电厂（盟） <=> 发电厂（苏）
-            { "NAREFN", "GAREFN" },       // 精炼厂（苏） <=> 精炼厂（盟）
-            { "GAPILE", "NAHAND" },       // 兵营（盟） <=> 兵营（苏）
-            { "NAWALL", "GAWALL" },       // 围墙（苏） <=> 围墙（盟）
-            { "GAWEAP","NAWEAP"},         // 战车工厂（盟） <=> 战车工厂（苏）
-            { "GAAIRC", "NARADR"},        // 机场（盟） <=> 苏军雷达（苏）
-            { "AMRADR", "NARADR"},        // 霉国机场 <=> 苏军雷达
-            {"GADEPT","NADEPT" },         // 维修厂（盟） <=> 维修厂（苏）
-            {"NAYARD","GAYARD" },         // 造船厂（苏） <=> 造船厂（盟）
-            {"GATECH","NATECH" },         // 高科（盟） <=> 高科（苏）
-            {"NALASR","GAPILL" },         // 哨戒炮（苏） <=> 地堡（盟）
-            {"NASAM","NAFLAK"},           // 爱国者 <=> 防空炮
-            {"TESLA","ATESLA"},           // 磁暴线圈（苏） <=> 光棱塔（盟）
-            {"GACNST","NACNST"},          // 建造厂（盟） <=> 建造厂（苏）
-            {"NAIRON","GACSPH"},          // 铁幕装置 <=> 超时空（盟）
-            {"NAMISL","GAWEAT"},          // 核弹发射井 <=> 天气控制器
-            {"NAPSIS","GAGAP"},           // 心灵探测器（苏） <=> 裂缝生成器（盟）
+            // 装甲单位部分(RA2)
+            {"CMIN", "HARV"},           // 超时空采矿车 <=> 武装采矿车
+            {"CMON", "HORV"},           // 超时空采矿车 (倒矿) <=> 武装采矿车 (倒矿)
+            {"MTNK", "HTNK"},           // 灰熊坦克 <=> 犀牛坦克
+            {"FV", "HTK"},              // 多功能步兵战车 <=> 防空履带车
+            {"MGTK", "APOC"},           // 幻影坦克 <=> 天启坦克
+            {"SREF", "V3"},             // 光棱坦克 <=> V3火箭车
+            {"AMCV", "SMCV"},           // 机动基地车 (盟) <=> 机动基地车 (苏)
+
+            // 海军单位部分(RA2)
+            {"LCRF", "SAPC"},           // 两栖运输船 (盟) <=> 两栖运输船 (苏)
+            {"DEST", "SUB"},            // 驱逐舰 <=> 台风级攻击潜艇
+            {"AEGIS", "HYD"},           // 宙斯盾巡洋舰 <=> 海蝎
+            {"DLPH", "SQD"},            // 海豚 <=> 巨型乌贼
+            {"CARRIER", "DRED"},        // 航空母舰 <=> 无畏级战舰
+
+            // 生产建筑部分(RA2)
+            {"GAPOWR", "NAPOWR"},       // 发电厂 <=> 磁能反应炉
+            {"GAREFN", "NAREFN"},       // 矿石精炼厂 (盟) <=> 矿石精炼厂 (苏)
+            {"GAPILE", "NAHAND"},       // 兵营 (盟) <=> 兵营 (苏)
+            {"GAWEAP", "NAWEAP"},       // 战车工厂 (盟) <=> 战车工厂 (苏)
+            {"GAAIRC", "NARADR"},       // 空指部 <=> 雷达
+            {"AMRADR", "NARADR"},       // 美国空指部 <=> 雷达
+            {"GAYARD", "NAYARD"},       // 海军船厂 (盟) <=> 海军船厂 (苏)
+            {"GADEPT", "NADEPT"},       // 维修厂 (盟) <=> 维修厂 (苏)
+            {"GATECH", "NATECH"},       // 作战实验室 (盟) <=> 作战实验室 (苏)
+            {"GACNST", "NACNST"},       // 建造场 (盟) <=> 建造场 (苏)
+
+            // 防御建筑部分(RA2)
+            {"GAWALL", "NAWALL"},       // 围墙 (盟) <=> 围墙 (苏)
+            {"GAPILL", "NALASR"},       // 机枪碉堡 <=> 哨戒炮
+            {"NASAM", "NAFLAK"},        // 爱国者导弹 <=> 防空炮
+            {"ATESLA", "TESLA"},        // 光棱塔 <=> 磁暴线圈
+            {"GAGAP", "NAPSIS"},        // 裂缝产生器 <=> 心灵探测器
+            {"GACSPH", "NAIRON"},       // 超时空传送仪 <=> 铁幕装置
+            {"GAWEAT", "NAMISL"},       // 天气控制器 <=> 核弹发射井
         };
 
         private readonly Dictionary<string, string> replaceYRDict = new()
         {
-            { "E1", "E2" },               // 美国大兵 <=> 动员兵
-            { "ADOG", "DOG" },            // 警犬（盟） <=> 警犬（苏）
-            { "ENGINEER", "SENGINEER" },  // 工程师（盟） <=> 工程师（苏）
-            { "HTNK", "MTNK"},            // 灰熊坦克 <=> 犀牛坦克
-            {"AMCV","SMCV" },             // 基地车（盟） <=> 基地车（苏）
-            {"V3","SREF" },               // V3火箭车 <=> 光棱坦克
+            // 步兵单位部分(YR)
+            {"E1", "E2"},               // 美国大兵 <=> 动员兵
+            {"ADOG", "DOG"},            // 警犬 (盟) <=> 警犬 (苏)
+            {"ENGINEER", "SENGINEER"},  // 工程师 (盟) <=> 工程师 (苏)
+            {"GGI", "FLAKT"},           // 守卫大兵 <=> 防空步兵
+            {"JUMPJET", "LUNR"},        // 火箭飞行兵 <=> 登月火箭员
+            {"TANY", "BORIS"},          // 谭雅 <=> 鲍里斯
 
-            {"HTK","FV" },                // 煤球车 <=> 多功能（FV）
-            {"SAPC","LCRF" },             // 运输船（盟） <=> 运输船（苏）
-            {"DEST","SUB" },              // 驱逐舰 <=> 潜艇
-            {"DLPH","SQD"},               // 海豚 <=> 巨型鱿鱼
-            {"HYD","AEGIS"},              // 海螺（盟） <=> 宙斯盾巡洋舰
-            {"DRED","CARRIER"},           // 无畏级战舰 <=> 航空母舰
-            {"CMIN","HARV"},              // 盟军矿车 <=> 苏军矿车
-            {"CMON","HORV"},              // 盟军矿车（倒矿） <=> 苏军矿车（倒矿）
-            {"MGTK","APOC"},              // 幻影坦克 <=> 天启坦克
+            // 装甲单位部分(YR)
+            {"CMIN", "HARV"},           // 超时空采矿车 <=> 武装采矿车
+            {"CMON", "HORV"},           // 超时空采矿车 (倒矿) <=> 武装采矿车 (倒矿)
+            {"MTNK", "HTNK"},           // 灰熊坦克 <=> 犀牛坦克
+            {"FV", "HTK"},              // 多功能步兵战车 <=> 防空履带车
+            {"BFRT", "APOC"},           // 战斗要塞 <=> 天启坦克
+            {"SREF", "V3"},             // 光棱坦克 <=> V3火箭车
+            {"AMCV", "SMCV"},           // 机动基地车 (盟) <=> 机动基地车 (苏)
 
-            {"BORIS","TANY" },            // 鲍里斯 <=> 谭雅
-            {"GGI","FLAKT" },            // 重装步兵 <=> 煤球兵
-            {"JUMPJET","LUNR"},
-            {"APOC","BFRT" },              //天启坦克 <=> 要塞
+            // 海军单位部分(YR)
+            {"LCRF", "SAPC"},           // 两栖运输船 (盟) <=> 两栖运输船 (苏)
+            {"DEST", "SUB"},            // 驱逐舰 <=> 台风级攻击潜艇
+            {"AEGIS", "HYD"},           // 宙斯盾巡洋舰 <=> 海蝎
+            {"DLPH", "SQD"},            // 海豚 <=> 巨型乌贼
+            {"CARRIER", "DRED"},        // 航空母舰 <=> 无畏级战舰
 
-            // 建筑对应
-            { "GAPOWR", "NAPOWR" },       // 发电厂（盟） <=> 发电厂（苏）
-            { "NAREFN", "GAREFN" },       // 精炼厂（苏） <=> 精炼厂（盟）
-            { "GAPILE", "NAHAND" },       // 兵营（盟） <=> 兵营（苏）
-            { "NAWALL", "GAWALL" },       // 围墙（苏） <=> 围墙（盟）
-            { "GAWEAP","NAWEAP"},         // 战车工厂（盟） <=> 战车工厂（苏）
-            { "GAAIRC", "NARADR"},        // 机场（盟） <=> 苏军雷达（苏）
-            { "AMRADR", "NARADR"},        // 霉国机场 <=> 苏军雷达
-            {"GADEPT","NADEPT" },         // 维修厂（盟） <=> 维修厂（苏）
-            {"NAYARD","GAYARD" },         // 造船厂（苏） <=> 造船厂（盟）
-            {"GATECH","NATECH" },         // 高科（盟） <=> 高科（苏）
-            {"NALASR","GAPILL" },         // 哨戒炮（苏） <=> 地堡（盟）
-            {"NASAM","NAFLAK"},           // 爱国者 <=> 防空炮
-            {"TESLA","ATESLA"},           // 磁暴线圈（苏） <=> 光棱塔（盟）
-            {"GACNST","NACNST"},          // 建造厂（盟） <=> 建造厂（苏）
-            {"NAIRON","GACSPH"},          // 铁幕装置 <=> 超时空（盟）
-            {"NAMISL","GAWEAT"},          // 核弹发射井 <=> 天气控制器
-            //{"NAPSIS","GAGAP"},           // 心灵探测器（苏） <=> 裂缝生成器（盟）
+            // 生产建筑部分(YR)
+            {"GAPOWR", "NAPOWR"},       // 发电厂 <=> 磁能反应炉
+            {"GAREFN", "NAREFN"},       // 矿石精炼厂 (盟) <=> 矿石精炼厂 (苏)
+            {"GAPILE", "NAHAND"},       // 兵营 (盟) <=> 兵营 (苏)
+            {"GAWEAP", "NAWEAP"},       // 战车工厂 (盟) <=> 战车工厂 (苏)
+            {"GAAIRC", "NARADR"},       // 空指部 <=> 雷达
+            {"AMRADR", "NARADR"},       // 美国空指部 <=> 雷达
+            {"GAYARD", "NAYARD"},       // 海军船厂 (盟) <=> 海军船厂 (苏)
+            {"GADEPT", "NADEPT"},       // 维修厂 (盟) <=> 维修厂 (苏)
+            {"GATECH", "NATECH"},       // 作战实验室 (盟) <=> 作战实验室 (苏)
+            {"GAOREP", "NAINDP"},       // 矿石精炼器 <=> 工业工厂
+            {"GACNST", "NACNST"},       // 建造场 (盟) <=> 建造场 (苏)
 
-            {"GAOREP","NAINDP" }            // 矿石精炼器 <=> 工业工厂
+            // 防御建筑部分(YR)
+            {"GAWALL", "NAWALL"},       // 围墙 (盟) <=> 围墙 (苏)
+            {"GAPILL", "NALASR"},       // 机枪碉堡 <=> 哨戒炮
+            {"NASAM", "NAFLAK"},        // 爱国者导弹 <=> 防空炮
+            {"ATESLA", "TESLA"},        // 光棱塔 <=> 磁暴线圈
+            {"GACSPH", "NAIRON"},       // 超时空传送仪 <=> 铁幕装置
+            {"GAWEAT", "NAMISL"},       // 天气控制器 <=> 核弹发射井
         };
-
-        //private readonly Dictionary<string, string> replaceYRDict = new()
-        //{
-        //    { "E1", "E2" },
-        //    { "ADOG", "DOG" },
-        //    { "GGI", "FLAKT" },
-        //    { "ENGINEER", "SENGINEER" },
-        //    { "TANY","BORIS"}
-        //};
 
         private readonly List<Mission> _missions = [];
         private readonly List<Mission> _screenMissions = [];
