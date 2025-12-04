@@ -310,6 +310,9 @@ public class ModManager : XNAWindow
 
     private void DDModAI_SelectedIndexChanged(object sender, EventArgs e)
     {
+        if (!Visible)
+            return;
+
         ListBoxModAi.SelectedIndexChanged -= ListBoxModAISelectedIndexChanged;
         ListBoxModAi.SelectedIndex = -1;
         ListBoxModAi.Items.Clear();
@@ -928,26 +931,41 @@ public class ModManager : XNAWindow
         #region 或从 rulesmd.ini 提取 国家 信息
         if (Countries == string.Empty)
         {
-            var RulesPath = Path.Combine(path, "rulesmd.ini");
-            if (File.Exists(RulesPath))
-            {
-                var ini = new IniFile(RulesPath);
-                if (ini.SectionExists("Countries"))
-                {
-                    var d = CSF.获取目录下的CSF字典(path);
-                    if (Directory.GetFiles(path,"*.csf").Length == 0)
-                        d = CSF.获取目录下的CSF字典("Mod&AI\\Mod\\YR");
+            string rulesPath = Path.Combine(path, "rulesmd.ini");
+            IniFile ini = null;
 
-                    foreach (var country in ini.GetSectionValues("Countries").SkipLast(4))
-                    {
-                        var UIName = ini.GetValue(country, "UIName", $"Name:{country}");
-                        if (d.ContainsKey(UIName))
-                            Countries += d[UIName] + ',';
-                        else
-                            Countries += country + ',';
-                    }
-                    Countries = Countries.TrimEnd(',').ConvertValuesToSimplified();
+            // 优先读取根目录
+            if (File.Exists(rulesPath))
+            {
+                ini = new IniFile(rulesPath);
+            }
+            // 根目录不存在，从 Mix 文件中提取
+            else
+            {
+                var mixFiles = MixLoader.MixFile.GetDirFiles(path, "rulesmd.ini");
+                if (mixFiles.Count > 0)
+                    ini = new IniFile(mixFiles[0]);
+            }
+
+            if (ini != null && ini.SectionExists("Countries"))
+            {
+                // 获取 CSF 字典，优先当前目录
+                var csfDict = CSF.获取目录下的CSF字典(path);
+                if (!Directory.GetFiles(path, "*.csf").Any())
+                {
+                    // 如果当前目录没有 csf 文件，使用默认路径
+                    csfDict = CSF.获取目录下的CSF字典("Mod&AI\\Mod\\YR");
                 }
+
+                var countryValues = ini.GetSectionValues("Countries").SkipLast(4);
+
+                var countriesList = countryValues.Select(country =>
+                {
+                    string uiName = ini.GetValue(country, "UIName", $"Name:{country}");
+                    return csfDict.ContainsKey(uiName) ? csfDict[uiName] : country;
+                }).ToList();
+
+                Countries = string.Join(",", countriesList).ConvertValuesToSimplified();
             }
         }
         #endregion
