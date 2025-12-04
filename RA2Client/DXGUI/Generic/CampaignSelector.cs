@@ -46,6 +46,7 @@ namespace Ra2Client.DXGUI.Generic
             {"E1", "E2"},               // 美国大兵 <=> 动员兵
             {"ADOG", "DOG"},            // 警犬 (盟) <=> 警犬 (苏)
             {"ENGINEER", "SENGINEER"},  // 工程师 (盟) <=> 工程师 (苏)
+            {"GHOST", "DESO"},          // 海豹部队 <=> 辐射工兵
 
             // 装甲单位部分(RA2)
             {"CMIN", "HARV"},           // 超时空采矿车 <=> 武装采矿车
@@ -93,6 +94,7 @@ namespace Ra2Client.DXGUI.Generic
             {"ENGINEER", "SENGINEER"},  // 工程师 (盟) <=> 工程师 (苏)
             {"GGI", "FLAKT"},           // 守卫大兵 <=> 防空步兵
             {"JUMPJET", "LUNR"},        // 火箭飞行兵 <=> 登月火箭员
+            {"GHOST", "DESO"},          // 海豹部队 <=> 辐射工兵
             {"TANY", "BORIS"},          // 谭雅 <=> 鲍里斯
 
             // 装甲单位部分(YR)

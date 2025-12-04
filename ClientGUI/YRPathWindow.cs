@@ -12,15 +12,15 @@ namespace ClientGUI
 
             var firstLabel = new XNALabel(WindowManager)
             {
-                ClientRectangle = new Rectangle(20, 10, 0, 0),
-                Text = "选择纯净尤里的复仇目录\n（这个对话框通常不会存在，如果你没有修改游戏文件，那也可能是安装目录太长了）"
+                ClientRectangle = new Rectangle(10, 10, 0, 0),
+                Text = "选择纯净尤里的复仇目录\n\n(这个对话框通常不会存在)\n(如果你没有修改游戏文件，那也可能是安装目录太长了)\n\n选择根目录的yr文件夹，如果无效请关杀毒重装。"
             };
 
 
             BackgroundTexture = AssetLoader.LoadTexture("msgboxform.png");
             var tbxName = new XNASuggestionTextBox(WindowManager)
             {
-                ClientRectangle = new Rectangle(20, 50, 350, 25),
+                ClientRectangle = new Rectangle(10, 110, 350, 25),
                 Name = "nameTextBox",
                 Suggestion = "点击以选择纯净尤里的复仇目录",
 
@@ -40,7 +40,7 @@ namespace ClientGUI
 
             var btnConfirm = new XNAClientButton(WindowManager)
             {
-                ClientRectangle = new Rectangle(20, 90, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT),
+                ClientRectangle = new Rectangle(100, 150, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT),
                 Text = "确认"
             };
             btnConfirm.LeftClick += (sender, e) =>
