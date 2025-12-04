@@ -2538,10 +2538,10 @@ namespace Ra2Client.DXGUI.Multiplayer.GameLobby
                 MapCodeHelper.ApplyMapCode(mapIni, mpGlobalCodeIni);
             }
 
-            foreach (GameLobbyCheckBox checkBox in CheckBoxes)
+            foreach (GameLobbyCheckBox checkBox in CheckBoxes.FindAll(chk => chk.Visible))
                 checkBox.ApplyMapCode(mapIni, GameMode);
 
-            foreach (GameLobbyDropDown dropDown in DropDowns)
+            foreach (GameLobbyDropDown dropDown in DropDowns.FindAll(dd => dd.Visible))
                 dropDown.ApplyMapCode(mapIni, GameMode);
 
             mapIni.MoveSectionToFirst("MultiplayerDialogSettings"); // Required by YR
