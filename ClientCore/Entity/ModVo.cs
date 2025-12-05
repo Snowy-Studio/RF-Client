@@ -4,6 +4,7 @@ namespace ClientCore.Entity
 {
     public record ModVo
     {
+        public List<string>? countries { get; init; } = [];
         public string id { get; init; }
         public string name { get; init; } = "";
         public string description { get; init; } = "";

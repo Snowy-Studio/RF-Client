@@ -856,7 +856,7 @@ public class ModManager : XNAWindow
         }
 
         var Name = m?.Name ?? id;
-        var Countries = string.Empty;
+        var Countries = m?.Countries ?? string.Empty;
         var RandomSides = string.Empty;
         List<string> RandomSidesIndexs = [];
         var Colors = string.Empty;
@@ -872,7 +872,7 @@ public class ModManager : XNAWindow
             if (File.Exists(GameOptionsPath))
             {
                 var ini = new IniFile(GameOptionsPath);
-                if (ini.SectionExists("General"))
+                if (Countries == string.Empty && ini.SectionExists("General"))
                     Countries = ini.GetValue("General", "Sides", string.Empty);
 
                 if (ini.SectionExists("RandomSelectors"))
