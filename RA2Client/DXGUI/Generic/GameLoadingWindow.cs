@@ -203,12 +203,7 @@ namespace Ra2Client.DXGUI.Generic
 
             SavedGame sg = savedGames[lbSaveGameList.SelectedIndex];
             var msgBox = new XNAMessageBox(WindowManager, "Delete confirmation".L10N("UI:Main:DeleteConfirmationTitle"),
-                string.Format("The following saved games will be permanently deleted:" + Environment.NewLine +
-                    Environment.NewLine +
-                    "Filename: {0}" + Environment.NewLine +
-                    "Saved game name: {1}" + Environment.NewLine +
-                    "Date and time: {2}" + Environment.NewLine +
-                    Environment.NewLine +
+                string.Format(
                     "Are you sure you want to proceed?".L10N("UI:Main:DeleteConfirmationText"),
                     sg.FileName, Renderer.GetSafeString(sg.GUIName, lbSaveGameList.FontIndex), sg.LastModified.ToString()),
                 XNAMessageBoxButtons.YesNo);

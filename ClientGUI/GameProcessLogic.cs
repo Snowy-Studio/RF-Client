@@ -358,7 +358,7 @@ namespace ClientGUI
             mod = Mod.Mods.Find(m => m.FilePath == newSection.GetValue("Game", string.Empty));
             if (mod == null)
             {
-                XNAMessageBox.Show(windowManager, "无法启动游戏", $"模组文件已丢失：{newSection.GetValue("Game", string.Empty)}");
+                XNAMessageBox.Show(windowManager, "无法启动游戏", $"模组文件已丢失：{newSection.GetValue("Game", string.Empty)}\n\n这可能是个bug，你可以尝试重启客户端重新载入，如果你确实没有删东西的话");
                 return false;
             }
 
