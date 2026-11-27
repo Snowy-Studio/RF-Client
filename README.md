@@ -1,4 +1,7 @@
 # 红色警戒2 重聚未来 1.5 开发者文档
+> [!CAUTION]
+> ## 重聚未来制作组不允许任何基于重聚且名字和内容高度相似的三创衍生作品公开发布，这里公开点名某个叫知寻重聚2027的，可以自用、测试或开发其他红警二创作品
+
 <div align="center">
 
 ![image](https://socialify.git.ci/Snowy-Studio/RF-Client/image?description=1&font=Inter&forks=1&issues=1&language=1&name=1&owner=1&pulls=1&stargazers=1&theme=Auto)
